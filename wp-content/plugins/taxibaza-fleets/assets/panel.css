@@ -1,0 +1,22 @@
+/* TaxiBaza Fleets — /panel/?tab=fleets */
+.tbf-panel .tbf-badge{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:100px;font-size:12px;font-weight:600;vertical-align:middle;margin-left:8px}
+.tbf-badge--pending{background:#ffe9a8;color:#5c4400}
+.tbf-badge--approved{background:#d9fff0;color:#00663e}
+.tbf-badge--rejected,.tbf-badge--blocked{background:#ffe1e1;color:#8a1116}
+.tbf-badge--draft{background:#ececec;color:#555}
+.tbf-panel .tbf-fa-act{display:inline}
+.tbf-panel .tbf-btn-accent{background:#02f797;border-color:#02f797;color:#000}
+.tbf-panel .tbf-btn-accent:hover{filter:brightness(.95)}
+.tbf-notice{margin:24px 0 0;padding:14px 20px;border-radius:12px;background:#e9fff5;border:1px solid #9ef0cc;font-size:14px}
+.tbf-notice--error{background:#fff1f1;border-color:#f3b4b6}
+.tbf-back{font-size:14px;color:#000;text-decoration:none;display:inline-block;margin-top:24px}
+.tbf-detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.tbf-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.tbf-search input{height:40px;border-radius:100px;border:1px solid #e5e5e5;padding:0 16px;font:400 14px Inter,sans-serif;min-width:220px;background:#f9f9f9}
+.tbf-versions{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+.tbf-versions .tbf-grid{grid-template-columns:1fr;margin-top:16px}
+.tbf-version-title{font-size:16px;margin:0}
+.tbf-panel .tbf-cab .tbf-grid{margin-top:32px}
+@media (max-width:1023px){.tbf-versions{grid-template-columns:1fr}.tbf-search input{min-width:0;width:100%}}
+.tbf-panel .tb-fa-user-avatar-link{text-decoration:none}
+.tbf-panel .tb-fa-user-avatar{background:#ececec;color:#000}
