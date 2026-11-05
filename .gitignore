@@ -1,0 +1,16 @@
+# secrets and site data — never commit
+wp-config.php
+.env
+*.sql
+*.sql.gz
+*.zip
+*.log
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup*/
+wp-content/updraft/
+wp-content/ai1wm-backups/
+wp-content/uploads/duplicator*/
+node_modules/
+.DS_Store
