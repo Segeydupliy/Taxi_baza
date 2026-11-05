@@ -261,6 +261,27 @@ namespace TaxiBaza\Fleets\Tests {
 	add_filter( 'wpml_translate_single_string', fn( $v, $c = '', $k = '', $l = '' ) => 'save' === $k ? 'Зберегти зміни' : $v, 10, 4 );
 	check( 'WPML override wins', 'Зберегти зміни' === \TaxiBaza\Fleets\t( 'save' ) );
 
+
+	echo "Admin panel: actions\n";
+	$AP='\TaxiBaza\Fleets\Admin_Panel'; $S='\TaxiBaza\Fleets\Status'; $P='\TaxiBaza\Fleets\Profile';
+	$GLOBALS['__users'][8] = [ 'car_owner' ]; \test_set_role( 8, 'fleet' );
+	check( 'draft fleet: only block button', [ 'block' ] === $AP::actions_for( 8 ) );
+	$P::submit( 8, $p );
+	check( 'pending fleet: reject + approve', [ 'reject', 'approve' ] === $AP::actions_for( 8 ) );
+	check( 'reject pending', $AP::apply( 8, 'reject' ) && $S::REJECTED === $S::get( 8 ) && in_array( 8, $S::hidden_authors(), true ) );
+	check( 'rejected: approve + block', [ 'approve', 'block' ] === $AP::actions_for( 8 ) );
+	check( 'approve rejected (draft kept) -> approved + live', $AP::apply( 8, 'approve' ) && $S::APPROVED === $S::get( 8 ) && 'Gold Fleet s.r.o.' === $P::get_live( 8 )['name'] );
+	check( 'approved: only block', [ 'block' ] === $AP::actions_for( 8 ) );
+	$P::submit( 8, array_merge( $p, [ 'name' => 'Edited' ] ) );
+	check( 'approved with edits: reject_edits + approve + block', [ 'reject_edits', 'approve', 'block' ] === $AP::actions_for( 8 ) );
+	check( 'grouped puts edits fleet into pending', in_array( 8, $AP::grouped()['pending'], true ) && in_array( 8, $AP::grouped()['approved'], true ) );
+	check( 'block', $AP::apply( 8, 'block' ) && $S::BLOCKED === $S::get( 8 ) && in_array( 8, $S::hidden_authors(), true ) );
+	check( 'blocked: only unblock', [ 'unblock' ] === $AP::actions_for( 8 ) );
+	check( 'unblock with live profile -> approved', $AP::apply( 8, 'unblock' ) && $S::APPROVED === $S::get( 8 ) && ! in_array( 8, $S::hidden_authors(), true ) );
+	$GLOBALS['__users'][9] = [ 'car_owner' ]; \test_set_role( 9, 'fleet' ); $AP::apply( 9, 'block' );
+	check( 'unblock without live profile -> pending', $AP::apply( 9, 'unblock' ) && $S::PENDING === $S::get( 9 ) );
+	check( 'unknown action rejected', false === $AP::apply( 9, 'nuke' ) );
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }

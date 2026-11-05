@@ -27,6 +27,7 @@ require_once __DIR__ . '/includes/class-lock.php';
 require_once __DIR__ . '/includes/class-role-switch.php';
 require_once __DIR__ . '/includes/class-profile.php';
 require_once __DIR__ . '/includes/class-cabinet.php';
+require_once __DIR__ . '/includes/class-admin-panel.php';
 
 add_action(
 	'plugins_loaded',
@@ -38,6 +39,7 @@ add_action(
 		Role_Switch::init();
 		Profile::init();
 		Cabinet::init();
+		Admin_Panel::init();
 	},
 	20
 );
