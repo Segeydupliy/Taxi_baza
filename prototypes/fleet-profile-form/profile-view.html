@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Мій профіль — перегляд (прототип)</title><link rel="stylesheet" href="assets/tbf-cabinet.css">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif}.stub-h{height:86px;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;padding:0 96px;font-weight:800;font-size:24px}.stub-f{background:#000;color:#fff;height:300px;display:grid;place-items:center}</style></head>
+<body>
+<div class="stub-h">TaxiBaza.sk</div>
+<main class="tbf-cab"><div class="tbf-wrap">
+ <header class="tbf-head"><div><h1 class="tbf-title">Вітаємо Gold Fleet s.r.o.</h1><p class="tbf-lead">У вас 0 опублікованих оголошень.</p></div>
+  <a class="tbf-btn tbf-btn--lg" href="#"><span aria-hidden="true" style="font-size:24px;line-height:1">+</span> Додати оголошення</a></header>
+ <!-- status banner: tbf-status--pending | --approved | --rejected | --blocked ; prototype: ?status=pending -->
+ <p class="tbf-status" id="tbf-status" role="status" hidden></p>
+ <nav class="tbf-tabs" aria-label="Кабінет"><a href="#">Мої оголошення</a><a href="#">Повідомлення</a><a href="#" aria-current="page">Мій профіль</a><a href="#">Налаштування</a></nav>
+ <div class="tbf-grid">
+  <aside class="tbf-card"><h2 class="tbf-card__title">Логотип/фото флотилії</h2><div class="tbf-logo"><div class="tbf-logo__pic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.5"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+   <div class="tbf-logo__actions"><label class="tbf-btn tbf-btn--dark" style="cursor:pointer">Завантажити нове<input type="file" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="tbf-link">Видалити</button></div></div></aside>
+  <div class="tbf-main"><section class="tbf-card tbf-card--has-actions"><div class="tbf-card__head"><h2 class="tbf-card__title">Основна інформація</h2><div class="tbf-card__actions"><a class="tbf-btn tbf-btn--dark tbf-btn--sm" href="profile-form.html">Редагувати</a><button type="button" class="tbf-link tbf-link--muted">Видалити акаунт</button></div></div><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Назва флотилії/компанії</dt><dd>Gold Fleet s.r.o.</dd></div><div class="tbf-dl__row"><dt>Email</dt><dd>goldfleet.s.r.o@info.com</dd></div><div class="tbf-dl__row"><dt>Телефон</dt><dd>+421 902 123 456</dd></div><div class="tbf-dl__row"><dt>Тип облікового запису</dt><dd>Флотилія / Компанія</dd></div><div class="tbf-dl__row"><dt>Номер IČO</dt><dd>54 123 456</dd></div><div class="tbf-dl__row"><dt>Платформи</dt><dd>Uber, Bolt, Hopin</dd></div><div class="tbf-dl__row"><dt>Телеграм</dt><dd>gold_fleet_s.r.o.</dd></div><div class="tbf-dl__row"><dt>WhatsApp</dt><dd>gold_fleet_s.r.o.</dd></div><div class="tbf-dl__row"><dt>Мови спілкування</dt><dd>Словацька, Українська, Англійська</dd></div><div class="tbf-dl__row"><dt>Короткий опис</dt><dd><div class="tbf-clamp" id="tbf-desc">Надійна флотилія з чесними умовами для нових і досвідчених водіїв. Працюємо в Братиславі та Трнаві з 2019 року — допоможемо з реєстрацією на платформах, концесією і першими поїздками.</div><button type="button" class="tbf-more" id="tbf-more" aria-expanded="false">Читати повністю</button></dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Моделі співпраці</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Що пропонуємо водіям</dt><dd>Роботу на власному авто та оренду авто флотилії</dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Водії з власним авто</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Як беремо оплату</dt><dd>% з виручки</dd></div><div class="tbf-dl__row"><dt>Комісія флотилії</dt><dd>8 %</dd></div><div class="tbf-dl__row"><dt>Від чого рахується комісія</dt><dd>Від загальної виручки</dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Оренда авто флотилії</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Ціна оренди</dt><dd>від 210 € / тиждень</dd></div><div class="tbf-dl__row"><dt>Комісія з виручки додатково до оренди</dt><dd>8 %</dd></div><div class="tbf-dl__row"><dt>Депозит</dt><dd>200 €, повертаємо під час здачі авто</dd></div><div class="tbf-dl__row"><dt>Мінімальний термін оренди</dt><dd>14 днів, далі щотижня</dd></div><div class="tbf-dl__row"><dt>Включено у вартість оренди</dt><dd>Страховка, сервіс і ТО</dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Виплати водіям</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Як часто</dt><dd>Щотижня, у понеділок</dd></div><div class="tbf-dl__row"><dt>Спосіб виплати</dt><dd>На банківський рахунок</dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Переваги для водіїв</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Паливна картка</dt><dd>Знижка 4 центи за літр на АЗС партнера · для власного авто</dd></div><div class="tbf-dl__row"><dt>Знижки на сервіс</dt><dd>−15 % на сервіс і шини в партнерському СТО · для власного авто</dd></div><div class="tbf-dl__row"><dt>Допомога з концесією</dt><dd>Допоможемо зібрати та подати документи, безкоштовно · для власного авто</dd></div></dl></section><section class="tbf-card"><h2 class="tbf-card__title">Вимоги до водія</h2><dl class="tbf-dl"><div class="tbf-dl__row"><dt>Мінімальний вік</dt><dd>21</dd></div><div class="tbf-dl__row"><dt>Водійський стаж</dt><dd>від 2 років</dd></div><div class="tbf-dl__row"><dt>Обов’язкові документи</dt><dd>ID-картка або паспорт</dd></div></dl></section></div>
+ </div>
+</div>
+<div class="tbf-bottombar"><div class="tbf-wrap"><a class="tbf-btn tbf-btn--lg" href="#"><span aria-hidden="true" style="font-size:24px;line-height:1">+</span> Додати оголошення</a><a class="tbf-btn tbf-btn--dark tbf-btn--lg" href="profile-form.html">Редагувати</a></div></div>
+</main>
+<div class="stub-f">footer (theme)</div>
+<script>
+(function(){
+ var d=document.getElementById('tbf-desc'),b=document.getElementById('tbf-more');
+ function need(){if(d.classList.contains('is-open'))return;d.classList.remove('is-short');var short=d.scrollHeight<=d.clientHeight+2;d.classList.toggle('is-short',short);b.hidden=short}
+ b.addEventListener('click',function(){var o=d.classList.toggle('is-open');b.setAttribute('aria-expanded',o);b.textContent=o?'Згорнути':'Читати повністю'});
+ need(); window.addEventListener('resize',need);
+ var T={pending:'Профіль надіслано на модерацію. Поки ми його перевіряємо, ви вже можете додавати оголошення.',
+  approved:'Вітаємо, ви успішно пройшли модерацію адміністратором.',
+  edits:'Зміни профілю на модерації. До схвалення водії бачать попередню версію.',
+  rejected:'Профіль не пройшов модерацію. Зверніться в підтримку.',
+  blocked:'Профіль заблоковано адміністратором. Ваші оголошення приховані з каталогу.'};
+ var s=(location.search.match(/status=(\w+)/)||[])[1], el=document.getElementById('tbf-status');
+ if(s&&T[s]){el.textContent=T[s];el.className='tbf-status tbf-status--'+(s==='edits'?'pending':s);el.hidden=false}
+})();
+</script>
+</body></html>

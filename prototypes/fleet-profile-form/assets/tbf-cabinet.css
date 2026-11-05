@@ -98,3 +98,28 @@
   .tbf-savebar{padding:24px 0 40px}
   .tbf-savebar .tbf-btn{flex:1}
 }
+
+/* ---- profile view (Figma: Flotilla Profile 994:40) ---- */
+.tbf-card--has-actions{position:relative}
+.tbf-card--has-actions .tbf-card__actions{position:absolute;top:32px;right:32px}
+.tbf-card--has-actions .tbf-dl{max-width:703px}
+.tbf-card__head{display:block}
+.tbf-card__actions{display:flex;flex-direction:column;align-items:center;gap:10px;flex:none}
+.tbf-btn--sm{height:37px;padding:0 16px;font-size:14px}
+.tbf-link--muted{font-size:12px;color:var(--tbf-subtle);font-weight:400}
+.tbf-dl{margin:24px 0 0;display:flex;flex-direction:column;gap:22px}
+.tbf-dl__row{display:flex;flex-direction:column;gap:2px}
+.tbf-dl dt{font-size:12px;color:var(--tbf-subtle)}
+.tbf-dl dd{margin:0;font-size:16px;font-weight:500;line-height:1.3}
+.tbf-clamp{max-height:calc(1.3em * 2.6);overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
+.tbf-clamp.is-open,.tbf-clamp.is-short{max-height:none;-webkit-mask-image:none;mask-image:none}
+.tbf-more{margin-top:12px;font-size:12px;color:var(--tbf-subtle);background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.tbf-bottombar{border-top:1px solid var(--tbf-border);margin-top:64px}
+.tbf-bottombar .tbf-wrap{display:flex;justify-content:flex-end;gap:16px;padding-top:24px;padding-bottom:24px}
+/* moderation status banner (Figma: Notification 991:11636) */
+.tbf-status{display:flex;align-items:center;gap:12px;border-radius:12px;padding:18px 24px;margin:32px 0 0;font-size:14px;background:#fff7e0;border:1px solid #f5d77a}
+.tbf-status::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;background:#f0b400}
+.tbf-status--approved{background:#e9fff5;border-color:#9ef0cc}.tbf-status--approved::before{background:var(--tbf-accent)}
+.tbf-status--rejected,.tbf-status--blocked{background:#fff1f1;border-color:#f3b4b6}.tbf-status--rejected::before,.tbf-status--blocked::before{background:var(--tbf-error)}
+.tbf-status[hidden]{display:none}
+@media (max-width:1023px){.tbf-card--has-actions .tbf-card__actions{position:static;flex-direction:row;margin-top:16px}.tbf-bottombar .tbf-btn{flex:1}}
