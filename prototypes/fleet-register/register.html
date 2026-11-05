@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Реєстрація флотилії (прототип)</title><link rel="stylesheet" href="assets/tbf-auth.css">
+<style>body{margin:0;font-family:Inter,system-ui,sans-serif}.stub-h{height:86px;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;padding:0 48px;font-weight:800;font-size:24px}.stub-f{background:#000;color:#fff;height:240px;display:grid;place-items:center}</style></head>
+<body>
+<div class="stub-h">TaxiBaza.sk</div>
+<main class="tbf-auth">
+
+ <section class="tbf-view" id="v-register">
+  <h1 class="tbf-auth__title">Реєстрація облікового запису</h1>
+  <form class="tbf-auth__card" id="tbf-reg" novalidate>
+   <p class="tbf-auth__note"><b>*</b> Обов’язкові поля до заповнення</p>
+   <div class="tbf-auth__fields">
+    <div class="tbf-f"><input class="tbf-f__in" id="r-name" name="name" placeholder=" " autocomplete="organization" aria-label="Ім'я / Назва флотилії"><span class="tbf-f__ph">Ім'я / Назва флотилії <b>*</b></span><p class="tbf-f__err" hidden></p></div>
+    <div class="tbf-f"><input class="tbf-f__in" id="r-id" name="identity" placeholder=" " autocomplete="username" inputmode="email" aria-label="Email / Телефон"><span class="tbf-f__ph">Email / Телефон <b>*</b></span><p class="tbf-f__err" hidden></p></div>
+    <div class="tbf-f"><input class="tbf-f__in" id="r-pass" name="password" type="password" placeholder=" " autocomplete="new-password" aria-label="Пароль" style="padding-right:96px"><span class="tbf-f__ph">Пароль <b>*</b></span><button type="button" class="tbf-f__eye" id="tbf-eye">Показати</button><p class="tbf-f__err" hidden></p></div>
+    <div class="tbf-f">
+     <div class="tbf-sel">
+      <input type="hidden" name="account_type" id="tbf-type" value="">
+      <button type="button" class="tbf-sel__btn" id="tbf-type-btn" aria-haspopup="listbox" aria-expanded="false"><span id="tbf-type-label">Виберіть будь ласка</span><svg width="16" height="16" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="tbf-sel__list" id="tbf-type-list" role="listbox" hidden>
+       <li class="tbf-sel__opt" role="option" data-value="fleet" aria-selected="false">Флотилія / компанія</li>
+       <li class="tbf-sel__opt" role="option" data-value="owner" aria-selected="false">Я власник, планую здавати авто</li>
+       <li class="tbf-sel__opt" role="option" data-value="driver" aria-selected="false">Я водій, планую орендувати авто</li>
+      </ul>
+     </div><p class="tbf-f__err" hidden></p>
+    </div>
+   </div>
+   <label class="tbf-agree"><input type="checkbox" id="r-agree" name="agree"><span class="tbf-agree__box"></span><span>Я погоджуюся з <a href="#">Умовами використання</a> та ознайомився(-лася) з <a href="#">Політикою конфіденційності</a></span></label>
+   <button class="tbf-pill" id="tbf-submit" type="submit" disabled>Зареєструватись</button>
+   <a class="tbf-pill tbf-pill--google" href="#"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.5 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Продовжити Google</a>
+   <p class="tbf-auth__alt">Вже маєте акаунт? <a href="#">Увійти</a></p>
+  </form>
+ </section>
+
+ <section class="tbf-view" id="v-confirm" hidden>
+  <div class="tbf-auth__card tbf-auth__card--center" style="margin-top:0">
+   <div class="tbf-auth__icon" aria-hidden="true">✉</div>
+   <h1 class="tbf-auth__h2">Підтвердіть ваш email</h1>
+   <p class="tbf-auth__p">Ми надіслали лист на <span id="tbf-sent-to">email</span>. Перейдіть за посиланням для активації акаунту.</p>
+   <div class="tbf-auth__stack">
+    <button type="button" class="tbf-pill tbf-pill--dark" id="tbf-resend">Надіслати повторно</button>
+    <button type="button" class="tbf-pill tbf-pill--ghost" id="tbf-change-email">Змінити email</button>
+   </div>
+   <p class="tbf-auth__timer" id="tbf-timer" aria-live="polite"></p>
+  </div>
+ </section>
+
+ <section class="tbf-view" id="v-done" hidden>
+  <div class="tbf-auth__card tbf-auth__card--center">
+   <div class="tbf-auth__ok" aria-hidden="true">✓</div>
+   <h1 class="tbf-auth__h2">Email підтверджено!</h1>
+   <p class="tbf-auth__p">Ваш акаунт активовано. Тепер ви можете увійти та користуватись TaxiBaza.sk</p>
+   <a class="tbf-pill" href="#">Увійти до акаунту</a>
+  </div>
+ </section>
+</main>
+<div class="stub-f">footer (theme)</div>
+<script src="assets/tbf-auth.js"></script>
+</body></html>
