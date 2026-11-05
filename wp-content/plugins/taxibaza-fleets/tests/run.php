@@ -63,13 +63,14 @@ namespace {
 	function nocache_headers() {}
 	function wp_send_json_error( $d = null, $c = null ) { $GLOBALS['__ajax_out'] = [ 'error', $d, $c ]; throw new WP_Ajax_Exit(); }
 	function wp_safe_redirect( $u ) { $GLOBALS['__redirect'] = $u; throw new WP_Redirect_Exit(); }
-	function add_query_arg( $k, $v, $u ) { return $u . ( str_contains( $u, '?' ) ? '&' : '?' ) . $k . '=' . $v; }
+	function add_query_arg( $k, $v = null, $u = '' ) { if ( is_array( $k ) ) { $u = (string) $v; return $u . ( str_contains( $u, '?' ) ? '&' : '?' ) . http_build_query( $k ); } return $u . ( str_contains( $u, '?' ) ? '&' : '?' ) . $k . '=' . $v; }
 	function home_url( $p = '' ) { return 'https://example.test' . $p; }
 
 	function sanitize_text_field( $s ) { return trim( strip_tags( (string) $s ) ); }
 	function sanitize_textarea_field( $s ) { return trim( strip_tags( (string) $s ) ); }
 	function absint( $v ) { return abs( (int) $v ); }
 	function has_action( $h ) { return ! empty( $GLOBALS['__hooks'][ $h ] ); }
+	function wp_generate_uuid4() { return bin2hex( random_bytes( 8 ) ); }
 	function wp_update_user( $a ) { $GLOBALS['__updated_user'] = $a; return $a['ID']; }
 
 	// Simulates WP_User::set_role firing set_user_role.
@@ -79,6 +80,7 @@ namespace {
 		do_action( 'set_user_role', $id, $role, $old );
 	}
 
+	class WP_User { public $ID; function __construct( $id ) { $this->ID = $id; } function set_role( $r ) { test_set_role( $this->ID, $r ); } }
 	class Fake_Query {
 		public array $q; public bool $main; public bool $single;
 		function __construct( array $q, bool $main = false, bool $single = false ) { $this->q = $q; $this->main = $main; $this->single = $single; }
@@ -281,6 +283,51 @@ namespace TaxiBaza\Fleets\Tests {
 	$GLOBALS['__users'][9] = [ 'car_owner' ]; \test_set_role( 9, 'fleet' ); $AP::apply( 9, 'block' );
 	check( 'unblock without live profile -> pending', $AP::apply( 9, 'unblock' ) && $S::PENDING === $S::get( 9 ) );
 	check( 'unknown action rejected', false === $AP::apply( 9, 'nuke' ) );
+
+
+	echo "Registration with account type\n";
+	$_POST = [ 'tb_action' => 'register', 'tbf_account_type' => 'fleet' ];
+	$GLOBALS['__users'][20] = [ 'subscriber' ];
+	\test_set_role( 20, 'car_owner' );                       // what core does
+	update_user_meta( 20, 'account_type', 'car_owner' );     // core writes meta after set_role
+	do_action( 'updated_user_meta', 1, 20, 'account_type', 'car_owner' );
+	check( 'chosen fleet -> role fleet', [ 'fleet' ] === $GLOBALS['__users'][20] );
+	check( 'fleet starts as draft', \TaxiBaza\Fleets\Status::DRAFT === \TaxiBaza\Fleets\Status::get( 20 ) );
+	check( 'account_type meta kept as fleet', 'fleet' === get_user_meta( 20, 'account_type' ) );
+	$_POST = [ 'tb_action' => 'register', 'tbf_account_type' => 'car_owner' ];
+	$GLOBALS['__users'][21] = [ 'subscriber' ];
+	\test_set_role( 21, 'car_owner' );
+	check( 'chosen owner stays car_owner', [ 'car_owner' ] === $GLOBALS['__users'][21] && '' === \TaxiBaza\Fleets\Status::get( 21 ) );
+	$_POST = [ 'tb_action' => 'update_profile', 'tbf_account_type' => 'fleet' ];
+	$GLOBALS['__users'][22] = [ 'subscriber' ];
+	\test_set_role( 22, 'car_owner' );
+	check( 'field ignored outside registration', [ 'car_owner' ] === $GLOBALS['__users'][22] );
+	$_POST = [];
+
+
+	echo "Notifications\n";
+	$N='\TaxiBaza\Fleets\Notifications'; $S='\TaxiBaza\Fleets\Status'; $P='\TaxiBaza\Fleets\Profile'; $AP='\TaxiBaza\Fleets\Admin_Panel';
+	add_filter( 'wpml_current_language', fn() => 'uk' );
+	$GLOBALS['__users'][30] = [ 'car_owner' ]; \test_set_role( 30, 'fleet' );
+	$before = $N::unread( 1 );
+	$P::submit( 30, array_merge( $p, [ 'name' => 'Bell Fleet' ] ) );
+	check( 'admin gets "new fleet" notification', $N::unread( 1 ) === $before + 1 && 'fleet_new' === $N::get( 1 )[0]['type'] );
+	$pres = $N::present( $N::get( 1 )[0] );
+	check( 'admin text mentions fleet name (uk)', str_contains( $pres['d'], 'Bell Fleet' ) && str_contains( $pres['t'], 'флотилія' ) );
+	$AP::apply( 30, 'approve' );
+	check( 'fleet gets "approved"', 'approved' === $N::get( 30 )[0]['type'] && 1 === $N::unread( 30 ) );
+	$P::submit( 30, array_merge( $p, [ 'name' => 'Bell Fleet 2' ] ) );
+	check( 'admin gets "edits" notification', 'fleet_edits' === $N::get( 1 )[0]['type'] );
+	$AP::apply( 30, 'approve' );
+	check( 'fleet gets "edits approved"', 'edits_ok' === $N::get( 30 )[0]['type'] );
+	$P::submit( 30, array_merge( $p, [ 'name' => 'Bell Fleet 3' ] ) );
+	$AP::apply( 30, 'reject_edits' );
+	check( 'fleet gets "edits rejected"', 'edits_no' === $N::get( 30 )[0]['type'] );
+	$AP::apply( 30, 'block' );
+	check( 'fleet gets "blocked"', 'blocked' === $N::get( 30 )[0]['type'] );
+	for ( $i = 0; $i < 40; $i++ ) { $N::add( 30, 'approved' ); }
+	check( 'list capped at 30', 30 === count( $N::get( 30 ) ) );
+	check( 'car owner gets nothing', [] === $N::get( 2 ) );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );

@@ -238,4 +238,30 @@ return [
 	'fa_done_reject_edits'   => [ 'Zmeny zamietnuté, platí predchádzajúca verzia.', 'Зміни відхилено, діє попередня версія.' ],
 	'fa_done_error'          => [ 'Akciu nebolo možné vykonať.', 'Дію виконати не вдалося.' ],
 	'fa_registered'          => [ 'Registrácia', 'Реєстрація' ],
+
+	// Registration.
+	'reg_type_label'         => [ 'Typ účtu', 'Тип облікового запису' ],
+	'reg_type_owner'         => [ 'Som majiteľ, plánujem prenajímať auto', 'Я власник, планую здавати авто' ],
+	'reg_type_fleet'         => [ 'Flotila / spoločnosť', 'Флотилія / компанія' ],
+
+	// Notifications (bell).
+	'n_title'                => [ 'Upozornenia', 'Сповіщення' ],
+	'n_read_all'             => [ 'Označiť všetko ako prečítané', 'Прочитати всі' ],
+	'n_empty'                => [ 'Zatiaľ žiadne upozornenia.', 'Поки що сповіщень немає.' ],
+	'n_today'                => [ 'Dnes', 'Сьогодні' ],
+	'n_earlier'              => [ 'Skôr', 'Раніше' ],
+	'n_fleet_new_t'          => [ 'Nová flotila čaká na moderáciu', 'Нова флотилія очікує на модерацію' ],
+	'n_fleet_new_d'          => [ 'Flotila %s sa zaregistrovala a čaká na moderáciu.', 'Флотилія %s зареєструвалась та очікує на модерацію.' ],
+	'n_fleet_edits_t'        => [ 'Zmeny profilu flotily', 'Зміни профілю флотилії' ],
+	'n_fleet_edits_d'        => [ 'Flotila %s upravila profil — zmeny čakajú na moderáciu.', 'Флотилія %s змінила профіль — зміни очікують модерації.' ],
+	'n_approved_t'           => [ 'Moderácia úspešná', 'Проходження модерації' ],
+	'n_approved_d'           => [ 'Gratulujeme, úspešne ste prešli moderáciou administrátorom.', 'Вітаємо, ви успішно пройшли модерацію адміністратором.' ],
+	'n_edits_ok_t'           => [ 'Zmeny profilu schválené', 'Зміни профілю схвалено' ],
+	'n_edits_ok_d'           => [ 'Vodiči už vidia aktualizovaný profil vašej flotily.', 'Водії вже бачать оновлений профіль вашої флотилії.' ],
+	'n_edits_no_t'           => [ 'Zmeny profilu zamietnuté', 'Зміни профілю відхилено' ],
+	'n_edits_no_d'           => [ 'Platí predchádzajúca verzia profilu.', 'Діє попередня версія профілю.' ],
+	'n_rejected_t'           => [ 'Profil neprešiel moderáciou', 'Профіль не пройшов модерацію' ],
+	'n_rejected_d'           => [ 'Kontaktujte podporu TaxiBaza.sk.', 'Зверніться в підтримку TaxiBaza.sk.' ],
+	'n_blocked_t'            => [ 'Profil zablokovaný', 'Профіль заблоковано' ],
+	'n_blocked_d'            => [ 'Vaše inzeráty sú skryté z katalógu.', 'Ваші оголошення приховані з каталогу.' ],
 ];

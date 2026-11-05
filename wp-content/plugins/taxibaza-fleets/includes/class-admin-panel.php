@@ -122,6 +122,7 @@ final class Admin_Panel {
 				return Status::set( $fleet, Profile::get_live( $fleet ) ? Status::APPROVED : Status::PENDING );
 			case 'reject_edits':
 				Profile::reject_edits( $fleet );
+				do_action( 'tbf_edits_rejected', $fleet );
 				return true;
 		}
 		return false;

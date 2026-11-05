@@ -28,6 +28,8 @@ require_once __DIR__ . '/includes/class-role-switch.php';
 require_once __DIR__ . '/includes/class-profile.php';
 require_once __DIR__ . '/includes/class-cabinet.php';
 require_once __DIR__ . '/includes/class-admin-panel.php';
+require_once __DIR__ . '/includes/class-registration.php';
+require_once __DIR__ . '/includes/class-notifications.php';
 
 add_action(
 	'plugins_loaded',
@@ -40,6 +42,8 @@ add_action(
 		Profile::init();
 		Cabinet::init();
 		Admin_Panel::init();
+		Registration::init();
+		Notifications::init();
 	},
 	20
 );
