@@ -1,0 +1,45 @@
+{
+	"key": "group_tb_blog",
+	"title": "Blog — strings",
+	"fields": [
+		{
+			"key": "field_tb_blog_title",
+			"label": "Blog page title",
+			"name": "tb_blog_title",
+			"type": "text",
+			"default_value": "Korišné materiály pre vodičov a vlastníkov áut",
+			"required": 0
+		},
+		{
+			"key": "field_tb_blog_filter_all",
+			"label": "All — filter pill",
+			"name": "tb_blog_filter_all",
+			"type": "text",
+			"default_value": "Všetky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_blog_empty",
+			"label": "No posts — notice",
+			"name": "tb_blog_empty",
+			"type": "text",
+			"default_value": "Zatiaľ neboli zverejnené žiadne články.",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-blog"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

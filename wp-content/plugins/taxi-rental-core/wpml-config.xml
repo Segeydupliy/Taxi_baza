@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    WPML configuration for taxi-rental-core.
+    Docs: https://wpml.org/documentation/support/wpml-config-xml/
+-->
+<wpml-config>
+
+    <!-- ── Custom post types ──────────────────────────────────────── -->
+    <custom-types>
+        <custom-type translate="1">car_listing</custom-type>
+    </custom-types>
+
+    <!-- ── Taxonomies ─────────────────────────────────────────────── -->
+    <taxonomies>
+        <taxonomy translate="1">city</taxonomy>
+        <taxonomy translate="1">platform</taxonomy>
+        <taxonomy translate="1">ride_category</taxonomy>
+    </taxonomies>
+
+    <!-- ── ACF fields on car_listing posts ────────────────────────── -->
+    <!--
+        action="translate" — field has a separate value per language.
+        action="copy"      — same value copied to every language (numbers,
+                             selects, images, contact handles).
+    -->
+    <custom-fields>
+
+        <!-- Text fields that may differ per language -->
+        <custom-field action="translate">make</custom-field>
+        <custom-field action="translate">model</custom-field>
+        <custom-field action="translate">insurance_details</custom-field>
+        <custom-field action="translate">maintenance_details</custom-field>
+        <custom-field action="translate">short_description</custom-field>
+
+        <!-- Numeric / technical — same across languages -->
+        <custom-field action="copy">year</custom-field>
+        <custom-field action="copy">engine_type</custom-field>
+        <custom-field action="copy">transmission</custom-field>
+        <custom-field action="copy">consumption_100km</custom-field>
+        <custom-field action="copy">price_week</custom-field>
+        <custom-field action="copy">deposit</custom-field>
+        <custom-field action="copy">mileage_limit_month</custom-field>
+        <custom-field action="copy">min_term_days</custom-field>
+        <custom-field action="copy">insurance</custom-field>
+        <custom-field action="copy">maintenance_included</custom-field>
+        <custom-field action="copy">listing_lang</custom-field>
+
+        <!-- Media — shared across languages -->
+        <custom-field action="copy">gallery</custom-field>
+
+        <!-- Contact details — language-neutral -->
+        <custom-field action="copy">contact_phone</custom-field>
+        <custom-field action="copy">contact_telegram</custom-field>
+        <custom-field action="copy">contact_whatsapp</custom-field>
+
+        <!-- ACF internal field reference keys (needed by some WPML versions) -->
+        <custom-field action="copy">_make</custom-field>
+        <custom-field action="copy">_model</custom-field>
+        <custom-field action="copy">_short_description</custom-field>
+        <custom-field action="copy">_gallery</custom-field>
+
+    </custom-fields>
+
+</wpml-config>

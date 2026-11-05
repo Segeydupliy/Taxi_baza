@@ -1,0 +1,62 @@
+{
+	"key": "group_tb_404",
+	"title": "404 — strings",
+	"fields": [
+		{
+			"key": "field_tb_404_label",
+			"label": "Error badge label",
+			"name": "tb_404_label",
+			"type": "text",
+			"default_value": "Pomôžeme",
+			"required": 0
+		},
+		{
+			"key": "field_tb_404_title",
+			"label": "Page title",
+			"name": "tb_404_title",
+			"type": "text",
+			"default_value": "Stránka sa nenašla",
+			"required": 0
+		},
+		{
+			"key": "field_tb_404_desc",
+			"label": "Description",
+			"name": "tb_404_desc",
+			"type": "textarea",
+			"default_value": "Zdá sa, že táto adresa už neexistuje alebo bola presunutá. Skontrolujte odkaz alebo sa vráťte na hlavnú stránku.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_404_home_btn",
+			"label": "Go home — button",
+			"name": "tb_404_home_btn",
+			"type": "text",
+			"default_value": "Na hlavnú",
+			"required": 0
+		},
+		{
+			"key": "field_tb_404_catalog_btn",
+			"label": "Car catalog — button",
+			"name": "tb_404_catalog_btn",
+			"type": "text",
+			"default_value": "Katalóg áut",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-404"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

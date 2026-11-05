@@ -14,3 +14,5 @@ wp-content/ai1wm-backups/
 wp-content/uploads/duplicator*/
 node_modules/
 .DS_Store
+# theme images are not in the snapshot (too large for Duplicator on this host); keep the folder untracked
+wp-content/themes/taxi-rental/assets/img/

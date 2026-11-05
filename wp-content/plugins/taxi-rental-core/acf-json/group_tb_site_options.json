@@ -1,0 +1,547 @@
+{
+    "key": "group_tb_site_options",
+    "title": "Site content — global settings",
+    "fields": [
+        {
+            "key": "field_tb_tab_global",
+            "label": "Global",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_telegram_url",
+            "label": "Telegram community — URL",
+            "name": "tb_telegram_url",
+            "type": "url",
+            "instructions": "Used in all Telegram buttons and links across the site.",
+            "required": 0,
+            "default_value": "https:\/\/t.me\/taxibaza_sk"
+        },
+        {
+            "key": "field_tb_contact_email",
+            "label": "Support email",
+            "name": "tb_contact_email",
+            "type": "email",
+            "instructions": "Displayed on the Contact page.",
+            "required": 0,
+            "default_value": "support@taxibaza.sk"
+        },
+        {
+            "key": "field_tb_tab_header",
+            "label": "Header \/ Menu",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_logo_text",
+            "label": "Logo (text)",
+            "name": "tb_logo_text",
+            "type": "text",
+            "instructions": "The last dot is highlighted in accent color automatically (e.g. TaxiBaza.sk).",
+            "required": 0,
+            "default_value": "TaxiBaza.sk"
+        },
+        {
+            "key": "field_tb_logo_image",
+            "label": "Logo (image, optional)",
+            "name": "tb_logo_image",
+            "type": "image",
+            "instructions": "If uploaded — replaces the text logo in the header and mobile menu.",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "mime_types": "svg,png,jpg,jpeg,webp"
+        },
+        {
+            "key": "field_tb_header_menu",
+            "label": "Navigation menu (desktop + mobile)",
+            "name": "tb_header_menu",
+            "type": "repeater",
+            "instructions": "Shared menu for desktop header and mobile. If empty — the default theme menu is shown.",
+            "required": 0,
+            "layout": "block",
+            "button_label": "Add menu item",
+            "sub_fields": [
+                {
+                    "key": "field_tb_menu_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "30", "class": "", "id": "" }
+                },
+                {
+                    "key": "field_tb_menu_url",
+                    "label": "URL",
+                    "name": "url",
+                    "type": "text",
+                    "instructions": "Relative path (\/avto\/, \/blog\/) or full URL. Not needed for dropdown menus.",
+                    "required": 0,
+                    "wrapper": { "width": "40", "class": "", "id": "" }
+                },
+                {
+                    "key": "field_tb_menu_submenu_type",
+                    "label": "Dropdown type",
+                    "name": "submenu_type",
+                    "type": "select",
+                    "choices": {
+                        "none": "None (plain link)",
+                        "cities": "Cities list (auto)",
+                        "custom": "Custom list (below)"
+                    },
+                    "default_value": "none",
+                    "return_format": "value",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "wrapper": { "width": "30", "class": "", "id": "" }
+                },
+                {
+                    "key": "field_tb_menu_submenu",
+                    "label": "Dropdown items",
+                    "name": "submenu",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_tb_menu_submenu_type",
+                                "operator": "==",
+                                "value": "custom"
+                            }
+                        ]
+                    ],
+                    "layout": "table",
+                    "button_label": "Add sub-item",
+                    "sub_fields": [
+                        {
+                            "key": "field_tb_submenu_label",
+                            "label": "Label",
+                            "name": "label",
+                            "type": "text",
+                            "required": 1
+                        },
+                        {
+                            "key": "field_tb_submenu_url",
+                            "label": "URL",
+                            "name": "url",
+                            "type": "text",
+                            "required": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "field_tb_login_label",
+            "label": "Sign in — button",
+            "name": "tb_login_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Prihlásiť sa"
+        },
+        {
+            "key": "field_tb_register_label",
+            "label": "Register — button",
+            "name": "tb_register_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Zaregistrovať sa"
+        },
+        {
+            "key": "field_tb_account_menu",
+            "label": "Account menu (logged in)",
+            "name": "tb_account_menu",
+            "type": "repeater",
+            "instructions": "Links in the avatar dropdown (desktop) and account block (mobile). If empty — 4 default items.",
+            "required": 0,
+            "layout": "table",
+            "button_label": "Add item",
+            "sub_fields": [
+                {
+                    "key": "field_tb_acc_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "50", "class": "", "id": "" }
+                },
+                {
+                    "key": "field_tb_acc_url",
+                    "label": "URL",
+                    "name": "url",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "50", "class": "", "id": "" }
+                }
+            ]
+        },
+        {
+            "key": "field_tb_logout_label",
+            "label": "Sign out — button",
+            "name": "tb_logout_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Odhlásiť sa"
+        },
+        {
+            "key": "field_tb_nav_all_cities",
+            "label": "Cities dropdown — all cities link",
+            "name": "tb_nav_all_cities",
+            "type": "text",
+            "required": 0,
+            "default_value": "Všetky mestá →"
+        },
+        {
+            "key": "field_tb_nav_panel",
+            "label": "Admin panel — nav link",
+            "name": "tb_nav_panel",
+            "type": "text",
+            "required": 0,
+            "default_value": "Panel"
+        },
+        {
+            "key": "field_tb_add_listing_label",
+            "label": "Add listing — button",
+            "name": "tb_add_listing_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Pridať inzerát"
+        },
+        {
+            "key": "field_tb_tab_cta",
+            "label": "CTA Telegram (green banner)",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_cta_label",
+            "label": "Badge label",
+            "name": "tb_cta_label",
+            "type": "text",
+            "default_value": "Telegram komunita"
+        },
+        {
+            "key": "field_tb_cta_title",
+            "label": "Title",
+            "name": "tb_cta_title",
+            "type": "textarea",
+            "instructions": "Line break = line break on the site.",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Pridajte sa k 1 200+\nvodičom a vlastníkom"
+        },
+        {
+            "key": "field_tb_cta_desc",
+            "label": "Description",
+            "name": "tb_cta_desc",
+            "type": "text",
+            "default_value": "Nové inzeráty, rady a priama komunikácia medzi vlastníkmi a vodičmi"
+        },
+        {
+            "key": "field_tb_cta_button",
+            "label": "Button text",
+            "name": "tb_cta_button",
+            "type": "text",
+            "default_value": "Otvoriť Telegram"
+        },
+        {
+            "key": "field_tb_tab_cta_car",
+            "label": "CTA Telegram (car page)",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_cta_car_label",
+            "label": "Badge label",
+            "name": "tb_cta_car_label",
+            "type": "text",
+            "default_value": "Telegram"
+        },
+        {
+            "key": "field_tb_cta_car_title",
+            "label": "Title",
+            "name": "tb_cta_car_title",
+            "type": "text",
+            "default_value": "Pridajte sa do nášho kanála"
+        },
+        {
+            "key": "field_tb_cta_car_sub",
+            "label": "Subtitle",
+            "name": "tb_cta_car_sub",
+            "type": "text",
+            "default_value": "Nové inzeráty, rady a správy z trhu prenájmu taxi"
+        },
+        {
+            "key": "field_tb_cta_car_button",
+            "label": "Button text",
+            "name": "tb_cta_car_button",
+            "type": "text",
+            "default_value": "Prihlásiť sa v Telegram"
+        },
+        {
+            "key": "field_tb_tab_faq",
+            "label": "FAQ",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_faq_title",
+            "label": "Section heading",
+            "name": "tb_faq_title",
+            "type": "text",
+            "default_value": "Otázky a odpovede"
+        },
+        {
+            "key": "field_tb_faq_items",
+            "label": "FAQ items",
+            "name": "tb_faq_items",
+            "type": "repeater",
+            "instructions": "Shown on About and Contact pages. If empty — the default list is used.",
+            "layout": "block",
+            "button_label": "Add question",
+            "sub_fields": [
+                {
+                    "key": "field_tb_faq_q",
+                    "label": "Question",
+                    "name": "question",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_tb_faq_a",
+                    "label": "Answer",
+                    "name": "answer",
+                    "type": "textarea",
+                    "rows": 3,
+                    "new_lines": "",
+                    "required": 1
+                }
+            ]
+        },
+        {
+            "key": "field_tb_faq_more_text",
+            "label": "Text below list",
+            "name": "tb_faq_more_text",
+            "type": "text",
+            "default_value": "Nenašli ste odpoveď?"
+        },
+        {
+            "key": "field_tb_faq_more_button",
+            "label": "Button below list",
+            "name": "tb_faq_more_button",
+            "type": "text",
+            "default_value": "Kontaktujte nás"
+        },
+        {
+            "key": "field_tb_tab_footer",
+            "label": "Footer",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_footer_copy",
+            "label": "Copyright text",
+            "name": "tb_footer_copy",
+            "type": "text",
+            "instructions": "Year and site name are prepended automatically.",
+            "default_value": "Všetky práva vyhradené."
+        },
+        {
+            "key": "field_tb_footer_privacy_label",
+            "label": "Privacy policy — link text",
+            "name": "tb_footer_privacy_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Zásady ochrany osobných údajov"
+        },
+        {
+            "key": "field_tb_footer_privacy_url",
+            "label": "Privacy policy — URL",
+            "name": "tb_footer_privacy_url",
+            "type": "text",
+            "required": 0,
+            "default_value": "/konfidenzialnist/"
+        },
+        {
+            "key": "field_tb_footer_terms_label",
+            "label": "Terms of use — link text",
+            "name": "tb_footer_terms_label",
+            "type": "text",
+            "required": 0,
+            "default_value": "Podmienky používania"
+        },
+        {
+            "key": "field_tb_footer_terms_url",
+            "label": "Terms of use — URL",
+            "name": "tb_footer_terms_url",
+            "type": "text",
+            "required": 0,
+            "default_value": "/umovy/"
+        },
+        {
+            "key": "field_tb_tab_footer_nav",
+            "label": "Footer — Navigation",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_tb_footer_nav_heading",
+            "label": "Navigation column — heading",
+            "name": "tb_footer_nav_heading",
+            "type": "text",
+            "default_value": "Navigácia",
+            "required": 0
+        },
+        {
+            "key": "field_tb_footer_nav_links",
+            "label": "Navigation — links",
+            "name": "tb_footer_nav_links",
+            "type": "repeater",
+            "layout": "table",
+            "min": 0,
+            "max": 0,
+            "sub_fields": [
+                {
+                    "key": "field_tb_footer_nav_link_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_tb_footer_nav_link_url",
+                    "label": "URL",
+                    "name": "url",
+                    "type": "text",
+                    "required": 1
+                }
+            ]
+        },
+        {
+            "key": "field_tb_footer_platform_heading",
+            "label": "Platform column — heading",
+            "name": "tb_footer_platform_heading",
+            "type": "text",
+            "default_value": "Platforma",
+            "required": 0
+        },
+        {
+            "key": "field_tb_footer_platform_links",
+            "label": "Platform — links",
+            "name": "tb_footer_platform_links",
+            "type": "repeater",
+            "layout": "table",
+            "min": 0,
+            "max": 0,
+            "sub_fields": [
+                {
+                    "key": "field_tb_footer_platform_link_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_tb_footer_platform_link_url",
+                    "label": "URL",
+                    "name": "url",
+                    "type": "text",
+                    "required": 1
+                }
+            ]
+        },
+        {
+            "key": "field_tb_footer_cities_heading",
+            "label": "Cities column — heading",
+            "name": "tb_footer_cities_heading",
+            "type": "text",
+            "default_value": "Mestá",
+            "required": 0
+        },
+        {
+            "key": "field_tb_footer_cities_all",
+            "label": "Cities — all cities link",
+            "name": "tb_footer_cities_all",
+            "type": "text",
+            "default_value": "Všetky mestá",
+            "required": 0
+        },
+        {
+            "key": "field_tb_footer_support_heading",
+            "label": "Support column — heading",
+            "name": "tb_footer_support_heading",
+            "type": "text",
+            "default_value": "Podpora",
+            "required": 0
+        },
+        {
+            "key": "field_tb_footer_support_links",
+            "label": "Support — links",
+            "name": "tb_footer_support_links",
+            "type": "repeater",
+            "layout": "table",
+            "min": 0,
+            "max": 0,
+            "sub_fields": [
+                {
+                    "key": "field_tb_footer_support_link_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_tb_footer_support_link_url",
+                    "label": "URL",
+                    "name": "url",
+                    "type": "text",
+                    "required": 1
+                }
+            ]
+        },
+        {
+            "key": "field_tb_footer_lang_label",
+            "label": "Language switcher — label",
+            "name": "tb_footer_lang_label",
+            "type": "text",
+            "default_value": "Slovenčina",
+            "required": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "tb-content"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Global site content: Telegram, email, CTA banners, FAQ, footer.",
+    "show_in_rest": 0
+}

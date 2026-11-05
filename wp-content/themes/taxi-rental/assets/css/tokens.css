@@ -1,0 +1,189 @@
+/* ==========================================================================
+   TaxiBaza.sk — design tokens (extracted from Figma)
+   For classic PHP templates / acf_form / custom JS. Mirrors theme.json.
+   Enqueue this before the main stylesheet.
+   ========================================================================== */
+
+:root {
+  /* ---- Color ---- */
+  --tb-accent:      #02F797;   /* mint — primary CTA "Здати в оренду" */
+  --tb-ink:         #000000;   /* text + secondary button */
+  --tb-base:        #FFFFFF;   /* page background, cards */
+  --tb-border:      #E5E5E5;   /* hairlines, header bottom border */
+  --tb-muted:       #6B6B6B;   /* secondary text */
+  --tb-surface:     #F5F5F5;   /* alt section background */
+  --tb-overlay-80:  rgba(0,0,0,.80);
+  --tb-overlay-20:  rgba(0,0,0,.20);
+
+  /* ---- Feedback colors (Figma error/warn states) ---- */
+  --tb-error:       #d44f4f;
+  --tb-error-bg:    #fff5f5;
+  --tb-error-light: rgba(255, 245, 245, 0.25);
+  --tb-warn:        #f2b63e;
+  --tb-warn-bg:     #fffbeb;
+
+  /* ---- Typography ---- */
+  --tb-font-body:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tb-font-display: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+  --tb-font-heading: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+
+  --tb-fs-xs:   12px;
+  --tb-fs-sm:   15px;   /* nav, buttons, body UI */
+  --tb-fs-base: 16px;
+  --tb-fs-lead: 24px;   /* hero card lead */
+  --tb-fs-h3:   clamp(24px, 2.2vw, 32px);
+  --tb-fs-h2:   clamp(32px, 3.5vw, 48px);
+  --tb-fs-h1:   clamp(40px, 5vw, 68px);
+
+  --tb-lh-tight: 1.06;  /* hero headings (72/68) */
+  --tb-lh-snug:  1.33;  /* lead (32/24) */
+  --tb-lh-base:  1.5;
+  --tb-tracking-h1: -1.5px;
+
+  /* ---- Spacing ---- */
+  --tb-sp-1: 4px;
+  --tb-sp-2: 8px;
+  --tb-sp-3: 16px;
+  --tb-sp-4: 24px;
+  --tb-sp-5: 28px;   /* nav item gap */
+  --tb-sp-6: 32px;   /* card inner gap, button h-padding */
+  --tb-sp-7: 48px;   /* card padding, container gutter */
+  --tb-sp-8: 96px;   /* section vertical rhythm */
+
+  /* ---- Radius ---- */
+  --tb-radius-card:  16px;
+  --tb-radius-pill:  100px;
+  --tb-radius-input: 12px;
+
+  /* ---- Layout ---- */
+  --tb-container:  1368px;
+  --tb-gutter:     48px;
+  --tb-stroke:     1px;
+  --tb-header-h:   87px;
+}
+
+/* ---- Base ---- */
+/* Form controls and pill buttons (often <a> tags) use width:100% + inner
+   padding — they must size by border-box or they overflow their column. */
+input, button, textarea, select, .tb-btn {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--tb-font-body);
+  font-size: var(--tb-fs-base);
+  line-height: var(--tb-lh-base);
+  color: var(--tb-ink);
+  background: var(--tb-base);
+}
+
+h1, h2, h3, .tb-display {
+  font-family: var(--tb-font-display);
+  font-weight: 800;
+  line-height: var(--tb-lh-tight);
+  letter-spacing: -.5px;
+}
+h1 { font-size: var(--tb-fs-h1); letter-spacing: var(--tb-tracking-h1); }
+h2 { font-size: var(--tb-fs-h2); }
+h3 { font-size: var(--tb-fs-h3); }
+
+/* ---- Visually hidden ---- */
+/* .screen-reader-text was used across the theme (cabinet search label, password
+   labels, panel submit buttons) but never actually defined, so every one of
+   those "hidden" labels was rendering on screen. This is the standard WP rule. */
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* [hidden] must always win. The theme has no global reset, so a later author
+   rule on the same element (e.g. `.tb-contact-success { display: flex }`) has
+   equal specificity to the UA stylesheet's `[hidden]{display:none}` and wins
+   by cascade order alone — the element stays visible even while hidden (#99,
+   #101). tokens.css loads before style.css, so !important is required here,
+   not just ordering. */
+[hidden] {
+  display: none !important;
+}
+
+/* ---- Container ---- */
+.tb-container {
+  max-width: var(--tb-container);
+  margin-inline: auto;
+  padding-inline: var(--tb-gutter);
+}
+
+/* ---- Buttons (pills) ---- */
+.tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tb-sp-2);
+  padding: var(--tb-sp-3) var(--tb-sp-6);
+  border-radius: var(--tb-radius-pill);
+  font: 700 var(--tb-fs-sm)/1.46 var(--tb-font-body);
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  transition: opacity .15s ease, transform .05s ease;
+}
+.tb-btn:active { transform: translateY(1px); }
+.tb-btn:disabled,
+.tb-btn[aria-disabled="true"] {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.tb-btn--primary   { background: var(--tb-accent); color: var(--tb-ink); }
+.tb-btn--secondary { background: var(--tb-ink);    color: var(--tb-base); }
+.tb-btn--ghost     { background: transparent; color: var(--tb-ink); }
+
+/* ---- Card ---- */
+.tb-card {
+  background: var(--tb-base);
+  border: var(--tb-stroke) solid var(--tb-border);
+  border-radius: var(--tb-radius-card);
+  padding: var(--tb-sp-7);
+}
+
+/* ---- Header ---- */
+.tb-header {
+  min-height: var(--tb-header-h);
+  background: var(--tb-base);
+  border-bottom: var(--tb-stroke) solid var(--tb-border);
+}
+.tb-nav { display: flex; align-items: center; gap: var(--tb-sp-5); }
+.tb-nav a { font-weight: 600; font-size: var(--tb-fs-sm); color: var(--tb-ink); text-decoration: none; }
+.tb-logo { font-family: var(--tb-font-display); font-weight: 800; font-size: 32px; letter-spacing: -.5px; }
+.tb-logo .dot { color: var(--tb-accent); }
+
+/* ---- Form fields (acf_form / contact) ---- */
+.tb-field input,
+.tb-field select,
+.tb-field textarea {
+  width: 100%;
+  padding: var(--tb-sp-3);
+  border: var(--tb-stroke) solid var(--tb-border);
+  border-radius: var(--tb-radius-input);
+  font: var(--tb-fs-base)/1.4 var(--tb-font-body);
+}
+.tb-field input:focus,
+.tb-field select:focus,
+.tb-field textarea:focus {
+  outline: 2px solid var(--tb-accent);
+  outline-offset: 1px;
+}
+
+/* ---- Mobile (mobile-first critical per ТЗ) ---- */
+@media (max-width: 768px) {
+  :root { --tb-gutter: 16px; }
+  .tb-nav { display: none; } /* hamburger / drop-down menu instead */
+}

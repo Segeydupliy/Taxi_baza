@@ -1,0 +1,170 @@
+{
+    "key": "group_tb_about_page",
+    "title": "About page — strings",
+    "fields": [
+        {
+            "key": "field_tb_ap_hero_title",
+            "label": "Hero — heading",
+            "name": "tb_ap_hero_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Z'єднuєmo vlasníkov áut s vodičmi po celom Slovensku",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_photo",
+            "label": "Wide photo",
+            "name": "tb_ap_photo",
+            "type": "image",
+            "instructions": "If empty — uses the default theme photo.",
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all",
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_ap_mission_title",
+            "label": "Mission — heading",
+            "name": "tb_ap_mission_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Trh vyžaduje rýchle riešenia. Pomáhame byť napred.",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_mission_text",
+            "label": "Mission — body text",
+            "name": "tb_ap_mission_text",
+            "type": "wysiwyg",
+            "tabs": "visual",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "default_value": "<p>TaxiBaza.sk — slovenský marketplace, ktorý pomáha vlastníkom áut a flotilám nájsť spoľahlivých vodičov Bolt a Uber, a vodičom — auto za férových podmienok.</p>\n<p>Trh rideshare na Slovensku každoročne rastie. Vytvárame nástroje, ktoré pomáhajú vlastníkom áut zarábať viac a vodičom — začať rýchlejšie a s nižšími nákladmi. Bez zbytočných sprostredkovateľov a skrytých provízií.</p>",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_values_title",
+            "label": "Values — heading",
+            "name": "tb_ap_values_title",
+            "type": "text",
+            "default_value": "Naše hodnoty",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_values_sub",
+            "label": "Values — subheading",
+            "name": "tb_ap_values_sub",
+            "type": "text",
+            "default_value": "Naším cieľom je bezpečný a vzájomne výhodný prenájom taxislužby, kde technológie slúžia ľuďom.",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_values",
+            "label": "Values — cards",
+            "name": "tb_ap_values",
+            "type": "repeater",
+            "instructions": "If empty — 5 default cards are used.",
+            "layout": "block",
+            "button_label": "Add card",
+            "sub_fields": [
+                {
+                    "key": "field_tb_ap_value_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_ap_value_text",
+                    "label": "Text",
+                    "name": "text",
+                    "type": "textarea",
+                    "rows": 4,
+                    "new_lines": "",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                }
+            ],
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_ap_history_label",
+            "label": "History — badge label",
+            "name": "tb_ap_history_label",
+            "type": "text",
+            "default_value": "História",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_history_title",
+            "label": "History — heading",
+            "name": "tb_ap_history_title",
+            "type": "text",
+            "default_value": "Od vzniku po 1 000+ inzerátov",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_ap_milestones",
+            "label": "History — milestones",
+            "name": "tb_ap_milestones",
+            "type": "repeater",
+            "instructions": "If empty — 4 default milestones are used.",
+            "layout": "block",
+            "button_label": "Add milestone",
+            "sub_fields": [
+                {
+                    "key": "field_tb_ap_milestone_year",
+                    "label": "Year",
+                    "name": "year",
+                    "type": "text",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_ap_milestone_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_ap_milestone_text",
+                    "label": "Text",
+                    "name": "text",
+                    "type": "textarea",
+                    "rows": 3,
+                    "new_lines": "",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                }
+            ],
+            "wpml_cf_preferences": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "14"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content"
+    ],
+    "active": true,
+    "description": "Content for /pro-nas/ page.",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1789741697
+}

@@ -1,0 +1,406 @@
+{
+	"key": "group_tb_catalog",
+	"title": "Catalog — strings",
+	"fields": [
+		{
+			"key": "field_tb_cat_tab_archive",
+			"label": "Archive",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_archive_heading",
+			"label": "Archive heading",
+			"name": "tb_cat_archive_heading",
+			"type": "text",
+			"default_value": "Katalóg automobilov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_load_more",
+			"label": "Load more — button",
+			"name": "tb_cat_load_more",
+			"type": "text",
+			"default_value": "Načítať viac",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_empty_title",
+			"label": "Empty state — title",
+			"name": "tb_cat_empty_title",
+			"type": "text",
+			"default_value": "Nič sa nenašlo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_empty_desc",
+			"label": "Empty state — description",
+			"name": "tb_cat_empty_desc",
+			"type": "text",
+			"default_value": "Skúste zmeniť parametre filtra.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_reset_filters",
+			"label": "Reset filters — button",
+			"name": "tb_cat_reset_filters",
+			"type": "text",
+			"default_value": "Resetovať filtre",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_city",
+			"label": "City page",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_city_count",
+			"label": "Car count (use %d)",
+			"name": "tb_cat_city_count",
+			"type": "text",
+			"default_value": "Dostupných %d áut",
+			"instructions": "Use %d where the car count should appear.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_city_empty",
+			"label": "Empty state — title (city)",
+			"name": "tb_cat_city_empty",
+			"type": "text",
+			"default_value": "Zatiaľ žiadne inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_city_empty_desc",
+			"label": "Empty state — description (city)",
+			"name": "tb_cat_city_empty_desc",
+			"type": "text",
+			"default_value": "V tomto meste zatiaľ nie sú žiadne inzeráty.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_city_all_catalog",
+			"label": "All listings — link",
+			"name": "tb_cat_city_all_catalog",
+			"type": "text",
+			"default_value": "Celý katalóg",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_card",
+			"label": "Car card (archive)",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_price_from",
+			"label": "Price — 'from' preposition",
+			"name": "tb_cat_price_from",
+			"type": "text",
+			"default_value": "od",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_price_unit",
+			"label": "Price — unit ('/week')",
+			"name": "tb_cat_price_unit",
+			"type": "text",
+			"default_value": "/ týždeň",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_card_more",
+			"label": "View details — button",
+			"name": "tb_cat_card_more",
+			"type": "text",
+			"default_value": "Viac informácií",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_deposit_label",
+			"label": "Deposit — label",
+			"name": "tb_cat_deposit_label",
+			"type": "text",
+			"default_value": "Depozit",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_filters",
+			"label": "Filters",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_filter_city",
+			"label": "City — filter label",
+			"name": "tb_cat_filter_city",
+			"type": "text",
+			"default_value": "Mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_cat",
+			"label": "Category — filter label",
+			"name": "tb_cat_filter_cat",
+			"type": "text",
+			"default_value": "Kategória",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_platform",
+			"label": "Platform — filter label",
+			"name": "tb_cat_filter_platform",
+			"type": "text",
+			"default_value": "Platforma",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_fuel",
+			"label": "Fuel — filter label",
+			"name": "tb_cat_filter_fuel",
+			"type": "text",
+			"default_value": "Palivo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_trans",
+			"label": "Transmission — filter label",
+			"name": "tb_cat_filter_trans",
+			"type": "text",
+			"default_value": "Prevodovka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_price",
+			"label": "Price — filter label",
+			"name": "tb_cat_filter_price",
+			"type": "text",
+			"default_value": "Cena",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_reset",
+			"label": "Reset — button (in filter)",
+			"name": "tb_cat_filter_reset",
+			"type": "text",
+			"default_value": "Resetovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_apply",
+			"label": "Apply — button",
+			"name": "tb_cat_filter_apply",
+			"type": "text",
+			"default_value": "Použiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_price_min_ph",
+			"label": "Price — min placeholder",
+			"name": "tb_cat_filter_price_min_ph",
+			"type": "text",
+			"default_value": "od €",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_price_max_ph",
+			"label": "Price — max placeholder",
+			"name": "tb_cat_filter_price_max_ph",
+			"type": "text",
+			"default_value": "do €",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_price_reset",
+			"label": "Reset price — button",
+			"name": "tb_cat_filter_price_reset",
+			"type": "text",
+			"default_value": "Resetovať cenu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_filter_sort_label",
+			"label": "Sort — label",
+			"name": "tb_cat_filter_sort_label",
+			"type": "text",
+			"default_value": "Zoradenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_enum",
+			"label": "Enum values",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_fuel_petrol",
+			"label": "Fuel: Petrol",
+			"name": "tb_cat_fuel_petrol",
+			"type": "text",
+			"default_value": "Benzín",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_fuel_diesel",
+			"label": "Fuel: Diesel",
+			"name": "tb_cat_fuel_diesel",
+			"type": "text",
+			"default_value": "Diesel",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_fuel_electric",
+			"label": "Fuel: Electric",
+			"name": "tb_cat_fuel_electric",
+			"type": "text",
+			"default_value": "Elektro",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_fuel_hybrid",
+			"label": "Fuel: Hybrid",
+			"name": "tb_cat_fuel_hybrid",
+			"type": "text",
+			"default_value": "Hybrid",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_fuel_lpg",
+			"label": "Fuel: LPG",
+			"name": "tb_cat_fuel_lpg",
+			"type": "text",
+			"default_value": "LPG",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_trans_automatic",
+			"label": "Transmission: Automatic",
+			"name": "tb_cat_trans_automatic",
+			"type": "text",
+			"default_value": "Automat",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_trans_manual",
+			"label": "Transmission: Manual",
+			"name": "tb_cat_trans_manual",
+			"type": "text",
+			"default_value": "Manuál",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_sort",
+			"label": "Sorting",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_sort_date_desc",
+			"label": "Sort: Newest first",
+			"name": "tb_cat_sort_date_desc",
+			"type": "text",
+			"default_value": "Najnovšie najskôr",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_sort_price_asc",
+			"label": "Sort: Price low to high",
+			"name": "tb_cat_sort_price_asc",
+			"type": "text",
+			"default_value": "Cena: od najnižšej",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_sort_price_desc",
+			"label": "Sort: Price high to low",
+			"name": "tb_cat_sort_price_desc",
+			"type": "text",
+			"default_value": "Cena: od najvyššej",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_owner",
+			"label": "Owner Box",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_owner_contact_btn",
+			"label": "Owner Box — contact button",
+			"name": "tb_cat_owner_contact_btn",
+			"type": "text",
+			"default_value": "Kontaktovať vlastníka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_owner_tg_btn",
+			"label": "Owner Box — Telegram button",
+			"name": "tb_cat_owner_tg_btn",
+			"type": "text",
+			"default_value": "Pripojiť sa k Telegram kanálu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_role_owner",
+			"label": "Role: Car owner",
+			"name": "tb_cat_role_owner",
+			"type": "text",
+			"default_value": "Vlastník auta",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_role_fleet",
+			"label": "Role: Fleet",
+			"name": "tb_cat_role_fleet",
+			"type": "text",
+			"default_value": "Flotila",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_tab_mista",
+			"label": "Cities",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cat_mista_zero",
+			"label": "Cities — 0 cars",
+			"name": "tb_cat_mista_zero",
+			"type": "text",
+			"default_value": "0 áut",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cat_mista_empty",
+			"label": "Cities — empty state",
+			"name": "tb_cat_mista_empty",
+			"type": "text",
+			"default_value": "Mestá ešte neboli pridané.",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-catalog"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

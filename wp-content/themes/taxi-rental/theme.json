@@ -1,0 +1,106 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "useRootPaddingAwareAlignments": true,
+    "layout": {
+      "contentSize": "1368px",
+      "wideSize": "1368px"
+    },
+    "color": {
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "custom": true,
+      "palette": [
+        { "slug": "accent",       "name": "Accent (mint)", "color": "#02F797" },
+        { "slug": "ink",          "name": "Ink / Black",   "color": "#000000" },
+        { "slug": "base",         "name": "Base / White",  "color": "#FFFFFF" },
+        { "slug": "border",       "name": "Border",        "color": "#E5E5E5" },
+        { "slug": "muted",        "name": "Muted text",    "color": "#6B6B6B" },
+        { "slug": "surface",      "name": "Surface",       "color": "#F5F5F5" },
+        { "slug": "overlay-80",   "name": "Overlay 80%",   "color": "#000000CC" },
+        { "slug": "overlay-20",   "name": "Overlay 20%",   "color": "#00000033" }
+      ]
+    },
+    "typography": {
+      "fluid": true,
+      "customFontSize": true,
+      "fontFamilies": [
+        {
+          "slug": "body",
+          "name": "Inter",
+          "fontFamily": "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+        },
+        {
+          "slug": "display",
+          "name": "Hanken Grotesk",
+          "fontFamily": "'Hanken Grotesk', Inter, system-ui, sans-serif"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "xs",   "name": "XS",    "size": "12px" },
+        { "slug": "sm",   "name": "Small", "size": "15px" },
+        { "slug": "base", "name": "Base",  "size": "16px" },
+        { "slug": "lead", "name": "Lead",  "size": "24px" },
+        { "slug": "h3",   "name": "H3",    "size": "clamp(24px, 2.2vw, 32px)" },
+        { "slug": "h2",   "name": "H2",    "size": "clamp(32px, 3.5vw, 48px)" },
+        { "slug": "h1",   "name": "H1",    "size": "clamp(40px, 5vw, 68px)" }
+      ]
+    },
+    "spacing": {
+      "customSpacingSize": true,
+      "units": ["px", "rem", "%", "vw"],
+      "spacingSizes": [
+        { "slug": "10", "name": "1 — 4",  "size": "4px" },
+        { "slug": "20", "name": "2 — 8",  "size": "8px" },
+        { "slug": "30", "name": "3 — 16", "size": "16px" },
+        { "slug": "40", "name": "4 — 24", "size": "24px" },
+        { "slug": "50", "name": "5 — 28", "size": "28px" },
+        { "slug": "60", "name": "6 — 32", "size": "32px" },
+        { "slug": "70", "name": "7 — 48", "size": "48px" },
+        { "slug": "80", "name": "8 — 96", "size": "96px" }
+      ]
+    },
+    "custom": {
+      "radius": {
+        "card": "16px",
+        "pill": "100px",
+        "input": "12px"
+      },
+      "container": {
+        "max": "1368px",
+        "gutter": "48px"
+      },
+      "stroke": "1px",
+      "header": {
+        "height": "87px"
+      }
+    }
+  },
+  "styles": {
+    "color": { "background": "#FFFFFF", "text": "#000000" },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--body)",
+      "fontSize": "16px",
+      "lineHeight": "1.5"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--display)",
+          "fontWeight": "800",
+          "lineHeight": "1.06",
+          "letterSpacing": "-1px"
+        }
+      },
+      "link": { "color": { "text": "#000000" } },
+      "button": {
+        "color": { "background": "#000000", "text": "#FFFFFF" },
+        "border": { "radius": "100px" },
+        "spacing": { "padding": { "top": "16px", "bottom": "16px", "left": "32px", "right": "32px" } },
+        "typography": { "fontWeight": "700", "fontSize": "15px" }
+      }
+    }
+  }
+}

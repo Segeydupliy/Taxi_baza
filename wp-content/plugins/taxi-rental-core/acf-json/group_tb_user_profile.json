@@ -1,0 +1,249 @@
+{
+    "key": "group_tb_user_profile",
+    "title": "User Profile",
+    "fields": [
+        {
+            "key": "field_tb_account_type",
+            "label": "Account Type",
+            "name": "account_type",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "car_owner": "Private owner (1–2 cars)",
+                "fleet": "Fleet \/ Company (3+ cars)"
+            },
+            "allow_null": 0,
+            "other_choice": 0,
+            "save_other_choice": 0,
+            "default_value": "car_owner",
+            "layout": "horizontal",
+            "return_format": "value",
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_display_name",
+            "label": "Full Name",
+            "name": "display_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_tb_account_type",
+                        "operator": "==",
+                        "value": "car_owner"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": "",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_company_name",
+            "label": "Company Name",
+            "name": "company_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_tb_account_type",
+                        "operator": "==",
+                        "value": "fleet"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": "",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_contact_person",
+            "label": "Contact Person",
+            "name": "contact_person",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Name of the person to contact.",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_tb_account_type",
+                        "operator": "==",
+                        "value": "fleet"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": "",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_profile_phone",
+            "label": "Phone",
+            "name": "phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Format: +421 XXX XXX XXX",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "+421",
+            "prepend": "",
+            "append": "",
+            "maxlength": 20,
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_profile_telegram",
+            "label": "Telegram",
+            "name": "telegram",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Username without @",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "username",
+            "prepend": "@",
+            "append": "",
+            "maxlength": 64,
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_profile_city",
+            "label": "City",
+            "name": "city",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": "",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_about",
+            "label": "About",
+            "name": "about",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Short description of the owner or company.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "maxlength": 500,
+            "rows": 4,
+            "new_lines": "br",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_avatar",
+            "label": "Avatar \/ Logo",
+            "name": "avatar",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Profile photo or company logo.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": 2,
+            "mime_types": "jpg, jpeg, png, webp",
+            "wpml_cf_preferences": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "user_form",
+                "operator": "==",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Extended user profile fields.",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1781980016
+}

@@ -1,0 +1,485 @@
+{
+    "key": "group_tb_listing_fields",
+    "title": "Car Listing Fields",
+    "fields": [
+        {
+            "key": "field_tb_make",
+            "label": "Car make",
+            "name": "make",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_tb_model",
+            "label": "Model",
+            "name": "model",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_tb_year",
+            "label": "Year",
+            "name": "year",
+            "type": "number",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "min": 1990,
+            "max": 2030,
+            "step": 1
+        },
+        {
+            "key": "field_tb_engine_type",
+            "label": "Engine type",
+            "name": "engine_type",
+            "type": "select",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "petrol": "Petrol",
+                "diesel": "Diesel",
+                "electric": "Electric",
+                "hybrid": "Hybrid",
+                "lpg": "LPG"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "Please select"
+        },
+        {
+            "key": "field_tb_transmission",
+            "label": "Transmission",
+            "name": "transmission",
+            "type": "select",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "automatic": "Automatic",
+                "manual": "Manual"
+            },
+            "default_value": "",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "Please select"
+        },
+        {
+            "key": "field_tb_consumption_100km",
+            "label": "Fuel consumption (L/100km)",
+            "name": "consumption_100km",
+            "type": "number",
+            "instructions": "e.g. 8",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "L",
+            "min": "",
+            "max": "",
+            "step": "0.1"
+        },
+        {
+            "key": "field_tb_price_week",
+            "label": "Price / week (€)",
+            "name": "price_week",
+            "type": "number",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "€",
+            "min": 0,
+            "max": "",
+            "step": 1
+        },
+        {
+            "key": "field_tb_deposit",
+            "label": "Deposit (€)",
+            "name": "deposit",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "€",
+            "min": 0,
+            "max": "",
+            "step": 1
+        },
+        {
+            "key": "field_tb_mileage_limit_month",
+            "label": "Mileage limit / month (km)",
+            "name": "mileage_limit_month",
+            "type": "number",
+            "instructions": "0 — no limit",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": "km",
+            "min": 0,
+            "max": "",
+            "step": 100
+        },
+        {
+            "key": "field_tb_min_term_days",
+            "label": "Minimum rental term (days)",
+            "name": "min_term_days",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 7,
+            "placeholder": "",
+            "prepend": "",
+            "append": "days",
+            "min": 1,
+            "max": "",
+            "step": 1
+        },
+        {
+            "key": "field_tb_insurance",
+            "label": "Insurance included",
+            "name": "insurance",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "yes": "Yes",
+                "no": "No",
+                "details": "See details below"
+            },
+            "default_value": "no",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_tb_insurance_details",
+            "label": "Insurance details",
+            "name": "insurance_details",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_tb_insurance",
+                        "operator": "==",
+                        "value": "details"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_tb_maintenance_included",
+            "label": "Maintenance included",
+            "name": "maintenance_included",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "yes": "Yes",
+                "no": "No",
+                "details": "See details below"
+            },
+            "default_value": "no",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_tb_maintenance_details",
+            "label": "Maintenance details",
+            "name": "maintenance_details",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_tb_maintenance_included",
+                        "operator": "==",
+                        "value": "details"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_tb_short_description",
+            "label": "Listing description",
+            "name": "short_description",
+            "type": "textarea",
+            "instructions": "Think about what a driver would want to know. Add it to the description.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": "br"
+        },
+        {
+            "key": "field_tb_gallery",
+            "label": "Photos",
+            "name": "gallery",
+            "type": "gallery",
+            "instructions": "First photo will be the listing cover. Minimum 1, recommended 3–5.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "insert": "append",
+            "library": "all",
+            "min": 1,
+            "max": "",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg, jpeg, png, webp"
+        },
+        {
+            "key": "field_tb_contact_phone",
+            "label": "Contact phone",
+            "name": "contact_phone",
+            "type": "text",
+            "instructions": "Format: +421 XXX XXX XXX",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "+421",
+            "prepend": "",
+            "append": "",
+            "maxlength": 20
+        },
+        {
+            "key": "field_tb_contact_telegram",
+            "label": "Telegram",
+            "name": "contact_telegram",
+            "type": "text",
+            "instructions": "Username without @",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "username",
+            "prepend": "@",
+            "append": "",
+            "maxlength": 64
+        },
+        {
+            "key": "field_tb_contact_whatsapp",
+            "label": "WhatsApp",
+            "name": "contact_whatsapp",
+            "type": "text",
+            "instructions": "Phone number in international format: +421912345678",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "+421",
+            "prepend": "",
+            "append": "",
+            "maxlength": 20
+        },
+        {
+            "key": "field_tb_listing_lang",
+            "label": "Listing language",
+            "name": "listing_lang",
+            "type": "select",
+            "instructions": "Language this listing is written in.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "sk": "Slovenčina",
+                "uk": "Українська",
+                "en": "English",
+                "ru": "Русский"
+            },
+            "default_value": "sk",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "car_listing"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "slug",
+        "format"
+    ],
+    "active": true,
+    "description": "Fields for car rental listings.",
+    "show_in_rest": 0,
+    "modified": 1717840000
+}

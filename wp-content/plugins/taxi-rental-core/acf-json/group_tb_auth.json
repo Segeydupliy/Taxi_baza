@@ -1,0 +1,516 @@
+{
+	"key": "group_tb_auth",
+	"title": "Auth — strings",
+	"fields": [
+		{
+			"key": "field_tb_auth_tab_login",
+			"label": "Login",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_login_title",
+			"label": "Form title",
+			"name": "tb_auth_login_title",
+			"type": "text",
+			"default_value": "Prihlásiť sa do účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_email_label",
+			"label": "Email — label",
+			"name": "tb_auth_login_email_label",
+			"type": "text",
+			"default_value": "Email",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_email_ph",
+			"label": "Email — placeholder",
+			"name": "tb_auth_login_email_ph",
+			"type": "text",
+			"default_value": "your@email.com",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_pass_label",
+			"label": "Password — label",
+			"name": "tb_auth_login_pass_label",
+			"type": "text",
+			"default_value": "Heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_pass_ph",
+			"label": "Password — placeholder",
+			"name": "tb_auth_login_pass_ph",
+			"type": "text",
+			"default_value": "••••••••",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_forgot",
+			"label": "Forgot password? — link",
+			"name": "tb_auth_login_forgot",
+			"type": "text",
+			"default_value": "Zabudli ste heslo?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_submit",
+			"label": "Sign in — button",
+			"name": "tb_auth_login_submit",
+			"type": "text",
+			"default_value": "Prihlásiť sa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_no_account",
+			"label": "No account? — caption",
+			"name": "tb_auth_login_no_account",
+			"type": "text",
+			"default_value": "Ešte nemáte účet?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_login_register_link",
+			"label": "Register — link",
+			"name": "tb_auth_login_register_link",
+			"type": "text",
+			"default_value": "Zaregistrovať sa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_register",
+			"label": "Register",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_reg_title",
+			"label": "Form title",
+			"name": "tb_auth_reg_title",
+			"type": "text",
+			"default_value": "Registrácia účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_subtitle",
+			"label": "Subtitle",
+			"name": "tb_auth_reg_subtitle",
+			"type": "text",
+			"default_value": "Len pre vlastníkov áut a flotily.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_req_fields_note",
+			"label": "Required fields — note",
+			"name": "tb_auth_req_fields_note",
+			"type": "text",
+			"default_value": "Povinné polia na vyplnenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_name_label",
+			"label": "Name — label",
+			"name": "tb_auth_reg_name_label",
+			"type": "text",
+			"default_value": "Meno / Názov flotily",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_name_ph",
+			"label": "Name — placeholder",
+			"name": "tb_auth_reg_name_ph",
+			"type": "text",
+			"default_value": "Ján Novák",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_email_label",
+			"label": "Email / Phone — label",
+			"name": "tb_auth_reg_email_label",
+			"type": "text",
+			"default_value": "Email / Telefón",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_pass_ph",
+			"label": "Password — placeholder",
+			"name": "tb_auth_reg_pass_ph",
+			"type": "text",
+			"default_value": "Minimálne 8 znakov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_confirm_label",
+			"label": "Confirm password — label",
+			"name": "tb_auth_reg_confirm_label",
+			"type": "text",
+			"default_value": "Zopakujte heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_type_label",
+			"label": "Account type — label",
+			"name": "tb_auth_reg_type_label",
+			"type": "text",
+			"default_value": "Vyberte typ účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_type_owner",
+			"label": "Type: Car owner",
+			"name": "tb_auth_reg_type_owner",
+			"type": "text",
+			"default_value": "Vlastník auta (1–2 autá)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_type_fleet",
+			"label": "Type: Fleet",
+			"name": "tb_auth_reg_type_fleet",
+			"type": "text",
+			"default_value": "Flotila (3+ áut)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_submit",
+			"label": "Register — button",
+			"name": "tb_auth_reg_submit",
+			"type": "text",
+			"default_value": "Zaregistrovať sa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reg_have_account",
+			"label": "Already have an account? — caption",
+			"name": "tb_auth_reg_have_account",
+			"type": "text",
+			"default_value": "Máte už účet?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_recover",
+			"label": "Password Recovery",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_recover_title",
+			"label": "Form title",
+			"name": "tb_auth_recover_title",
+			"type": "text",
+			"default_value": "Obnovenie hesla",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_subtitle",
+			"label": "Subtitle",
+			"name": "tb_auth_recover_subtitle",
+			"type": "text",
+			"default_value": "Zadajte e-mailovú adresu — pošleme vám odkaz na reset hesla.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_submit",
+			"label": "Send reset link — button",
+			"name": "tb_auth_recover_submit",
+			"type": "text",
+			"default_value": "Odoslať odkaz",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_back_to_login",
+			"label": "Back to login — link",
+			"name": "tb_auth_back_to_login",
+			"type": "text",
+			"default_value": "Späť na prihlásenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_email_ph",
+			"label": "Email — placeholder",
+			"name": "tb_auth_recover_email_ph",
+			"type": "text",
+			"default_value": "Zadajte váš email *",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_sent_title",
+			"label": "Email sent — heading",
+			"name": "tb_auth_recover_sent_title",
+			"type": "text",
+			"default_value": "List bol odoslaný!",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_sent_desc",
+			"label": "Email sent — text (use %s for email address)",
+			"name": "tb_auth_recover_sent_desc",
+			"type": "textarea",
+			"instructions": "Use %s where the user's email address should appear.",
+			"default_value": "Skontrolujte email %s a kliknite na odkaz na obnovenie hesla. Odkaz je platný 30 minút.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_auth_recover_no_email",
+			"label": "\"Didn't receive it?\" — caption",
+			"name": "tb_auth_recover_no_email",
+			"type": "text",
+			"default_value": "Nedostali ste ho?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_recover_resend",
+			"label": "Resend link — button",
+			"name": "tb_auth_recover_resend",
+			"type": "text",
+			"default_value": "Odoslať znova",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_reset",
+			"label": "Password Reset",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_reset_title",
+			"label": "Form title",
+			"name": "tb_auth_reset_title",
+			"type": "text",
+			"default_value": "Nové heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_subtitle",
+			"label": "Subtitle",
+			"name": "tb_auth_reset_subtitle",
+			"type": "text",
+			"default_value": "Zadajte nové heslo pre váš účet.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_new_pass_label",
+			"label": "New password — label",
+			"name": "tb_auth_reset_new_pass_label",
+			"type": "text",
+			"default_value": "Nové heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_new_pass_ph",
+			"label": "New password — placeholder",
+			"name": "tb_auth_reset_new_pass_ph",
+			"type": "text",
+			"default_value": "Minimálne 8 znakov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_confirm_label",
+			"label": "Confirm new password — label",
+			"name": "tb_auth_reset_confirm_label",
+			"type": "text",
+			"default_value": "Zopakujte heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_submit",
+			"label": "Save password — button",
+			"name": "tb_auth_reset_submit",
+			"type": "text",
+			"default_value": "Uložiť heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_toggle_show",
+			"label": "Password field — \"show\" tooltip",
+			"name": "tb_auth_pw_toggle_show",
+			"type": "text",
+			"default_value": "Zobraziť heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_toggle_hide",
+			"label": "Password field — \"hide\" tooltip",
+			"name": "tb_auth_pw_toggle_hide",
+			"type": "text",
+			"default_value": "Skryť heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_strength_label",
+			"label": "Strength meter — label",
+			"name": "tb_auth_pw_strength_label",
+			"type": "text",
+			"default_value": "Sila hesla",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_strength_weak",
+			"label": "Strength meter — weak",
+			"name": "tb_auth_pw_strength_weak",
+			"type": "text",
+			"default_value": "Slabé",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_strength_medium",
+			"label": "Strength meter — medium",
+			"name": "tb_auth_pw_strength_medium",
+			"type": "text",
+			"default_value": "Stredné",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_pw_strength_strong",
+			"label": "Strength meter — strong",
+			"name": "tb_auth_pw_strength_strong",
+			"type": "text",
+			"default_value": "Silné",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_done_title",
+			"label": "Password changed — heading",
+			"name": "tb_auth_reset_done_title",
+			"type": "text",
+			"default_value": "Heslo bolo úspešne zmenené!",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_done_desc",
+			"label": "Password changed — text",
+			"name": "tb_auth_reset_done_desc",
+			"type": "text",
+			"default_value": "Teraz sa môžete prihlásiť do svojho účtu s novým heslom.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_reset_done_btn",
+			"label": "Password changed — button",
+			"name": "tb_auth_reset_done_btn",
+			"type": "text",
+			"default_value": "Prihlásiť sa do účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_deleted",
+			"label": "Account Deleted",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_deleted_title",
+			"label": "Heading",
+			"name": "tb_auth_deleted_title",
+			"type": "text",
+			"default_value": "Váš účet bol vymazaný",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_deleted_desc",
+			"label": "Text",
+			"name": "tb_auth_deleted_desc",
+			"type": "textarea",
+			"default_value": "Hotovo. Váš účet už neexistuje. Škoda, že odchádzate — spolu by sme mohli zarábať ešte dlho. Ak si to rozmyslíte, registrácia zaberie len pár minút.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_auth_deleted_btn",
+			"label": "Create new account — button",
+			"name": "tb_auth_deleted_btn",
+			"type": "text",
+			"default_value": "Vytvoriť nový účet",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_confirm",
+			"label": "Email Confirmation",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_confirm_title",
+			"label": "Heading",
+			"name": "tb_auth_confirm_title",
+			"type": "text",
+			"default_value": "Potvrďte svoj e-mail",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_confirm_email_text",
+			"label": "Text with email (use %s for email address)",
+			"name": "tb_auth_confirm_email_text",
+			"type": "textarea",
+			"instructions": "Use %s where the user's email address should appear.",
+			"default_value": "Poslali sme list na %s. Kliknite na odkaz v liste a aktivujte účet.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_auth_confirm_no_email_text",
+			"label": "Text without email",
+			"name": "tb_auth_confirm_no_email_text",
+			"type": "textarea",
+			"default_value": "Poslali sme list s odkazom na potvrdenie. Skontrolujte svoju e-mailovú schránku.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_auth_confirm_hint",
+			"label": "Spam folder hint",
+			"name": "tb_auth_confirm_hint",
+			"type": "text",
+			"default_value": "Nedostali ste list? Skontrolujte priečinok Spam alebo odošlite znova.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_confirm_resend",
+			"label": "Resend email — button",
+			"name": "tb_auth_confirm_resend",
+			"type": "text",
+			"default_value": "Odoslať list znova",
+			"required": 0
+		},
+		{
+			"key": "field_tb_auth_tab_notices",
+			"label": "System Notices",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_auth_notice_confirmed",
+			"label": "Notice — email confirmed",
+			"name": "tb_auth_notice_confirmed",
+			"type": "text",
+			"default_value": "E-mail bol potvrdený. Teraz sa môžete prihlásiť.",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-auth"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

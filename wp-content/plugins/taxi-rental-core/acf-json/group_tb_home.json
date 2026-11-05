@@ -1,0 +1,280 @@
+{
+    "key": "group_tb_home",
+    "title": "Home page — strings",
+    "fields": [
+        {
+            "key": "field_tb_home_tab_hero",
+            "label": "Hero",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_hero_title",
+            "label": "Heading",
+            "name": "tb_hero_title",
+            "type": "textarea",
+            "instructions": "Line break = line break on the site.",
+            "rows": 3,
+            "new_lines": "",
+            "default_value": "Z'єднuєmo vlasníkov\náut s vodičmi po celom\nSlovensku.",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_hero_text",
+            "label": "Card text",
+            "name": "tb_hero_text",
+            "type": "textarea",
+            "rows": 3,
+            "new_lines": "",
+            "default_value": "Nájdite auto pre prácu na Bolt alebo Uber, alebo odovzdajte svoje auto do spoľahlivých rúk.",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_hero_btn_owner",
+            "label": "Rent out — button",
+            "name": "tb_hero_btn_owner",
+            "type": "text",
+            "default_value": "Prenajať auto",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_hero_btn_driver",
+            "label": "Rent — button",
+            "name": "tb_hero_btn_driver",
+            "type": "text",
+            "default_value": "Zobrať auto",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_hero_image",
+            "label": "Background photo",
+            "name": "tb_hero_image",
+            "type": "image",
+            "instructions": "If empty — uses the default theme photo.",
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all",
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_home_tab_about",
+            "label": "About the service",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_about_kicker",
+            "label": "Kicker (small label)",
+            "name": "tb_about_kicker",
+            "type": "text",
+            "default_value": "TaxiBaza.sk",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_about_title",
+            "label": "Heading",
+            "name": "tb_about_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Inteligentná platforma\npre prenájom áut",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_about_image",
+            "label": "Right-side photo",
+            "name": "tb_about_image",
+            "type": "image",
+            "instructions": "If empty — uses the default theme photo.",
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all",
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_about_items",
+            "label": "Accordion items",
+            "name": "tb_about_items",
+            "type": "repeater",
+            "instructions": "If empty — 3 default items are used. First item is open by default.",
+            "layout": "block",
+            "button_label": "Add item",
+            "sub_fields": [
+                {
+                    "key": "field_tb_about_item_title",
+                    "label": "Item title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_about_item_text",
+                    "label": "Text",
+                    "name": "text",
+                    "type": "textarea",
+                    "rows": 3,
+                    "new_lines": "",
+                    "required": 1,
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_about_item_btn_text",
+                    "label": "Button text",
+                    "name": "button_text",
+                    "type": "text",
+                    "wpml_cf_preferences": 2
+                },
+                {
+                    "key": "field_tb_about_item_btn_url",
+                    "label": "Button URL",
+                    "name": "button_url",
+                    "type": "url",
+                    "wpml_cf_preferences": 1
+                }
+            ],
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_home_tab_cities",
+            "label": "Cities",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_cities_kicker",
+            "label": "Kicker",
+            "name": "tb_cities_kicker",
+            "type": "text",
+            "default_value": "Mestá",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cities_title",
+            "label": "Heading",
+            "name": "tb_cities_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Nájdi auto vo\nsvojom meste",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cities_button",
+            "label": "Button text",
+            "name": "tb_cities_button",
+            "type": "text",
+            "default_value": "Zobraziť všetky mestá",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_home_tab_cats",
+            "label": "Categories",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_cats_kicker",
+            "label": "Kicker",
+            "name": "tb_cats_kicker",
+            "type": "text",
+            "default_value": "Kategórie",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cats_title",
+            "label": "Heading",
+            "name": "tb_cats_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Vyberte auto\npodľa kategórie",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cats_bolt_label",
+            "label": "Bolt group label",
+            "name": "tb_cats_bolt_label",
+            "type": "text",
+            "default_value": "Kategórie Bolt",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cats_uber_label",
+            "label": "Uber group label",
+            "name": "tb_cats_uber_label",
+            "type": "text",
+            "default_value": "Kategórie Uber",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_home_tab_listings",
+            "label": "Listings",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_listings_kicker",
+            "label": "Kicker",
+            "name": "tb_listings_kicker",
+            "type": "text",
+            "default_value": "Automobily",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_listings_title",
+            "label": "Heading",
+            "name": "tb_listings_title",
+            "type": "textarea",
+            "rows": 2,
+            "new_lines": "",
+            "default_value": "Aktuálne inzeráty\npre prenájom áut",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_listings_button",
+            "label": "Button text",
+            "name": "tb_listings_button",
+            "type": "text",
+            "default_value": "Celý katalóg áut",
+            "wpml_cf_preferences": 2
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_type",
+                "operator": "==",
+                "value": "front_page"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content"
+    ],
+    "active": true,
+    "description": "Home page content.",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1789741697
+}

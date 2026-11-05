@@ -1,0 +1,464 @@
+{
+	"key": "group_tb_single",
+	"title": "Car listing — strings",
+	"fields": [
+		{
+			"key": "field_tb_sng_tab_breadcrumbs",
+			"label": "Breadcrumbs",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_breadcrumb_home",
+			"label": "Breadcrumb — Home",
+			"name": "tb_sng_breadcrumb_home",
+			"type": "text",
+			"default_value": "Hlavná stránka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_breadcrumb_catalog",
+			"label": "Breadcrumb — Catalog",
+			"name": "tb_sng_breadcrumb_catalog",
+			"type": "text",
+			"default_value": "Katalóg",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_specs",
+			"label": "Specifications",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_specs_heading",
+			"label": "Section heading",
+			"name": "tb_sng_specs_heading",
+			"type": "text",
+			"default_value": "Charakteristiky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_make",
+			"label": "Spec: Make",
+			"name": "tb_sng_spec_make",
+			"type": "text",
+			"default_value": "Značka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_model",
+			"label": "Spec: Model",
+			"name": "tb_sng_spec_model",
+			"type": "text",
+			"default_value": "Model",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_year",
+			"label": "Spec: Year",
+			"name": "tb_sng_spec_year",
+			"type": "text",
+			"default_value": "Rok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_engine",
+			"label": "Spec: Engine type",
+			"name": "tb_sng_spec_engine",
+			"type": "text",
+			"default_value": "Typ motora",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_trans",
+			"label": "Spec: Transmission",
+			"name": "tb_sng_spec_trans",
+			"type": "text",
+			"default_value": "Prevodovka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_spec_consumption",
+			"label": "Spec: Fuel consumption",
+			"name": "tb_sng_spec_consumption",
+			"type": "text",
+			"default_value": "Spotreba na 100 km",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_conditions",
+			"label": "Rental conditions",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_conditions_heading",
+			"label": "Section heading",
+			"name": "tb_sng_conditions_heading",
+			"type": "text",
+			"default_value": "Podmienky prenájmu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_price",
+			"label": "Condition: Price / week",
+			"name": "tb_sng_cond_price",
+			"type": "text",
+			"default_value": "Cena / týždeň",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_deposit",
+			"label": "Condition: Deposit",
+			"name": "tb_sng_cond_deposit",
+			"type": "text",
+			"default_value": "Depozit",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_mileage",
+			"label": "Condition: Mileage limit",
+			"name": "tb_sng_cond_mileage",
+			"type": "text",
+			"default_value": "Limit najazdených km",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_min_term",
+			"label": "Condition: Min. term",
+			"name": "tb_sng_cond_min_term",
+			"type": "text",
+			"default_value": "Min. doba prenájmu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_insurance",
+			"label": "Condition: Insurance",
+			"name": "tb_sng_cond_insurance",
+			"type": "text",
+			"default_value": "Poistenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_cond_maintenance",
+			"label": "Condition: Maintenance included",
+			"name": "tb_sng_cond_maintenance",
+			"type": "text",
+			"default_value": "Servis zahrnutý",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_enum",
+			"label": "Enum values",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_bool_yes",
+			"label": "Boolean: Yes",
+			"name": "tb_sng_bool_yes",
+			"type": "text",
+			"default_value": "Áno",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_bool_no",
+			"label": "Boolean: No",
+			"name": "tb_sng_bool_no",
+			"type": "text",
+			"default_value": "Nie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_bool_details",
+			"label": "Boolean: Yes (see details)",
+			"name": "tb_sng_bool_details",
+			"type": "text",
+			"default_value": "Áno (upresniť)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_similar",
+			"label": "Similar listings",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_similar_badge",
+			"label": "Badge: Similar",
+			"name": "tb_sng_similar_badge",
+			"type": "text",
+			"default_value": "Podobné",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_similar_heading",
+			"label": "Heading: Similar listings",
+			"name": "tb_sng_similar_heading",
+			"type": "text",
+			"default_value": "Podobné inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_similar_link",
+			"label": "All cars catalog — link",
+			"name": "tb_sng_similar_link",
+			"type": "text",
+			"default_value": "Celý katalóg áut",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_modal",
+			"label": "Modal",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_modal_title",
+			"label": "Modal — title",
+			"name": "tb_sng_modal_title",
+			"type": "text",
+			"default_value": "Kontaktovať vlastníka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_modal_close",
+			"label": "Modal — close button",
+			"name": "tb_sng_modal_close",
+			"type": "text",
+			"default_value": "Zavrieť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_modal_required",
+			"label": "Modal — required fields note",
+			"name": "tb_sng_modal_required",
+			"type": "text",
+			"default_value": "Povinné polia na vyplnenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_tab_form",
+			"label": "Modal form",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_sng_form_first_name",
+			"label": "Form: First name",
+			"name": "tb_sng_form_first_name",
+			"type": "text",
+			"default_value": "Meno",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_last_name",
+			"label": "Form: Last name",
+			"name": "tb_sng_form_last_name",
+			"type": "text",
+			"default_value": "Priezvisko",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_email",
+			"label": "Form: Email",
+			"name": "tb_sng_form_email",
+			"type": "text",
+			"default_value": "Email",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_phone",
+			"label": "Form: Phone",
+			"name": "tb_sng_form_phone",
+			"type": "text",
+			"default_value": "Telefón",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_exp",
+			"label": "Form: Driving experience",
+			"name": "tb_sng_form_exp",
+			"type": "text",
+			"default_value": "Vodičská prax",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_term",
+			"label": "Form: Rental term",
+			"name": "tb_sng_form_term",
+			"type": "text",
+			"default_value": "Doba prenájmu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_date",
+			"label": "Form: Desired start date",
+			"name": "tb_sng_form_date",
+			"type": "text",
+			"default_value": "Požadovaný dátum začatia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_message",
+			"label": "Form: Message",
+			"name": "tb_sng_form_message",
+			"type": "text",
+			"default_value": "Správa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_select_ph",
+			"label": "Form — select placeholder",
+			"name": "tb_sng_select_ph",
+			"type": "text",
+			"default_value": "Vyberte prosím",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_exp_lt1",
+			"label": "Experience: under 1 year",
+			"name": "tb_sng_exp_lt1",
+			"type": "text",
+			"default_value": "Menej ako 1 rok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_exp_1_3",
+			"label": "Experience: 1–3 years",
+			"name": "tb_sng_exp_1_3",
+			"type": "text",
+			"default_value": "1–3 roky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_exp_3_5",
+			"label": "Experience: 3–5 years",
+			"name": "tb_sng_exp_3_5",
+			"type": "text",
+			"default_value": "3–5 rokov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_exp_5plus",
+			"label": "Experience: 5+ years",
+			"name": "tb_sng_exp_5plus",
+			"type": "text",
+			"default_value": "5+ rokov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_term_1_2w",
+			"label": "Term: 1–2 weeks",
+			"name": "tb_sng_term_1_2w",
+			"type": "text",
+			"default_value": "1–2 týždne",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_term_2_4w",
+			"label": "Term: 2–4 weeks",
+			"name": "tb_sng_term_2_4w",
+			"type": "text",
+			"default_value": "2–4 týždne",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_term_1_3m",
+			"label": "Term: 1–3 months",
+			"name": "tb_sng_term_1_3m",
+			"type": "text",
+			"default_value": "1–3 mesiace",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_term_3plus",
+			"label": "Term: 3+ months",
+			"name": "tb_sng_term_3plus",
+			"type": "text",
+			"default_value": "3+ mesiace",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_check_license",
+			"label": "Checkbox: valid driving licence",
+			"name": "tb_sng_check_license",
+			"type": "text",
+			"default_value": "Mám platný vodičský preukaz",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_check_platform",
+			"label": "Checkbox: active Bolt/Uber contract",
+			"name": "tb_sng_check_platform",
+			"type": "text",
+			"default_value": "Mám aktívnu zmluvu s Bolt / Uber",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_check_deposit",
+			"label": "Checkbox: ready to pay deposit",
+			"name": "tb_sng_check_deposit",
+			"type": "text",
+			"default_value": "Som pripravený zaplatiť depozit",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_consent_text",
+			"label": "Consent text (%1$s = privacy link, %2$s = terms link)",
+			"name": "tb_sng_consent_text",
+			"type": "textarea",
+			"instructions": "Use %1$s for the Privacy Policy link and %2$s for the Terms of Use link.",
+			"default_value": "Odoslaním správy súhlasíte s %1$s a %2$s. Na zlepšenie stránky používame súbory cookie.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_sng_privacy_link",
+			"label": "Privacy policy — link text",
+			"name": "tb_sng_privacy_link",
+			"type": "text",
+			"default_value": "Zásadami ochrany osobných údajov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_terms_link",
+			"label": "Terms of use — link text",
+			"name": "tb_sng_terms_link",
+			"type": "text",
+			"default_value": "Podmienkami používania",
+			"required": 0
+		},
+		{
+			"key": "field_tb_sng_form_submit",
+			"label": "Form — submit button",
+			"name": "tb_sng_form_submit",
+			"type": "text",
+			"default_value": "Odoslať žiadosť",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-single"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

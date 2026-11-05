@@ -1,0 +1,1967 @@
+{
+	"key": "group_tb_front_admin",
+	"title": "Front Admin UI — strings",
+	"fields": [
+		{
+			"key": "field_tb_fa_tab_nav",
+			"label": "Navigation",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_nav_dashboard",
+			"label": "Dashboard — nav link",
+			"name": "tb_fa_nav_dashboard",
+			"type": "text",
+			"default_value": "Prehľad",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_adverts",
+			"label": "Adverts — nav link",
+			"name": "tb_fa_nav_adverts",
+			"type": "text",
+			"default_value": "Inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_users",
+			"label": "Users — nav link",
+			"name": "tb_fa_nav_users",
+			"type": "text",
+			"default_value": "Používatelia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_cities",
+			"label": "Cities — nav link",
+			"name": "tb_fa_nav_cities",
+			"type": "text",
+			"default_value": "Mestá",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_categories",
+			"label": "Categories — nav link",
+			"name": "tb_fa_nav_categories",
+			"type": "text",
+			"default_value": "Kategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_blog",
+			"label": "Blog — nav link",
+			"name": "tb_fa_nav_blog",
+			"type": "text",
+			"default_value": "Blog / Správy",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_nav_wip",
+			"label": "Work in progress — notice",
+			"name": "tb_fa_nav_wip",
+			"type": "text",
+			"default_value": "Táto sekcia je vo vývoji.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_link_site",
+			"label": "Back to site — link label",
+			"name": "tb_fa_link_site",
+			"type": "text",
+			"default_value": "Na web",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_link_wpadmin",
+			"label": "WordPress admin — link label",
+			"name": "tb_fa_link_wpadmin",
+			"type": "text",
+			"default_value": "WordPress admin",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_dashboard",
+			"label": "Dashboard",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_dash_stats_title",
+			"label": "Stats block — title",
+			"name": "tb_fa_dash_stats_title",
+			"type": "text",
+			"default_value": "Celková štatistika",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_total",
+			"label": "Total listings — stat label",
+			"name": "tb_fa_dash_total",
+			"type": "text",
+			"default_value": "Celkom inzerátov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_pending",
+			"label": "Pending listings — stat label",
+			"name": "tb_fa_dash_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_users",
+			"label": "Total users — stat label",
+			"name": "tb_fa_dash_users",
+			"type": "text",
+			"default_value": "Používateľov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_cities",
+			"label": "Total cities — stat label",
+			"name": "tb_fa_dash_cities",
+			"type": "text",
+			"default_value": "Miest",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_mod_heading",
+			"label": "Moderation queue — heading",
+			"name": "tb_fa_dash_mod_heading",
+			"type": "text",
+			"default_value": "Čakajú na moderáciu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_price",
+			"label": "Price format (use %s for value)",
+			"name": "tb_fa_dash_price",
+			"type": "text",
+			"default_value": "od %s€ / týždeň",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_reject_btn",
+			"label": "Reject — button",
+			"name": "tb_fa_dash_reject_btn",
+			"type": "text",
+			"default_value": "Zamietnuť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_edit_btn",
+			"label": "Edit — button",
+			"name": "tb_fa_dash_edit_btn",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_publish_btn",
+			"label": "Publish — button",
+			"name": "tb_fa_dash_publish_btn",
+			"type": "text",
+			"default_value": "Zverejniť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_dash_empty",
+			"label": "Empty moderation queue — notice",
+			"name": "tb_fa_dash_empty",
+			"type": "text",
+			"default_value": "Žiadne inzeráty čakajú na moderáciu.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_adverts",
+			"label": "Adverts",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_adv_heading",
+			"label": "Page heading",
+			"name": "tb_fa_adv_heading",
+			"type": "text",
+			"default_value": "Inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_stats",
+			"label": "Stats line (use %1$d…%5$d for counts)",
+			"name": "tb_fa_adv_stats",
+			"type": "text",
+			"default_value": "Celkom %1$d, zverejnených %2$d, v moderácii %3$d, archivovaných %4$d, zamietnutých %5$d",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_all",
+			"label": "All — filter pill",
+			"name": "tb_fa_adv_all",
+			"type": "text",
+			"default_value": "Všetky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_published",
+			"label": "Published — filter pill",
+			"name": "tb_fa_adv_published",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_pending",
+			"label": "Pending — filter pill",
+			"name": "tb_fa_adv_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_rejected",
+			"label": "Rejected — filter pill",
+			"name": "tb_fa_adv_rejected",
+			"type": "text",
+			"default_value": "Zamietnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_archived",
+			"label": "Archived — filter pill",
+			"name": "tb_fa_adv_archived",
+			"type": "text",
+			"default_value": "Archivované",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_search_label",
+			"label": "Search — label",
+			"name": "tb_fa_adv_search_label",
+			"type": "text",
+			"default_value": "Hľadať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_search_ph",
+			"label": "Search — placeholder",
+			"name": "tb_fa_adv_search_ph",
+			"type": "text",
+			"default_value": "Hľadať inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_search_btn",
+			"label": "Search — button",
+			"name": "tb_fa_adv_search_btn",
+			"type": "text",
+			"default_value": "Hľadať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_search_reset",
+			"label": "Search — reset button",
+			"name": "tb_fa_adv_search_reset",
+			"type": "text",
+			"default_value": "Vymazať hľadanie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_price",
+			"label": "Price format (use %s for value)",
+			"name": "tb_fa_adv_price",
+			"type": "text",
+			"default_value": "od %s€ / týždeň",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_reject_btn",
+			"label": "Reject — button",
+			"name": "tb_fa_adv_reject_btn",
+			"type": "text",
+			"default_value": "Zamietnuť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_edit_btn",
+			"label": "Edit — button",
+			"name": "tb_fa_adv_edit_btn",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_publish_btn",
+			"label": "Publish — button",
+			"name": "tb_fa_adv_publish_btn",
+			"type": "text",
+			"default_value": "Zverejniť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_archive_btn",
+			"label": "Archive — button",
+			"name": "tb_fa_adv_archive_btn",
+			"type": "text",
+			"default_value": "Archivovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_review_btn",
+			"label": "Send to review — button",
+			"name": "tb_fa_adv_review_btn",
+			"type": "text",
+			"default_value": "Na posúdenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_restore_btn",
+			"label": "Restore — button",
+			"name": "tb_fa_adv_restore_btn",
+			"type": "text",
+			"default_value": "Obnoviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_delete_btn",
+			"label": "Delete — button",
+			"name": "tb_fa_adv_delete_btn",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_load_more",
+			"label": "Load more — button",
+			"name": "tb_fa_adv_load_more",
+			"type": "text",
+			"default_value": "Načítať viac",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_empty_search",
+			"label": "No search results (use %s for query)",
+			"name": "tb_fa_adv_empty_search",
+			"type": "text",
+			"default_value": "Pre hľadanie \"%s\" sa nič nenašlo.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_adv_empty",
+			"label": "Empty list — notice",
+			"name": "tb_fa_adv_empty",
+			"type": "text",
+			"default_value": "Žiadne inzeráty.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_advert_edit",
+			"label": "Advert Edit",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_ae_not_found",
+			"label": "Advert not found — message",
+			"name": "tb_fa_ae_not_found",
+			"type": "text",
+			"default_value": "Inzerát sa nenašiel.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_no_acf",
+			"label": "ACF Pro missing — message",
+			"name": "tb_fa_ae_no_acf",
+			"type": "text",
+			"default_value": "ACF Pro nie je aktivované.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_st_publish",
+			"label": "Status: Published",
+			"name": "tb_fa_ae_st_publish",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_st_pending",
+			"label": "Status: Pending",
+			"name": "tb_fa_ae_st_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_st_rejected",
+			"label": "Status: Rejected",
+			"name": "tb_fa_ae_st_rejected",
+			"type": "text",
+			"default_value": "Zamietnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_st_archived",
+			"label": "Status: Archived",
+			"name": "tb_fa_ae_st_archived",
+			"type": "text",
+			"default_value": "Archivované",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_st_draft",
+			"label": "Status: Draft",
+			"name": "tb_fa_ae_st_draft",
+			"type": "text",
+			"default_value": "Koncept",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_cancel_btn",
+			"label": "Cancel changes — button",
+			"name": "tb_fa_ae_cancel_btn",
+			"type": "text",
+			"default_value": "Zrušiť zmeny",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_archive_btn",
+			"label": "Archive — button",
+			"name": "tb_fa_ae_archive_btn",
+			"type": "text",
+			"default_value": "Archivovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_restore_btn",
+			"label": "Restore — button",
+			"name": "tb_fa_ae_restore_btn",
+			"type": "text",
+			"default_value": "Obnoviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_publish_btn",
+			"label": "Publish — button",
+			"name": "tb_fa_ae_publish_btn",
+			"type": "text",
+			"default_value": "Zverejniť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_section_basic",
+			"label": "Basic info — section heading",
+			"name": "tb_fa_ae_section_basic",
+			"type": "text",
+			"default_value": "Základné informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_make",
+			"label": "Car make — field label",
+			"name": "tb_fa_ae_make",
+			"type": "text",
+			"default_value": "Značka auta",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_model",
+			"label": "Car model — field label",
+			"name": "tb_fa_ae_model",
+			"type": "text",
+			"default_value": "Model",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_year",
+			"label": "Year — field label",
+			"name": "tb_fa_ae_year",
+			"type": "text",
+			"default_value": "Rok výroby",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_engine",
+			"label": "Engine type — field label",
+			"name": "tb_fa_ae_engine",
+			"type": "text",
+			"default_value": "Typ motora",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_select_ph",
+			"label": "Select dropdown — placeholder",
+			"name": "tb_fa_ae_select_ph",
+			"type": "text",
+			"default_value": "Vyberte prosím",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_trans",
+			"label": "Transmission — field label",
+			"name": "tb_fa_ae_trans",
+			"type": "text",
+			"default_value": "Prevodovka",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_consumption",
+			"label": "Fuel consumption — field label",
+			"name": "tb_fa_ae_consumption",
+			"type": "text",
+			"default_value": "Spotreba (l/100km)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_consumption_ph",
+			"label": "Fuel consumption — placeholder",
+			"name": "tb_fa_ae_consumption_ph",
+			"type": "text",
+			"default_value": "Napr. 8l/100km",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_photos",
+			"label": "Photos — section heading",
+			"name": "tb_fa_ae_photos",
+			"type": "text",
+			"default_value": "Fotografie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_photos_hint",
+			"label": "Photos — hint text",
+			"name": "tb_fa_ae_photos_hint",
+			"type": "textarea",
+			"rows": 2,
+			"default_value": "Prvá fotografia bude na obálke inzerátu. Poradie obrázkov zatiaľ nie je možné meniť.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_add_photo",
+			"label": "Add photo — button",
+			"name": "tb_fa_ae_add_photo",
+			"type": "text",
+			"default_value": "Pridať fotografiu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_remove_photo",
+			"label": "Remove photo — aria-label",
+			"name": "tb_fa_ae_remove_photo",
+			"type": "text",
+			"default_value": "Odstrániť fotografiu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_section_terms",
+			"label": "Rental terms — section heading",
+			"name": "tb_fa_ae_section_terms",
+			"type": "text",
+			"default_value": "Podmienky prenájmu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_price",
+			"label": "Price per week — field label",
+			"name": "tb_fa_ae_price",
+			"type": "text",
+			"default_value": "Cena / týždeň (€)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_deposit",
+			"label": "Deposit — field label",
+			"name": "tb_fa_ae_deposit",
+			"type": "text",
+			"default_value": "Depozit (€)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_mileage",
+			"label": "Mileage limit — field label",
+			"name": "tb_fa_ae_mileage",
+			"type": "text",
+			"default_value": "Limit najazdených km / mesiac (km)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_mileage_ph",
+			"label": "Mileage limit — placeholder",
+			"name": "tb_fa_ae_mileage_ph",
+			"type": "text",
+			"default_value": "0 — bez obmedzenia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_min_term",
+			"label": "Minimum rental term — field label",
+			"name": "tb_fa_ae_min_term",
+			"type": "text",
+			"default_value": "Minimálna doba prenájmu (dní)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_insurance",
+			"label": "Insurance included — field label",
+			"name": "tb_fa_ae_insurance",
+			"type": "text",
+			"default_value": "Poistenie zahrnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_maintenance",
+			"label": "Maintenance included — field label",
+			"name": "tb_fa_ae_maintenance",
+			"type": "text",
+			"default_value": "Servis zahrnutý",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_section_loc",
+			"label": "Location & categories — section heading",
+			"name": "tb_fa_ae_section_loc",
+			"type": "text",
+			"default_value": "Lokalita a kategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_city",
+			"label": "City — field label",
+			"name": "tb_fa_ae_city",
+			"type": "text",
+			"default_value": "Mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_section_extra",
+			"label": "Additional info — section heading",
+			"name": "tb_fa_ae_section_extra",
+			"type": "text",
+			"default_value": "Doplňujúce informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_description",
+			"label": "Description — field label",
+			"name": "tb_fa_ae_description",
+			"type": "text",
+			"default_value": "Popis inzerátu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ae_desc_hint",
+			"label": "Description — hint text",
+			"name": "tb_fa_ae_desc_hint",
+			"type": "textarea",
+			"rows": 2,
+			"default_value": "Zamyslite sa, čo by ste chceli vedieť z inzerátu. A doplňte to do popisu.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_users",
+			"label": "Users",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_usr_heading",
+			"label": "Page heading",
+			"name": "tb_fa_usr_heading",
+			"type": "text",
+			"default_value": "Používatelia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_stats",
+			"label": "Stats line (use %1$d, %2$d, %3$d)",
+			"name": "tb_fa_usr_stats",
+			"type": "text",
+			"default_value": "Celkom %1$d, aktívnych %2$d, zablokovaných %3$d",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_active",
+			"label": "Active — filter pill",
+			"name": "tb_fa_usr_active",
+			"type": "text",
+			"default_value": "Aktívni",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_blocked",
+			"label": "Blocked — filter pill",
+			"name": "tb_fa_usr_blocked",
+			"type": "text",
+			"default_value": "Zablokovaní",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_filter_city",
+			"label": "City filter — label",
+			"name": "tb_fa_usr_filter_city",
+			"type": "text",
+			"default_value": "Mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_filter_type",
+			"label": "User type filter — label",
+			"name": "tb_fa_usr_filter_type",
+			"type": "text",
+			"default_value": "Typ používateľa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_filter_apply",
+			"label": "Apply filters — button",
+			"name": "tb_fa_usr_filter_apply",
+			"type": "text",
+			"default_value": "Použiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_search_label",
+			"label": "Search — label",
+			"name": "tb_fa_usr_search_label",
+			"type": "text",
+			"default_value": "Hľadať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_search_ph",
+			"label": "Search — placeholder",
+			"name": "tb_fa_usr_search_ph",
+			"type": "text",
+			"default_value": "Hľadať používateľov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_empty",
+			"label": "Empty list — notice",
+			"name": "tb_fa_usr_empty",
+			"type": "text",
+			"default_value": "Žiadni používatelia.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_listings",
+			"label": "Listings count (use %d)",
+			"name": "tb_fa_usr_listings",
+			"type": "text",
+			"default_value": "%d inzerátov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_block_btn",
+			"label": "Block user — button",
+			"name": "tb_fa_usr_block_btn",
+			"type": "text",
+			"default_value": "Zablokovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_usr_unblock_btn",
+			"label": "Unblock user — button",
+			"name": "tb_fa_usr_unblock_btn",
+			"type": "text",
+			"default_value": "Odblokovať",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_user_detail",
+			"label": "User Detail",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_ud_not_found",
+			"label": "User not found — message",
+			"name": "tb_fa_ud_not_found",
+			"type": "text",
+			"default_value": "Používateľ sa nenašiel.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_role_admin",
+			"label": "Role: Administrator",
+			"name": "tb_fa_ud_role_admin",
+			"type": "text",
+			"default_value": "Administrátor",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_st_blocked",
+			"label": "Status: Blocked",
+			"name": "tb_fa_ud_st_blocked",
+			"type": "text",
+			"default_value": "Zablokovaný",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_st_active",
+			"label": "Status: Active",
+			"name": "tb_fa_ud_st_active",
+			"type": "text",
+			"default_value": "Aktívny",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_unblock_btn",
+			"label": "Unblock — button",
+			"name": "tb_fa_ud_unblock_btn",
+			"type": "text",
+			"default_value": "Odblokovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_block_btn",
+			"label": "Block — button",
+			"name": "tb_fa_ud_block_btn",
+			"type": "text",
+			"default_value": "Zablokovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_edit_btn",
+			"label": "Edit — button",
+			"name": "tb_fa_ud_edit_btn",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_photo_title",
+			"label": "Profile photo — card title",
+			"name": "tb_fa_ud_photo_title",
+			"type": "text",
+			"default_value": "Profilová fotografia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_upload_btn",
+			"label": "Upload new photo — button",
+			"name": "tb_fa_ud_upload_btn",
+			"type": "text",
+			"default_value": "Nahrať nové",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_delete_photo",
+			"label": "Delete photo — button",
+			"name": "tb_fa_ud_delete_photo",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_section_info",
+			"label": "Basic info — section heading",
+			"name": "tb_fa_ud_section_info",
+			"type": "text",
+			"default_value": "Základné informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_first_name",
+			"label": "First name — field label",
+			"name": "tb_fa_ud_first_name",
+			"type": "text",
+			"default_value": "Meno",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_last_name",
+			"label": "Last name — field label",
+			"name": "tb_fa_ud_last_name",
+			"type": "text",
+			"default_value": "Priezvisko",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_phone",
+			"label": "Phone — field label",
+			"name": "tb_fa_ud_phone",
+			"type": "text",
+			"default_value": "Telefón",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_email",
+			"label": "Email — field label",
+			"name": "tb_fa_ud_email",
+			"type": "text",
+			"default_value": "Email",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_city",
+			"label": "City — field label",
+			"name": "tb_fa_ud_city",
+			"type": "text",
+			"default_value": "Mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_account_type",
+			"label": "Account type — field label",
+			"name": "tb_fa_ud_account_type",
+			"type": "text",
+			"default_value": "Typ účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_telegram",
+			"label": "Telegram — field label",
+			"name": "tb_fa_ud_telegram",
+			"type": "text",
+			"default_value": "Telegram",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_listings_title",
+			"label": "Listings — section heading",
+			"name": "tb_fa_ud_listings_title",
+			"type": "text",
+			"default_value": "Inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_stats",
+			"label": "Stats line (use %1$d…%5$d)",
+			"name": "tb_fa_ud_stats",
+			"type": "text",
+			"default_value": "Celkom %1$d, zverejnených %2$d, v moderácii %3$d, archivovaných %4$d, zamietnutých %5$d",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_filter_all",
+			"label": "All — filter pill",
+			"name": "tb_fa_ud_filter_all",
+			"type": "text",
+			"default_value": "Všetky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_filter_publish",
+			"label": "Published — filter pill",
+			"name": "tb_fa_ud_filter_publish",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_filter_pending",
+			"label": "Pending — filter pill",
+			"name": "tb_fa_ud_filter_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_filter_reject",
+			"label": "Rejected — filter pill",
+			"name": "tb_fa_ud_filter_reject",
+			"type": "text",
+			"default_value": "Zamietnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_filter_archive",
+			"label": "Archived — filter pill",
+			"name": "tb_fa_ud_filter_archive",
+			"type": "text",
+			"default_value": "Archivované",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_search_ph",
+			"label": "Search — placeholder",
+			"name": "tb_fa_ud_search_ph",
+			"type": "text",
+			"default_value": "Hľadať...",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_search_label",
+			"label": "Search — label",
+			"name": "tb_fa_ud_search_label",
+			"type": "text",
+			"default_value": "Hľadať inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_search_btn",
+			"label": "Search — button",
+			"name": "tb_fa_ud_search_btn",
+			"type": "text",
+			"default_value": "Hľadať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_reject_btn",
+			"label": "Reject — button",
+			"name": "tb_fa_ud_reject_btn",
+			"type": "text",
+			"default_value": "Zamietnuť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_publish_btn",
+			"label": "Publish — button",
+			"name": "tb_fa_ud_publish_btn",
+			"type": "text",
+			"default_value": "Zverejniť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_archive_btn",
+			"label": "Archive — button",
+			"name": "tb_fa_ud_archive_btn",
+			"type": "text",
+			"default_value": "Archivovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_review_btn",
+			"label": "Send to review — button",
+			"name": "tb_fa_ud_review_btn",
+			"type": "text",
+			"default_value": "Na posúdenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_view_btn",
+			"label": "View listing — button",
+			"name": "tb_fa_ud_view_btn",
+			"type": "text",
+			"default_value": "Zobraziť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ud_empty",
+			"label": "Empty list — notice",
+			"name": "tb_fa_ud_empty",
+			"type": "text",
+			"default_value": "Žiadne inzeráty.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_user_edit",
+			"label": "User Edit",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_ue_not_found",
+			"label": "User not found — message",
+			"name": "tb_fa_ue_not_found",
+			"type": "text",
+			"default_value": "Používateľ sa nenašiel.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_type_owner",
+			"label": "Account type: Individual owner",
+			"name": "tb_fa_ue_type_owner",
+			"type": "text",
+			"default_value": "Fyzická osoba",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_type_fleet",
+			"label": "Account type: Fleet",
+			"name": "tb_fa_ue_type_fleet",
+			"type": "text",
+			"default_value": "Flotila",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_cancel_btn",
+			"label": "Cancel — button",
+			"name": "tb_fa_ue_cancel_btn",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_save_btn",
+			"label": "Save — button",
+			"name": "tb_fa_ue_save_btn",
+			"type": "text",
+			"default_value": "Uložiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_saved_notice",
+			"label": "Changes saved — toast notice",
+			"name": "tb_fa_ue_saved_notice",
+			"type": "text",
+			"default_value": "Zmeny uložené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_photo_title",
+			"label": "Profile photo — card title",
+			"name": "tb_fa_ue_photo_title",
+			"type": "text",
+			"default_value": "Profilová fotografia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_upload_btn",
+			"label": "Upload new photo — button",
+			"name": "tb_fa_ue_upload_btn",
+			"type": "text",
+			"default_value": "Nahrať nové",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_delete_photo",
+			"label": "Delete photo — button",
+			"name": "tb_fa_ue_delete_photo",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_section_info",
+			"label": "Basic info — section heading",
+			"name": "tb_fa_ue_section_info",
+			"type": "text",
+			"default_value": "Základné informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_first_name",
+			"label": "First name — field label",
+			"name": "tb_fa_ue_first_name",
+			"type": "text",
+			"default_value": "Meno",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_last_name",
+			"label": "Last name — field label",
+			"name": "tb_fa_ue_last_name",
+			"type": "text",
+			"default_value": "Priezvisko",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_email",
+			"label": "Email — field label",
+			"name": "tb_fa_ue_email",
+			"type": "text",
+			"default_value": "Email",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_phone",
+			"label": "Phone — field label",
+			"name": "tb_fa_ue_phone",
+			"type": "text",
+			"default_value": "Telefón",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_user_type",
+			"label": "User type — field label",
+			"name": "tb_fa_ue_user_type",
+			"type": "text",
+			"default_value": "Typ používateľa",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_telegram",
+			"label": "Telegram — field label",
+			"name": "tb_fa_ue_telegram",
+			"type": "text",
+			"default_value": "Telegram",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_ue_about",
+			"label": "About — field label",
+			"name": "tb_fa_ue_about",
+			"type": "text",
+			"default_value": "Krátky popis",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_cities",
+			"label": "Cities",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_cit_heading",
+			"label": "Page heading",
+			"name": "tb_fa_cit_heading",
+			"type": "text",
+			"default_value": "Mestá",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_count",
+			"label": "Cities count (use %d)",
+			"name": "tb_fa_cit_count",
+			"type": "text",
+			"default_value": "%d aktívnych miest",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_add_btn",
+			"label": "Add city — button",
+			"name": "tb_fa_cit_add_btn",
+			"type": "text",
+			"default_value": "Pridať mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_delete_btn",
+			"label": "Delete city — button",
+			"name": "tb_fa_cit_delete_btn",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_name_label",
+			"label": "City name — field label",
+			"name": "tb_fa_cit_name_label",
+			"type": "text",
+			"default_value": "Názov mesta",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_name_ph",
+			"label": "City name — placeholder",
+			"name": "tb_fa_cit_name_ph",
+			"type": "text",
+			"default_value": "Napr.: Bratislava",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_empty_records",
+			"label": "No records — notice",
+			"name": "tb_fa_cit_empty_records",
+			"type": "text",
+			"default_value": "Žiadne záznamy.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cit_empty_first",
+			"label": "No cities yet — notice",
+			"name": "tb_fa_cit_empty_first",
+			"type": "text",
+			"default_value": "Mestá ešte neexistujú. Pridajte prvé mesto.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_categories",
+			"label": "Categories",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_cat_heading",
+			"label": "Page heading",
+			"name": "tb_fa_cat_heading",
+			"type": "text",
+			"default_value": "Kategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cat_add_btn",
+			"label": "Add category — button",
+			"name": "tb_fa_cat_add_btn",
+			"type": "text",
+			"default_value": "Pridať kategóriu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cat_empty",
+			"label": "No categories — notice",
+			"name": "tb_fa_cat_empty",
+			"type": "text",
+			"default_value": "Žiadne kategórie. Kliknite na 'Pridať kategóriu'.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cat_no_sub",
+			"label": "No subcategories — notice",
+			"name": "tb_fa_cat_no_sub",
+			"type": "text",
+			"default_value": "Žiadne podkategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_cat_delete_btn",
+			"label": "Delete category — aria-label",
+			"name": "tb_fa_cat_delete_btn",
+			"type": "text",
+			"default_value": "Odstrániť kategóriu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_close",
+			"label": "Category edit modal — close aria-label",
+			"name": "tb_fa_mce_close",
+			"type": "text",
+			"default_value": "Zavrieť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_title",
+			"label": "Category edit modal — title",
+			"name": "tb_fa_mce_title",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_title_add",
+			"label": "Category edit modal — title (add mode)",
+			"name": "tb_fa_mce_title_add",
+			"type": "text",
+			"default_value": "Pridať kategóriu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_block_name",
+			"label": "Category edit modal — block name label",
+			"name": "tb_fa_mce_block_name",
+			"type": "text",
+			"default_value": "Názov bloku kategórií",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_block_ph",
+			"label": "Category edit modal — block name placeholder",
+			"name": "tb_fa_mce_block_ph",
+			"type": "text",
+			"default_value": "Napr.: Bolt",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_cats_label",
+			"label": "Category edit modal — subcategories label",
+			"name": "tb_fa_mce_cats_label",
+			"type": "text",
+			"default_value": "Kategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_add_more",
+			"label": "Category edit modal — add more button",
+			"name": "tb_fa_mce_add_more",
+			"type": "text",
+			"default_value": "Pridať ďalšie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_cancel",
+			"label": "Category edit modal — cancel button",
+			"name": "tb_fa_mce_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mce_save",
+			"label": "Category edit modal — save button",
+			"name": "tb_fa_mce_save",
+			"type": "text",
+			"default_value": "Uložiť",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_blog",
+			"label": "Blog",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_blg_heading",
+			"label": "Page heading",
+			"name": "tb_fa_blg_heading",
+			"type": "text",
+			"default_value": "Blog / Správy",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_stats",
+			"label": "Stats line (use %1$s, %2$s)",
+			"name": "tb_fa_blg_stats",
+			"type": "text",
+			"default_value": "%1$s článkov, %2$s kategórií",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_add_btn",
+			"label": "Add post — button",
+			"name": "tb_fa_blg_add_btn",
+			"type": "text",
+			"default_value": "Pridať článok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_toast_added",
+			"label": "Toast — article added",
+			"name": "tb_fa_blg_toast_added",
+			"type": "text",
+			"default_value": "Článok bol pridaný",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_all",
+			"label": "All — filter pill",
+			"name": "tb_fa_blg_all",
+			"type": "text",
+			"default_value": "Všetky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_published",
+			"label": "Published — filter pill",
+			"name": "tb_fa_blg_published",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_drafts",
+			"label": "Drafts — filter pill",
+			"name": "tb_fa_blg_drafts",
+			"type": "text",
+			"default_value": "Koncepty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_review",
+			"label": "Under review — filter pill",
+			"name": "tb_fa_blg_review",
+			"type": "text",
+			"default_value": "Na posúdenie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_search_label",
+			"label": "Search — label",
+			"name": "tb_fa_blg_search_label",
+			"type": "text",
+			"default_value": "Hľadať články",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_search_reset",
+			"label": "Search — reset button",
+			"name": "tb_fa_blg_search_reset",
+			"type": "text",
+			"default_value": "Vymazať hľadanie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_empty",
+			"label": "No posts found — notice",
+			"name": "tb_fa_blg_empty",
+			"type": "text",
+			"default_value": "Žiadne články nenájdené.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_no_title",
+			"label": "Post with no title — placeholder",
+			"name": "tb_fa_blg_no_title",
+			"type": "text",
+			"default_value": "(bez názvu)",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_trash",
+			"label": "Trash — button",
+			"name": "tb_fa_blg_trash",
+			"type": "text",
+			"default_value": "Kôš",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_delete_btn",
+			"label": "Delete post — button",
+			"name": "tb_fa_blg_delete_btn",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_load_more",
+			"label": "Load more — button",
+			"name": "tb_fa_blg_load_more",
+			"type": "text",
+			"default_value": "Načítať viac",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_cat_count",
+			"label": "Blog categories count (use %s)",
+			"name": "tb_fa_blg_cat_count",
+			"type": "text",
+			"default_value": "%s kategórií",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_blg_cat_empty",
+			"label": "No blog categories — notice",
+			"name": "tb_fa_blg_cat_empty",
+			"type": "text",
+			"default_value": "Žiadne kategórie.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_close",
+			"label": "Blog category modal — close aria-label",
+			"name": "tb_fa_mbc_close",
+			"type": "text",
+			"default_value": "Zavrieť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_title",
+			"label": "Blog category modal — title",
+			"name": "tb_fa_mbc_title",
+			"type": "text",
+			"default_value": "Kategória blogu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_name_label",
+			"label": "Blog category modal — name label",
+			"name": "tb_fa_mbc_name_label",
+			"type": "text",
+			"default_value": "Názov kategórie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_name_ph",
+			"label": "Blog category modal — name placeholder",
+			"name": "tb_fa_mbc_name_ph",
+			"type": "text",
+			"default_value": "Napr.: Tipy pre vodičov",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_cancel",
+			"label": "Blog category modal — cancel button",
+			"name": "tb_fa_mbc_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbc_save",
+			"label": "Blog category modal — save button",
+			"name": "tb_fa_mbc_save",
+			"type": "text",
+			"default_value": "Uložiť",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_blog_edit",
+			"label": "Blog Edit",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_be_new_title",
+			"label": "New post — page title",
+			"name": "tb_fa_be_new_title",
+			"type": "text",
+			"default_value": "Nový článok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_edit_title",
+			"label": "Edit post — page title",
+			"name": "tb_fa_be_edit_title",
+			"type": "text",
+			"default_value": "Upraviť článok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_save_draft",
+			"label": "Save as draft — button",
+			"name": "tb_fa_be_save_draft",
+			"type": "text",
+			"default_value": "Uložiť koncept",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_publish_btn",
+			"label": "Publish article — button",
+			"name": "tb_fa_be_publish_btn",
+			"type": "text",
+			"default_value": "Zverejniť článok",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_section_basic",
+			"label": "Basic info — section heading",
+			"name": "tb_fa_be_section_basic",
+			"type": "text",
+			"default_value": "Základné informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_art_title",
+			"label": "Article title — field label",
+			"name": "tb_fa_be_art_title",
+			"type": "text",
+			"default_value": "Názov článku",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_art_title_ph",
+			"label": "Article title — placeholder",
+			"name": "tb_fa_be_art_title_ph",
+			"type": "text",
+			"default_value": "Zadajte názov článku…",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_category",
+			"label": "Category — field label",
+			"name": "tb_fa_be_category",
+			"type": "text",
+			"default_value": "Kategória",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_category_ph",
+			"label": "Category — placeholder",
+			"name": "tb_fa_be_category_ph",
+			"type": "text",
+			"default_value": "— Vyberte kategóriu —",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_pub_date",
+			"label": "Publish date — field label",
+			"name": "tb_fa_be_pub_date",
+			"type": "text",
+			"default_value": "Dátum zverejnenia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_content",
+			"label": "Content — section heading",
+			"name": "tb_fa_be_content",
+			"type": "text",
+			"default_value": "Obsah článku",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_photo",
+			"label": "Cover photo — section heading",
+			"name": "tb_fa_be_photo",
+			"type": "text",
+			"default_value": "Fotografia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_photo_hint",
+			"label": "Cover photo — hint text",
+			"name": "tb_fa_be_photo_hint",
+			"type": "text",
+			"default_value": "Fotografia bude na obálke článku.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_delete_photo",
+			"label": "Delete photo — aria-label",
+			"name": "tb_fa_be_delete_photo",
+			"type": "text",
+			"default_value": "Odstrániť fotografiu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_add_photo",
+			"label": "Add photo — button",
+			"name": "tb_fa_be_add_photo",
+			"type": "text",
+			"default_value": "Pridať fotografiu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_toast_draft",
+			"label": "Toast — saved as draft",
+			"name": "tb_fa_be_toast_draft",
+			"type": "text",
+			"default_value": "Uložené ako koncept",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_toast_published",
+			"label": "Toast — article published",
+			"name": "tb_fa_be_toast_published",
+			"type": "text",
+			"default_value": "Článok bol zverejnený",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_banner",
+			"label": "Error banner text",
+			"name": "tb_fa_be_err_banner",
+			"type": "text",
+			"default_value": "Prosím, opravte chyby pred odoslaním.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_field_required",
+			"label": "Error — field required (input placeholder)",
+			"name": "tb_fa_be_err_field_required",
+			"type": "text",
+			"default_value": "Toto pole je povinné",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_title",
+			"label": "Error — title required",
+			"name": "tb_fa_be_err_title",
+			"type": "text",
+			"default_value": "Prosím, zadajte názov článku.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_category",
+			"label": "Error — category required",
+			"name": "tb_fa_be_err_category",
+			"type": "text",
+			"default_value": "Toto pole je povinné.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_content",
+			"label": "Error — content too short",
+			"name": "tb_fa_be_err_content",
+			"type": "text",
+			"default_value": "Článok je príliš krátky (minimálne 500 znakov).",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_be_err_photo",
+			"label": "Error — photo required",
+			"name": "tb_fa_be_err_photo",
+			"type": "text",
+			"default_value": "Fotografia je povinná.",
+			"required": 0
+		},
+
+		{
+			"key": "field_tb_fa_tab_modals",
+			"label": "Modals",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_fa_mdl_text",
+			"label": "Decline advert modal — body text",
+			"name": "tb_fa_mdl_text",
+			"type": "text",
+			"default_value": "Naozaj chcete zamietnuť tento inzerát?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdl_cancel",
+			"label": "Decline advert modal — cancel button",
+			"name": "tb_fa_mdl_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdl_confirm",
+			"label": "Decline advert modal — confirm button",
+			"name": "tb_fa_mdl_confirm",
+			"type": "text",
+			"default_value": "Zamietnuť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdd_title",
+			"label": "Delete advert modal — title (%s = listing title)",
+			"name": "tb_fa_mdd_title",
+			"type": "text",
+			"default_value": "Odstrániť inzerát „%s“?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdd_text",
+			"label": "Delete advert modal — body text",
+			"name": "tb_fa_mdd_text",
+			"type": "textarea",
+			"rows": 2,
+			"default_value": "Inzerát bude presunutý do koša. Obnoviť ho môžete cez WordPress admin.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdd_cancel",
+			"label": "Delete advert modal — cancel button",
+			"name": "tb_fa_mdd_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdd_confirm",
+			"label": "Delete advert modal — confirm button",
+			"name": "tb_fa_mdd_confirm",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbl_text",
+			"label": "Block user modal — body text",
+			"name": "tb_fa_mbl_text",
+			"type": "text",
+			"default_value": "Naozaj chcete zablokovať tohto používateľa?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbl_cancel",
+			"label": "Block user modal — cancel button",
+			"name": "tb_fa_mbl_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mbl_confirm",
+			"label": "Block user modal — confirm button",
+			"name": "tb_fa_mbl_confirm",
+			"type": "text",
+			"default_value": "Zablokovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdc_text",
+			"label": "Delete city modal — body text (%s = city name)",
+			"name": "tb_fa_mdc_text",
+			"type": "text",
+			"default_value": "Naozaj chcete odstrániť mesto „%s“?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdc_cancel",
+			"label": "Delete city modal — cancel button",
+			"name": "tb_fa_mdc_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdc_confirm",
+			"label": "Delete city modal — confirm button",
+			"name": "tb_fa_mdc_confirm",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdk_text",
+			"label": "Delete category modal — body text (%s = category name)",
+			"name": "tb_fa_mdk_text",
+			"type": "text",
+			"default_value": "Naozaj chcete odstrániť kategóriu „%s“?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdk_cancel",
+			"label": "Delete category modal — cancel button",
+			"name": "tb_fa_mdk_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdk_confirm",
+			"label": "Delete category modal — confirm button",
+			"name": "tb_fa_mdk_confirm",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdp_title",
+			"label": "Delete post modal — title",
+			"name": "tb_fa_mdp_title",
+			"type": "text",
+			"default_value": "Odstrániť článok?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdp_text",
+			"label": "Delete post modal — body text (%s = article title)",
+			"name": "tb_fa_mdp_text",
+			"type": "text",
+			"default_value": "Naozaj chcete odstrániť článok „%s“?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdp_cancel",
+			"label": "Delete post modal — cancel button",
+			"name": "tb_fa_mdp_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_fa_mdp_confirm",
+			"label": "Delete post modal — confirm button",
+			"name": "tb_fa_mdp_confirm",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-front-admin"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}

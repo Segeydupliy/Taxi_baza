@@ -1,0 +1,283 @@
+{
+    "key": "group_tb_contact_page",
+    "title": "Contact page — strings",
+    "fields": [
+        {
+            "key": "field_tb_cp_title",
+            "label": "Page heading",
+            "name": "tb_cp_title",
+            "type": "text",
+            "default_value": "Kontakty",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_subtitle",
+            "label": "Subtitle",
+            "name": "tb_cp_subtitle",
+            "type": "text",
+            "default_value": "Kontaktujte nás",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_tg_label",
+            "label": "Telegram block — badge label",
+            "name": "tb_cp_tg_label",
+            "type": "text",
+            "default_value": "Telegram komunita",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_tg_text",
+            "label": "Telegram block — body text",
+            "name": "tb_cp_tg_text",
+            "type": "wysiwyg",
+            "instructions": "You can embed a community link directly in the text.",
+            "tabs": "visual",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "default_value": "<p>Rýchlu podporu a odpovede na všetky otázky nájdete v našej <a href=\"https://t.me/taxibaza_sk\" target=\"_blank\" rel=\"noopener noreferrer\">Telegram komunite</a>.</p>",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_tab_form",
+            "label": "Form",
+            "name": "",
+            "type": "tab",
+            "placement": "top",
+            "endpoint": 0,
+            "wpml_cf_preferences": 1
+        },
+        {
+            "key": "field_tb_cp_form_required_note",
+            "label": "Required fields — note",
+            "name": "tb_cp_form_required_note",
+            "type": "text",
+            "default_value": "Povinné polia na vyplnenie",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_first_name_label",
+            "label": "First name — label",
+            "name": "tb_cp_form_first_name_label",
+            "type": "text",
+            "default_value": "Meno",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_first_name_err_ph",
+            "label": "First name — error placeholder",
+            "name": "tb_cp_form_first_name_err_ph",
+            "type": "text",
+            "default_value": "Toto pole je povinné",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_first_name_err_msg",
+            "label": "First name — error message",
+            "name": "tb_cp_form_first_name_err_msg",
+            "type": "text",
+            "default_value": "Zadajte prosím svoje meno",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_last_name_label",
+            "label": "Last name — label",
+            "name": "tb_cp_form_last_name_label",
+            "type": "text",
+            "default_value": "Priezvisko",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_last_name_err_msg",
+            "label": "Last name — error message",
+            "name": "tb_cp_form_last_name_err_msg",
+            "type": "text",
+            "default_value": "Zadajte prosím svoje priezvisko",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_email_err_ph",
+            "label": "Email — error placeholder",
+            "name": "tb_cp_form_email_err_ph",
+            "type": "text",
+            "default_value": "Toto pole je povinné",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_email_err_msg",
+            "label": "Email — error message",
+            "name": "tb_cp_form_email_err_msg",
+            "type": "text",
+            "default_value": "Zadajte prosím platnú e-mailovú adresu",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_phone_label",
+            "label": "Phone — label",
+            "name": "tb_cp_form_phone_label",
+            "type": "text",
+            "default_value": "Telefón",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_phone_err_ph",
+            "label": "Phone — error placeholder",
+            "name": "tb_cp_form_phone_err_ph",
+            "type": "text",
+            "default_value": "Toto pole je povinné",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_phone_err_msg",
+            "label": "Phone — error message",
+            "name": "tb_cp_form_phone_err_msg",
+            "type": "text",
+            "default_value": "Zadajte prosím svoje telefónne číslo",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_user_type_label",
+            "label": "Who are you — label",
+            "name": "tb_cp_form_user_type_label",
+            "type": "text",
+            "default_value": "Kto ste?",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_user_type_select_ph",
+            "label": "Who are you — placeholder",
+            "name": "tb_cp_form_user_type_select_ph",
+            "type": "text",
+            "default_value": "Vyberte prosím",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_type_driver",
+            "label": "Type: Driver",
+            "name": "tb_cp_form_type_driver",
+            "type": "text",
+            "default_value": "Vodič",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_type_owner",
+            "label": "Type: Car owner",
+            "name": "tb_cp_form_type_owner",
+            "type": "text",
+            "default_value": "Vlastník auta",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_type_fleet",
+            "label": "Type: Fleet",
+            "name": "tb_cp_form_type_fleet",
+            "type": "text",
+            "default_value": "Flotila",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_type_other",
+            "label": "Type: Other",
+            "name": "tb_cp_form_type_other",
+            "type": "text",
+            "default_value": "Iné",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_user_type_err",
+            "label": "Who are you — error message",
+            "name": "tb_cp_form_user_type_err",
+            "type": "text",
+            "default_value": "Vyberte prosím typ",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_message_label",
+            "label": "Message — label",
+            "name": "tb_cp_form_message_label",
+            "type": "text",
+            "default_value": "Správa",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_message_err_ph",
+            "label": "Message — error placeholder",
+            "name": "tb_cp_form_message_err_ph",
+            "type": "text",
+            "default_value": "Toto pole je povinné",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_message_err_msg",
+            "label": "Message — error message",
+            "name": "tb_cp_form_message_err_msg",
+            "type": "text",
+            "default_value": "Napíšte prosím svoju správu",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_consent",
+            "label": "Consent text (%1$s = privacy link, %2$s = terms link)",
+            "name": "tb_cp_form_consent",
+            "type": "textarea",
+            "instructions": "Use %1$s for the Privacy Policy link and %2$s for the Terms of Use link.",
+            "default_value": "Odoslaním správy súhlasíte s %1$s a %2$s. Na zlepšenie stránky používame súbory cookie.",
+            "rows": 3,
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_privacy_link",
+            "label": "Privacy policy — link text",
+            "name": "tb_cp_form_privacy_link",
+            "type": "text",
+            "default_value": "Zásadami ochrany osobných údajov",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_terms_link",
+            "label": "Terms of use — link text",
+            "name": "tb_cp_form_terms_link",
+            "type": "text",
+            "default_value": "Podmienkami používania",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_error_banner",
+            "label": "Error banner (above button)",
+            "name": "tb_cp_form_error_banner",
+            "type": "text",
+            "default_value": "Opravte prosím chyby pred odoslaním",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_cp_form_submit",
+            "label": "Submit — button",
+            "name": "tb_cp_form_submit",
+            "type": "text",
+            "default_value": "Odoslať",
+            "wpml_cf_preferences": 2
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "15"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content"
+    ],
+    "active": true,
+    "description": "Content for /kontakt/ page. Email is taken from Site Options.",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1789741697
+}

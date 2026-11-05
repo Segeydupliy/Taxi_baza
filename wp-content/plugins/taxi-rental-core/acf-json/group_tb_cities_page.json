@@ -1,0 +1,84 @@
+{
+    "key": "group_tb_cities_page",
+    "title": "Cities page — strings",
+    "fields": [
+        {
+            "key": "field_tb_mp_label",
+            "label": "Badge label",
+            "name": "tb_mp_label",
+            "type": "text",
+            "default_value": "Kde hľadať auto",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_title",
+            "label": "Page title",
+            "name": "tb_mp_title",
+            "type": "text",
+            "default_value": "Mestá",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_sub",
+            "label": "Subtitle",
+            "name": "tb_mp_sub",
+            "type": "text",
+            "default_value": "Vyberte mesto, kde chcete pracovať v taxislužbe",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_cta_label",
+            "label": "CTA — badge label",
+            "name": "tb_mp_cta_label",
+            "type": "text",
+            "default_value": "Telegram",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_cta_title",
+            "label": "CTA — title",
+            "name": "tb_mp_cta_title",
+            "type": "text",
+            "default_value": "Nové inzeráty vo vašom meste",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_cta_sub",
+            "label": "CTA — subtitle",
+            "name": "tb_mp_cta_sub",
+            "type": "text",
+            "default_value": "Prihláste sa na odber — dostávajte nové autá ako prví",
+            "wpml_cf_preferences": 2
+        },
+        {
+            "key": "field_tb_mp_cta_button",
+            "label": "CTA — button text",
+            "name": "tb_mp_cta_button",
+            "type": "text",
+            "default_value": "Prihlásiť sa v Telegram",
+            "wpml_cf_preferences": 2
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "13"
+            }
+        ]
+    ],
+    "menu_order": 4,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content"
+    ],
+    "active": true,
+    "description": "Content for /mista/ page.",
+    "show_in_rest": 0,
+    "acfml_field_group_mode": "translation",
+    "modified": 1789741697
+}

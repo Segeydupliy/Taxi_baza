@@ -1,0 +1,658 @@
+{
+	"key": "group_tb_cabinet",
+	"title": "Cabinet — strings",
+	"fields": [
+		{
+			"key": "field_tb_cab_tab_general",
+			"label": "General",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_toast_submitted",
+			"label": "Toast — listing submitted",
+			"name": "tb_cab_toast_submitted",
+			"type": "text",
+			"default_value": "Odoslané na moderáciu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_toast_draft",
+			"label": "Toast — saved as draft",
+			"name": "tb_cab_toast_draft",
+			"type": "text",
+			"default_value": "Uložené ako koncept",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_toast_updated",
+			"label": "Toast — changes saved",
+			"name": "tb_cab_toast_updated",
+			"type": "text",
+			"default_value": "Zmeny uložené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_greeting",
+			"label": "Greeting (use %s for username)",
+			"name": "tb_cab_greeting",
+			"type": "text",
+			"instructions": "Use %s where the user's name should appear.",
+			"default_value": "Vitajte %s",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_stats",
+			"label": "Stats line (use %1$d, %2$d, %3$d)",
+			"name": "tb_cab_stats",
+			"type": "text",
+			"instructions": "Use %1$d for published, %2$d for pending, %3$d for drafts.",
+			"default_value": "Máte %1$d zverejnených inzerátov, %2$d v moderácii, %3$d konceptov.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_add_listing_btn",
+			"label": "Add listing — button",
+			"name": "tb_cab_add_listing_btn",
+			"type": "text",
+			"default_value": "Pridať inzerát",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_nav",
+			"label": "Navigation",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_nav_listings",
+			"label": "Nav: My listings",
+			"name": "tb_cab_nav_listings",
+			"type": "text",
+			"default_value": "Moje inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_nav_messages",
+			"label": "Nav: Messages",
+			"name": "tb_cab_nav_messages",
+			"type": "text",
+			"default_value": "Správy",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_nav_profile",
+			"label": "Nav: My profile",
+			"name": "tb_cab_nav_profile",
+			"type": "text",
+			"default_value": "Môj profil",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_nav_settings",
+			"label": "Nav: Settings",
+			"name": "tb_cab_nav_settings",
+			"type": "text",
+			"default_value": "Nastavenia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_filters",
+			"label": "Filters / Search",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_filter_all",
+			"label": "All — filter pill",
+			"name": "tb_cab_filter_all",
+			"type": "text",
+			"default_value": "Všetky",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_filter_publish",
+			"label": "Published — filter pill",
+			"name": "tb_cab_filter_publish",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_filter_draft",
+			"label": "Drafts — filter pill",
+			"name": "tb_cab_filter_draft",
+			"type": "text",
+			"default_value": "Koncepty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_filter_pending",
+			"label": "Pending — filter pill",
+			"name": "tb_cab_filter_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_filter_rejected",
+			"label": "Rejected — filter pill",
+			"name": "tb_cab_filter_rejected",
+			"type": "text",
+			"default_value": "Zamietnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_filter_archived",
+			"label": "Archived — filter pill",
+			"name": "tb_cab_filter_archived",
+			"type": "text",
+			"default_value": "Archivované",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_search_label",
+			"label": "Search — label",
+			"name": "tb_cab_search_label",
+			"type": "text",
+			"default_value": "Hľadať inzeráty",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_search_ph",
+			"label": "Search — placeholder",
+			"name": "tb_cab_search_ph",
+			"type": "text",
+			"default_value": "Hľadať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_load_more",
+			"label": "Load more — button",
+			"name": "tb_cab_load_more",
+			"type": "text",
+			"default_value": "Načítať viac",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_empty",
+			"label": "Empty state",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_empty_title",
+			"label": "Empty state — title",
+			"name": "tb_cab_empty_title",
+			"type": "text",
+			"default_value": "Váš zoznam inzerátov je prázdny",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_empty_desc",
+			"label": "Empty state — description",
+			"name": "tb_cab_empty_desc",
+			"type": "textarea",
+			"default_value": "Zatiaľ ste nevytvorili žiadny inzerát. Teraz je ideálny čas to zmeniť.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_cab_tab_card",
+			"label": "Card-listing",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_status_publish",
+			"label": "Status: Published",
+			"name": "tb_cab_status_publish",
+			"type": "text",
+			"default_value": "Zverejnené",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_status_pending",
+			"label": "Status: Pending",
+			"name": "tb_cab_status_pending",
+			"type": "text",
+			"default_value": "V moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_status_draft",
+			"label": "Status: Draft",
+			"name": "tb_cab_status_draft",
+			"type": "text",
+			"default_value": "Koncept",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_status_rejected",
+			"label": "Status: Rejected",
+			"name": "tb_cab_status_rejected",
+			"type": "text",
+			"default_value": "Zamietnuté",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_status_archived",
+			"label": "Status: Archived",
+			"name": "tb_cab_status_archived",
+			"type": "text",
+			"default_value": "Archivované",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_archive_confirm",
+			"label": "Archive confirm — dialog",
+			"name": "tb_cab_archive_confirm",
+			"type": "text",
+			"default_value": "Archivovať tento inzerát?",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_archive_btn",
+			"label": "Archive — button",
+			"name": "tb_cab_archive_btn",
+			"type": "text",
+			"default_value": "Archivovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_restore_btn",
+			"label": "Restore — button",
+			"name": "tb_cab_restore_btn",
+			"type": "text",
+			"default_value": "Obnoviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_edit_btn",
+			"label": "Edit — button",
+			"name": "tb_cab_edit_btn",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_profile",
+			"label": "Profile",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_profile_photo_title",
+			"label": "Profile photo — card title",
+			"name": "tb_cab_profile_photo_title",
+			"type": "text",
+			"default_value": "Profilová fotografia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_upload_btn",
+			"label": "Upload new photo — button",
+			"name": "tb_cab_profile_upload_btn",
+			"type": "text",
+			"default_value": "Nahrať nové",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_delete_photo",
+			"label": "Delete photo — button",
+			"name": "tb_cab_profile_delete_photo",
+			"type": "text",
+			"default_value": "Odstrániť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_info_title",
+			"label": "Basic info — section heading",
+			"name": "tb_cab_profile_info_title",
+			"type": "text",
+			"default_value": "Základné informácie",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_edit_btn",
+			"label": "Edit profile — button",
+			"name": "tb_cab_profile_edit_btn",
+			"type": "text",
+			"default_value": "Upraviť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_first_name",
+			"label": "First name — field label",
+			"name": "tb_cab_profile_first_name",
+			"type": "text",
+			"default_value": "Meno",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_last_name",
+			"label": "Last name — field label",
+			"name": "tb_cab_profile_last_name",
+			"type": "text",
+			"default_value": "Priezvisko",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_phone",
+			"label": "Phone — field label",
+			"name": "tb_cab_profile_phone",
+			"type": "text",
+			"default_value": "Telefón",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_city",
+			"label": "City — field label",
+			"name": "tb_cab_profile_city",
+			"type": "text",
+			"default_value": "Mesto",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_account_type",
+			"label": "Account type — field label",
+			"name": "tb_cab_profile_account_type",
+			"type": "text",
+			"default_value": "Typ účtu",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_type_owner",
+			"label": "Account type: Individual owner",
+			"name": "tb_cab_profile_type_owner",
+			"type": "text",
+			"default_value": "Fyzická osoba",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_type_fleet",
+			"label": "Account type: Fleet / company",
+			"name": "tb_cab_profile_type_fleet",
+			"type": "text",
+			"default_value": "Flotila / spoločnosť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_telegram",
+			"label": "Telegram — field label",
+			"name": "tb_cab_profile_telegram",
+			"type": "text",
+			"default_value": "Telegram",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_about",
+			"label": "About — field label",
+			"name": "tb_cab_profile_about",
+			"type": "text",
+			"default_value": "Krátky popis",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_save",
+			"label": "Save — button",
+			"name": "tb_cab_profile_save",
+			"type": "text",
+			"default_value": "Uložiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_cancel",
+			"label": "Cancel — button",
+			"name": "tb_cab_profile_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_error",
+			"label": "Profile error — message",
+			"name": "tb_cab_profile_error",
+			"type": "text",
+			"default_value": "Skontrolujte meno a e-mail — polia sú povinné.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_profile_email_taken",
+			"label": "Email taken — error",
+			"name": "tb_cab_profile_email_taken",
+			"type": "text",
+			"default_value": "Tento e-mail je už použitý iným účtom.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_delete",
+			"label": "Delete account",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_delete_account_btn",
+			"label": "Delete account — button",
+			"name": "tb_cab_delete_account_btn",
+			"type": "text",
+			"default_value": "Vymazať účet",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_delete_modal_title",
+			"label": "Modal — title",
+			"name": "tb_cab_delete_modal_title",
+			"type": "text",
+			"default_value": "Naozaj chcete vymazať účet",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_delete_modal_close",
+			"label": "Modal — close button",
+			"name": "tb_cab_delete_modal_close",
+			"type": "text",
+			"default_value": "Zavrieť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_delete_modal_desc",
+			"label": "Modal — description",
+			"name": "tb_cab_delete_modal_desc",
+			"type": "textarea",
+			"default_value": "Ste si istý? Majitelia áut na TaxiBaza.sk zarábajú až 600 € týždenne z jedného auta — po vymazaní účtu prijdete o všetky inzeráty, príjem aj nazbieranú históriu. Túto akciu nie je možné vrátiť späť.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_cab_delete_confirm",
+			"label": "Confirm deletion — button",
+			"name": "tb_cab_delete_confirm",
+			"type": "text",
+			"default_value": "Vymazať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_delete_cancel",
+			"label": "Cancel deletion — button",
+			"name": "tb_cab_delete_cancel",
+			"type": "text",
+			"default_value": "Zrušiť",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_tab_settings",
+			"label": "Settings",
+			"name": "",
+			"type": "tab",
+			"placement": "top"
+		},
+		{
+			"key": "field_tb_cab_settings_pass_title",
+			"label": "Change password — section heading",
+			"name": "tb_cab_settings_pass_title",
+			"type": "text",
+			"default_value": "Zmeniť heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_pass_current_ph",
+			"label": "Current password — placeholder",
+			"name": "tb_cab_settings_pass_current_ph",
+			"type": "text",
+			"default_value": "Aktuálne heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_pass_new_ph",
+			"label": "New password — placeholder",
+			"name": "tb_cab_settings_pass_new_ph",
+			"type": "text",
+			"default_value": "Nové heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_pass_confirm_ph",
+			"label": "Confirm password — placeholder",
+			"name": "tb_cab_settings_pass_confirm_ph",
+			"type": "text",
+			"default_value": "Zopakujte nové heslo",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_pass_update",
+			"label": "Update password — button",
+			"name": "tb_cab_settings_pass_update",
+			"type": "text",
+			"default_value": "Aktualizovať",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_notif_title",
+			"label": "Notifications — section heading",
+			"name": "tb_cab_settings_notif_title",
+			"type": "text",
+			"default_value": "Upozornenia",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_settings_notif_desc",
+			"label": "Notifications — section description",
+			"name": "tb_cab_settings_notif_desc",
+			"type": "textarea",
+			"default_value": "Nastavte upozornenia podľa seba. Vyberajte len to, čo je pre vás skutočne dôležité.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_tb_cab_notif_messages_title",
+			"label": "Message notifications — title",
+			"name": "tb_cab_notif_messages_title",
+			"type": "text",
+			"default_value": "E-mailové upozornenia o správach",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notif_messages_desc",
+			"label": "Message notifications — description",
+			"name": "tb_cab_notif_messages_desc",
+			"type": "text",
+			"default_value": "Dostávajte e-maily zakaždým, keď vám príde nová správa.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notif_moderation_title",
+			"label": "Moderation notifications — title",
+			"name": "tb_cab_notif_moderation_title",
+			"type": "text",
+			"default_value": "Upozornenia o moderácii",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notif_moderation_desc",
+			"label": "Moderation notifications — description",
+			"name": "tb_cab_notif_moderation_desc",
+			"type": "text",
+			"default_value": "Dozviete sa o stave kontroly vášho obsahu tímom moderátorov.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notif_marketing_title",
+			"label": "Marketing emails — title",
+			"name": "tb_cab_notif_marketing_title",
+			"type": "text",
+			"default_value": "Marketingové e-maily",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notif_marketing_desc",
+			"label": "Marketing emails — description",
+			"name": "tb_cab_notif_marketing_desc",
+			"type": "text",
+			"default_value": "Dostávajte novinky, akcie a užitočné tipy od nášho tímu.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notice_pass_changed",
+			"label": "Notice — password updated",
+			"name": "tb_cab_notice_pass_changed",
+			"type": "text",
+			"default_value": "Heslo bolo aktualizované.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notice_pass_wrong",
+			"label": "Notice — wrong password",
+			"name": "tb_cab_notice_pass_wrong",
+			"type": "text",
+			"default_value": "Aktuálne heslo je nesprávne.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notice_pass_short",
+			"label": "Notice — password too short",
+			"name": "tb_cab_notice_pass_short",
+			"type": "text",
+			"default_value": "Nové heslo musí mať aspoň 8 znakov.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notice_pass_mismatch",
+			"label": "Notice — passwords don't match",
+			"name": "tb_cab_notice_pass_mismatch",
+			"type": "text",
+			"default_value": "Heslá sa nezhodujú.",
+			"required": 0
+		},
+		{
+			"key": "field_tb_cab_notice_notif_saved",
+			"label": "Notice — notifications saved",
+			"name": "tb_cab_notice_notif_saved",
+			"type": "text",
+			"default_value": "Nastavenia upozornení boli uložené.",
+			"required": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "options_page",
+				"operator": "==",
+				"value": "tb-cabinet"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"active": true
+}
