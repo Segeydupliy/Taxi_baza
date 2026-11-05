@@ -66,6 +66,12 @@ namespace {
 	function add_query_arg( $k, $v, $u ) { return $u . ( str_contains( $u, '?' ) ? '&' : '?' ) . $k . '=' . $v; }
 	function home_url( $p = '' ) { return 'https://example.test' . $p; }
 
+	function sanitize_text_field( $s ) { return trim( strip_tags( (string) $s ) ); }
+	function sanitize_textarea_field( $s ) { return trim( strip_tags( (string) $s ) ); }
+	function absint( $v ) { return abs( (int) $v ); }
+	function has_action( $h ) { return ! empty( $GLOBALS['__hooks'][ $h ] ); }
+	function wp_update_user( $a ) { $GLOBALS['__updated_user'] = $a; return $a['ID']; }
+
 	// Simulates WP_User::set_role firing set_user_role.
 	function test_set_role( $id, $role ) {
 		$old = $GLOBALS['__users'][ $id ] ?? [];
@@ -205,6 +211,55 @@ namespace TaxiBaza\Fleets\Tests {
 	reset_env(); $GLOBALS['__env']['uid'] = 2;
 	try { Lock::guard_ajax_submit(); $blocked = false; } catch ( \WP_Ajax_Exit $e ) { $blocked = true; }
 	check( 'car owner never locked', ! $blocked );
+
+
+	echo "Profile: sanitize + validate\n";
+	$raw = [ 'name' => '  <b>Gold Fleet</b> s.r.o. ', 'phone' => '+421 902 123 456<script>', 'ico' => '54 123 456x', 'telegram' => '@gold_fleet', 'platforms' => [ 'uber', 'evil' ], 'langs' => [ 'sk', 'uk' ], 'models' => [ 'own', 'fleet' ],
+		'own_pay_type' => 'percent', 'own_fee' => '8,5', 'rent_price' => '210', 'rent_period' => 'week', 'rent_comm_on' => '1', 'rent_comm' => '8', 'rent_dep_on' => '', 'rent_min' => '14', 'rent_min_unit' => 'days',
+		'pay_freq' => 'weekly', 'pay_day' => 'xxx', 'pay_method' => [ 'bank' ], 'perk_fuel' => '1', 'fuel_discount' => '4', 'docs' => [ 'id' ], 'req_age' => '99' ];
+	$p = \TaxiBaza\Fleets\Profile::sanitize( $raw );
+	check( 'html stripped from name', 'Gold Fleet s.r.o.' === $p['name'] );
+	check( 'phone keeps digits/+/spaces only', '+421 902 123 456' === $p['phone'] );
+	check( 'unknown platform dropped', [ 'uber' ] === $p['platforms'] );
+	check( 'decimal comma parsed', '8.5' === $p['own_fee'] );
+	check( 'invalid choice falls back to first allowed', 'mon' === $p['pay_day'] && '18' === $p['req_age'] );
+	check( 'telegram @ stripped', 'gold_fleet' === $p['telegram'] );
+	check( 'valid profile has no errors', [] === \TaxiBaza\Fleets\Profile::validate( $p ) );
+	$bad = \TaxiBaza\Fleets\Profile::validate( array_merge( $p, [ 'name' => 'G', 'own_fee' => '150', 'models' => [ 'own' ], 'docs' => [] ] ) );
+	check( 'errors: name, fee>100, docs', isset( $bad['name'], $bad['own_fee'], $bad['docs'] ) );
+	$bad = \TaxiBaza\Fleets\Profile::validate( array_merge( $p, [ 'models' => [ 'own' ], 'rent_price' => '' ] ) );
+	check( 'rent fields not required without fleet model', ! isset( $bad['rent_price'] ) );
+
+	echo "Profile: moderation flow\n";
+	$GLOBALS['__users'][5] = [ 'car_owner' ];
+	\test_set_role( 5, 'fleet' );
+	check( 'new fleet draft', \TaxiBaza\Fleets\Status::DRAFT === \TaxiBaza\Fleets\Status::get( 5 ) );
+	check( 'submit from draft -> submitted', 'submitted' === \TaxiBaza\Fleets\Profile::submit( 5, $p ) );
+	check( 'status pending after submit', \TaxiBaza\Fleets\Status::PENDING === \TaxiBaza\Fleets\Status::get( 5 ) );
+	check( 'nothing live yet', [] === \TaxiBaza\Fleets\Profile::get_live( 5 ) );
+	check( 'approve', \TaxiBaza\Fleets\Profile::approve( 5 ) );
+	check( 'live = submitted, draft cleared', 'Gold Fleet s.r.o.' === \TaxiBaza\Fleets\Profile::get_live( 5 )['name'] && [] === \TaxiBaza\Fleets\Profile::get_draft( 5 ) );
+	check( 'core meta synced (phone, company_name)', '+421 902 123 456' === get_user_meta( 5, 'phone' ) && 'Gold Fleet s.r.o.' === get_user_meta( 5, 'company_name' ) );
+	check( 'approved fleet visible', ! in_array( 5, \TaxiBaza\Fleets\Status::hidden_authors(), true ) );
+	$p2 = array_merge( $p, [ 'name' => 'Gold Fleet NEW' ] );
+	check( 'edit of approved -> edits', 'edits' === \TaxiBaza\Fleets\Profile::submit( 5, $p2 ) );
+	check( 'still approved & visible during edits', \TaxiBaza\Fleets\Status::APPROVED === \TaxiBaza\Fleets\Status::get( 5 ) && ! in_array( 5, \TaxiBaza\Fleets\Status::hidden_authors(), true ) );
+	check( 'live keeps old name until approval', 'Gold Fleet s.r.o.' === \TaxiBaza\Fleets\Profile::get_live( 5 )['name'] );
+	check( 'pending edits flag set', \TaxiBaza\Fleets\Profile::has_pending_edits( 5 ) );
+	\TaxiBaza\Fleets\Profile::approve( 5 );
+	check( 'after approval live has new name, flag cleared', 'Gold Fleet NEW' === \TaxiBaza\Fleets\Profile::get_live( 5 )['name'] && ! \TaxiBaza\Fleets\Profile::has_pending_edits( 5 ) );
+	\TaxiBaza\Fleets\Profile::submit( 5, array_merge( $p, [ 'name' => 'Rejected name' ] ) );
+	\TaxiBaza\Fleets\Profile::reject_edits( 5 );
+	check( 'rejecting edits keeps live version', 'Gold Fleet NEW' === \TaxiBaza\Fleets\Profile::get_live( 5 )['name'] && [] === \TaxiBaza\Fleets\Profile::get_draft( 5 ) );
+	\TaxiBaza\Fleets\Status::set( 5, \TaxiBaza\Fleets\Status::BLOCKED );
+	check( 'blocked fleet cannot edit profile', ! \TaxiBaza\Fleets\Profile::can_edit( 5 ) );
+
+	echo "I18n\n";
+	check( 'slovak by default', 'Uložiť' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'uk' );
+	check( 'ukrainian when WPML says uk', 'Зберегти' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_translate_single_string', fn( $v, $c = '', $k = '', $l = '' ) => 'save' === $k ? 'Зберегти зміни' : $v, 10, 4 );
+	check( 'WPML override wins', 'Зберегти зміни' === \TaxiBaza\Fleets\t( 'save' ) );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );

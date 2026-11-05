@@ -32,11 +32,11 @@ final class Lock {
 	public static function message( int $user_id ): string {
 		switch ( Status::get( $user_id ) ) {
 			case Status::BLOCKED:
-				return __( 'Профіль флотилії заблоковано. Додавати оголошення неможливо.', 'taxibaza-fleets' );
+				return t( 'lock_blocked' );
 			case Status::REJECTED:
-				return __( 'Профіль флотилії не пройшов модерацію. Зверніться в підтримку.', 'taxibaza-fleets' );
+				return t( 'lock_rejected' );
 			default:
-				return __( 'Спершу заповніть і збережіть профіль флотилії.', 'taxibaza-fleets' );
+				return t( 'lock_draft' );
 		}
 	}
 
