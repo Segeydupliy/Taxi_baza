@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Мій профіль — флотилія (прототип)</title>
+<link rel="stylesheet" href="assets/tbf-cabinet.css">
+<style>/* stub header/footer — in the theme these come from get_header()/get_footer() */
+body{margin:0;font-family:Inter,system-ui,sans-serif}
+.stub-h{height:86px;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between;padding:0 96px;font-weight:800;font-size:24px}
+.stub-f{background:#000;color:#fff;height:300px;margin-top:0;display:grid;place-items:center}
+</style>
+</head>
+<body>
+<div class="stub-h"><span>TaxiBaza.sk</span><span style="font-size:14px;font-weight:600">UA &nbsp; 🔔 &nbsp; ●</span></div>
+
+<main class="tbf-cab" id="tbf-cab">
+ <div class="tbf-wrap">
+  <header class="tbf-head">
+   <div>
+    <h1 class="tbf-title">Вітаємо Gold Fleet s.r.o.</h1>
+    <p class="tbf-lead">У вас 0 опублікованих оголошень.</p>
+   </div>
+   <a class="tbf-btn tbf-btn--lg" href="#" id="tbf-add-listing" aria-disabled="false"><span aria-hidden="true" style="font-size:24px;line-height:1">+</span> Додати оголошення</a>
+  </header>
+
+  <nav class="tbf-tabs" aria-label="Кабінет">
+   <a href="#">Мої оголошення</a><a href="#">Повідомлення</a><a href="#" aria-current="page">Мій профіль</a><a href="#">Налаштування</a>
+  </nav>
+
+  <form class="tbf-grid" id="tbf-profile" novalidate>
+   <aside class="tbf-card">
+    <h2 class="tbf-card__title">Логотип/фото флотилії</h2>
+    <div class="tbf-logo">
+     <div class="tbf-logo__pic" id="tbf-logo-pic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.5"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
+     <div class="tbf-logo__actions">
+      <label class="tbf-btn tbf-btn--dark" style="cursor:pointer">Завантажити нове<input type="file" id="tbf-logo-file" accept="image/jpeg,image/png,image/webp" hidden></label>
+      <button type="button" class="tbf-link" id="tbf-logo-del">Видалити</button>
+     </div>
+    </div>
+   </aside>
+
+   <div class="tbf-main">
+    <!-- Основна інформація -->
+    <section class="tbf-card">
+     <h2 class="tbf-card__title">Основна інформація</h2>
+     <div class="tbf-card__body">
+      <div class="tbf-field"><label class="tbf-label" for="f-name">Назва флотилії/компанії</label><input class="tbf-input" id="f-name" name="name" value="Gold Fleet s.r.o." required></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-email">Email</label><input class="tbf-input" id="f-email" name="email" value="goldfleet.s.r.o@info.com" readonly></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-phone">Телефон</label><input class="tbf-input" id="f-phone" name="phone" inputmode="tel" value="+421 902 123 456" placeholder="+421 XXX XXX XXX" pattern="\+421[\d\s]{9,12}"></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-type">Тип користувача</label><select class="tbf-select" id="f-type" disabled><option>Флотилія/Компанія</option></select></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-ico">Номер IČO</label><input class="tbf-input" id="f-ico" name="ico" inputmode="numeric" value="54 123 456"></div>
+      <div class="tbf-field" data-group="platforms">
+       <span class="tbf-label">Платформи<span class="tbf-req">*</span></span>
+       <div class="tbf-checks">
+        <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="platforms[]" value="uber" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Uber</span></label>
+        <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="platforms[]" value="bolt" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Bolt</span></label>
+        <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="platforms[]" value="hopin" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Hopin</span></label>
+       </div>
+       <p class="tbf-error" hidden>Оберіть хоча б одну платформу.</p>
+      </div>
+      <div class="tbf-field"><label class="tbf-label" for="f-tg">Телеграм</label><input class="tbf-input" id="f-tg" name="telegram" value="gold_fleet_s.r.o." placeholder="Username без @"></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-wa">WhatsApp</label><input class="tbf-input" id="f-wa" name="whatsapp" value="gold_fleet_s.r.o."></div>
+      <div class="tbf-field"><label class="tbf-label" for="f-desc">Короткий опис</label><textarea class="tbf-textarea" id="f-desc" name="description">Надійна флотилія з чесними умовами для нових і досвідчених водіїв. Працюємо в Братиславі та Трнаві з 2019 року — допоможемо з реєстрацією на платформах, концесією і першими поїздками.</textarea></div>
+      <div class="tbf-field" data-group="langs">
+       <span class="tbf-label">Мови спілкування<span class="tbf-req">*</span></span>
+       <div class="tbf-checks">
+        <label class="tbf-check"><input type="checkbox" name="langs[]" value="sk" checked><span class="tbf-check__box"></span>Словацька</label>
+        <label class="tbf-check"><input type="checkbox" name="langs[]" value="uk" checked><span class="tbf-check__box"></span>Українська</label>
+        <label class="tbf-check"><input type="checkbox" name="langs[]" value="cs"><span class="tbf-check__box"></span>Чеська</label>
+        <label class="tbf-check"><input type="checkbox" name="langs[]" value="en" checked><span class="tbf-check__box"></span>Англійська</label>
+        <label class="tbf-check"><input type="checkbox" name="langs[]" value="ru"><span class="tbf-check__box"></span>Російська</label>
+       </div>
+       <p class="tbf-error" hidden>Оберіть хоча б одну мову.</p>
+      </div>
+     </div>
+    </section>
+
+    <!-- Моделі співпраці -->
+    <section class="tbf-card">
+     <h2 class="tbf-card__title">Моделі співпраці</h2>
+     <p class="tbf-card__sub">Що ви пропонуєте водіям? Можна обрати обидва варіанти.</p>
+     <div class="tbf-card__body" data-group="models">
+      <label class="tbf-switch"><input type="checkbox" name="models[]" value="own" id="m-own" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__text"><span class="tbf-switch__name">Водії з власним авто</span><span class="tbf-switch__hint">Водій працює на своєму авто, флотилія бере комісію.</span></span></label>
+      <label class="tbf-switch"><input type="checkbox" name="models[]" value="fleet" id="m-fleet" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__text"><span class="tbf-switch__name">Оренда авто флотилії</span><span class="tbf-switch__hint">Водій бере ваше авто в оренду.</span></span></label>
+      <p class="tbf-error" hidden>Оберіть хоча б одну модель співпраці.</p>
+     </div>
+    </section>
+
+    <!-- Водії з власним авто -->
+    <section class="tbf-card" data-show-if="m-own">
+     <h2 class="tbf-card__title">Водії з власним авто</h2>
+     <p class="tbf-card__sub">Скільки флотилія бере з водія, який працює на своєму авто.</p>
+     <div class="tbf-card__body">
+      <div class="tbf-row">
+       <div class="tbf-field"><label class="tbf-label" for="o-pay">Як ви берете оплату<span class="tbf-req">*</span></label>
+        <select class="tbf-select" id="o-pay" name="own_pay_type"><option value="percent" selected>% з виручки</option><option value="fixed">Фіксована сума за тиждень</option><option value="after">Після вирахування комісії платформи</option></select></div>
+       <div class="tbf-field"><label class="tbf-label" for="o-fee" id="o-fee-l">Комісія флотилії (%)<span class="tbf-req">*</span></label><input class="tbf-input" id="o-fee" name="own_fee" inputmode="decimal" value="8" required></div>
+      </div>
+      <div class="tbf-field" id="o-base-f"><label class="tbf-label" for="o-base">Від чого рахується комісія</label>
+       <select class="tbf-select" id="o-base" name="own_fee_base"><option selected>Від загальної виручки</option><option>Після вирахування комісії платформи</option></select></div>
+     </div>
+    </section>
+
+    <!-- Оренда авто флотилії -->
+    <section class="tbf-card" data-show-if="m-fleet">
+     <h2 class="tbf-card__title">Оренда авто флотилії</h2>
+     <p class="tbf-card__sub">Загальні умови оренди. Точну ціну кожного авто вкажете в його картці.</p>
+     <div class="tbf-card__body">
+      <div class="tbf-row">
+       <div class="tbf-field"><label class="tbf-label" for="r-price">Ціна оренди від (€)<span class="tbf-req">*</span></label><input class="tbf-input" id="r-price" name="rent_price" inputmode="decimal" value="210" required></div>
+       <div class="tbf-field"><label class="tbf-label" for="r-period">Період</label><select class="tbf-select" id="r-period" name="rent_period"><option value="day">За день</option><option value="week" selected>За тиждень</option></select></div>
+      </div>
+      <label class="tbf-switch tbf-switch--center"><input type="checkbox" id="r-comm-on" name="rent_comm_on" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Комісія з виручки додатково до оренди</span></label>
+      <div class="tbf-row" data-show-if="r-comm-on"><div class="tbf-field"><label class="tbf-label" for="r-comm">Комісія з виручки (%)<span class="tbf-req">*</span></label><input class="tbf-input" id="r-comm" name="rent_comm" inputmode="decimal" value="8"></div></div>
+      <label class="tbf-switch tbf-switch--center"><input type="checkbox" id="r-dep-on" name="rent_dep_on" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Беремо депозит</span></label>
+      <div class="tbf-row" data-show-if="r-dep-on">
+       <div class="tbf-field"><label class="tbf-label" for="r-dep">Депозит (€)<span class="tbf-req">*</span></label><input class="tbf-input" id="r-dep" name="rent_dep" inputmode="decimal" value="200"></div>
+       <div class="tbf-field"><label class="tbf-label" for="r-dep-ret">Коли повертаєте</label><select class="tbf-select" id="r-dep-ret" name="rent_dep_return"><option selected>Під час здачі авто</option><option>Через 7 днів після здачі авто</option><option>Через 14 днів після здачі авто</option></select></div>
+      </div>
+      <div class="tbf-row">
+       <div class="tbf-field"><label class="tbf-label" for="r-min">Мінімальний термін оренди<span class="tbf-req">*</span></label>
+        <div class="tbf-inline tbf-inline--min"><input class="tbf-input" id="r-min" name="rent_min" inputmode="numeric" value="14"><select class="tbf-select" name="rent_min_unit" aria-label="Одиниця"><option>днів</option><option>тижнів</option><option>місяців</option></select></div></div>
+       <div class="tbf-field"><label class="tbf-label" for="r-ext">Далі продовження</label><select class="tbf-select" id="r-ext" name="rent_ext"><option selected>Щотижня</option><option>Щодня</option><option>Щомісяця</option></select></div>
+      </div>
+      <div class="tbf-card__body" style="margin:0;gap:16px">
+       <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="inc[]" value="insurance" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Страховка включена</span></label>
+       <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="inc[]" value="service" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Сервіс і ТО включено</span></label>
+       <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="inc[]" value="tires"><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Шини включено</span></label>
+       <label class="tbf-switch tbf-switch--center"><input type="checkbox" name="inc[]" value="wash"><span class="tbf-switch__ui"></span><span class="tbf-switch__name">Мийка включена</span></label>
+      </div>
+     </div>
+    </section>
+
+    <!-- Виплати водіям -->
+    <section class="tbf-card">
+     <h2 class="tbf-card__title">Виплати водіям</h2>
+     <p class="tbf-card__sub">Однаково для всіх водіїв флотилії.</p>
+     <div class="tbf-card__body">
+      <div class="tbf-row">
+       <div class="tbf-field"><label class="tbf-label" for="p-freq">Як часто<span class="tbf-req">*</span></label><select class="tbf-select" id="p-freq" name="pay_freq"><option value="daily">Щодня</option><option value="weekly" selected>Щотижня</option><option value="biweekly">Раз на 2 тижні</option><option value="monthly">Щомісяця</option></select></div>
+       <div class="tbf-field" id="p-day-f"><label class="tbf-label" for="p-day">День виплати</label><select class="tbf-select" id="p-day" name="pay_day"><option selected>Понеділок</option><option>Вівторок</option><option>Середа</option><option>Четвер</option><option>П’ятниця</option><option>Субота</option><option>Неділя</option></select></div>
+      </div>
+      <div class="tbf-field" data-group="paymethod"><span class="tbf-label">Спосіб виплати<span class="tbf-req">*</span></span>
+       <div class="tbf-checks"><label class="tbf-check"><input type="checkbox" name="pay_method[]" value="bank" checked><span class="tbf-check__box"></span>На банківський рахунок</label><label class="tbf-check"><input type="checkbox" name="pay_method[]" value="cash"><span class="tbf-check__box"></span>Готівкою</label></div>
+       <p class="tbf-error" hidden>Оберіть хоча б один спосіб виплати.</p></div>
+     </div>
+    </section>
+
+    <!-- Переваги -->
+    <section class="tbf-card">
+     <h2 class="tbf-card__title">Переваги для водіїв</h2>
+     <p class="tbf-card__sub">Увімкніть те, що пропонуєте. Вимкнене водії не побачать.</p>
+     <div class="tbf-card__body">
+      <div class="tbf-perk">
+       <label class="tbf-switch tbf-switch--right tbf-switch--center"><input type="checkbox" id="k-fuel" name="perk_fuel" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__text"><span class="tbf-switch__name">Паливна картка</span><span class="tbf-switch__hint">Знижка на пальне</span></span></label>
+       <div class="tbf-perk__fields" data-show-if="k-fuel">
+        <div class="tbf-row"><div class="tbf-field"><label class="tbf-label" for="k-fuel-v">Знижка<span class="tbf-req">*</span></label><input class="tbf-input" id="k-fuel-v" name="fuel_discount" inputmode="decimal" value="4"></div>
+         <div class="tbf-field"><label class="tbf-label" for="k-fuel-u">Одиниця</label><select class="tbf-select" id="k-fuel-u" name="fuel_unit"><option selected>Центів за літр</option><option>Відсоток %</option></select></div></div>
+        <div class="tbf-field"><label class="tbf-label" for="k-fuel-n">Мережа АЗС</label><input class="tbf-input" id="k-fuel-n" name="fuel_network" placeholder="Напр. Slovnaft — інакше покажемо «АЗС партнера»"></div>
+        <div class="tbf-field"><span class="tbf-label">Для кого</span><div class="tbf-checks"><label class="tbf-check"><input type="checkbox" name="fuel_for[]" value="own" checked><span class="tbf-check__box"></span>Власне авто</label><label class="tbf-check"><input type="checkbox" name="fuel_for[]" value="fleet"><span class="tbf-check__box"></span>Авто флотилії</label></div></div>
+       </div>
+      </div>
+      <div class="tbf-perk">
+       <label class="tbf-switch tbf-switch--right tbf-switch--center"><input type="checkbox" id="k-svc" name="perk_service" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__text"><span class="tbf-switch__name">Знижки на сервіс</span><span class="tbf-switch__hint">СТО, шини, запчастини</span></span></label>
+       <div class="tbf-perk__fields" data-show-if="k-svc">
+        <div class="tbf-row"><div class="tbf-field"><label class="tbf-label" for="k-svc-v">Знижка (%)<span class="tbf-req">*</span></label><input class="tbf-input" id="k-svc-v" name="svc_discount" inputmode="decimal" value="15"></div>
+         <div class="tbf-field"><label class="tbf-label" for="k-svc-w">Де</label><select class="tbf-select" id="k-svc-w" name="svc_where"><option selected>Партнерське СТО</option><option>СТО флотилії</option></select></div></div>
+        <div class="tbf-field"><span class="tbf-label">На що<span class="tbf-req">*</span></span><div class="tbf-checks"><label class="tbf-check"><input type="checkbox" name="svc_what[]" value="service" checked><span class="tbf-check__box"></span>Сервіс</label><label class="tbf-check"><input type="checkbox" name="svc_what[]" value="tires" checked><span class="tbf-check__box"></span>Шини</label><label class="tbf-check"><input type="checkbox" name="svc_what[]" value="parts"><span class="tbf-check__box"></span>Запчастини</label><label class="tbf-check"><input type="checkbox" name="svc_what[]" value="wash"><span class="tbf-check__box"></span>Мийка</label></div></div>
+        <div class="tbf-field"><span class="tbf-label">Для кого</span><div class="tbf-checks"><label class="tbf-check"><input type="checkbox" name="svc_for[]" value="own" checked><span class="tbf-check__box"></span>Власне авто</label><label class="tbf-check"><input type="checkbox" name="svc_for[]" value="fleet"><span class="tbf-check__box"></span>Авто флотилії</label></div></div>
+       </div>
+      </div>
+      <div class="tbf-perk">
+       <label class="tbf-switch tbf-switch--right tbf-switch--center"><input type="checkbox" id="k-con" name="perk_concession" checked><span class="tbf-switch__ui"></span><span class="tbf-switch__text"><span class="tbf-switch__name">Допомога з концесією</span><span class="tbf-switch__hint">Документи для роботи в таксі</span></span></label>
+       <div class="tbf-perk__fields" data-show-if="k-con">
+        <div class="tbf-field"><label class="tbf-label" for="k-con-w">Що саме робите</label><select class="tbf-select" id="k-con-w" name="con_what"><option selected>Допоможемо зібрати та подати документи</option><option>Оформимо посвідчення водія таксі за вас</option></select></div>
+        <div class="tbf-field"><label class="tbf-label" for="k-con-c">Вартість для водія</label><select class="tbf-select" id="k-con-c" name="con_cost"><option selected>Безкоштовно</option><option>Компенсуємо вартість</option><option>Платно</option></select></div>
+        <div class="tbf-field"><span class="tbf-label">Для кого</span><div class="tbf-checks"><label class="tbf-check"><input type="checkbox" name="con_for[]" value="own" checked><span class="tbf-check__box"></span>Власне авто</label><label class="tbf-check"><input type="checkbox" name="con_for[]" value="fleet"><span class="tbf-check__box"></span>Авто флотилії</label></div></div>
+       </div>
+      </div>
+     </div>
+    </section>
+
+    <!-- Вимоги -->
+    <section class="tbf-card">
+     <h2 class="tbf-card__title">Вимоги до водія</h2>
+     <p class="tbf-card__sub">Однаково для всіх водіїв флотилії.</p>
+     <div class="tbf-card__body">
+      <div class="tbf-row">
+       <div class="tbf-field"><label class="tbf-label" for="q-age">Мінімальний вік<span class="tbf-req">*</span></label><select class="tbf-select" id="q-age" name="req_age"><option>18</option><option selected>21</option><option>25</option><option>30</option></select></div>
+       <div class="tbf-field"><label class="tbf-label" for="q-exp">Водійський стаж</label><select class="tbf-select" id="q-exp" name="req_exp"><option>Без досвіду</option><option>1 рік</option><option selected>2 роки</option><option>3 роки</option><option>5 років</option><option>7 років</option><option>10 років</option></select></div>
+      </div>
+      <div class="tbf-field" data-group="docs"><span class="tbf-label">Обов’язкові документи<span class="tbf-req">*</span></span>
+       <div class="tbf-checks" style="flex-direction:column;gap:12px"><label class="tbf-check"><input type="checkbox" name="docs[]" value="id" checked><span class="tbf-check__box"></span>ID-картка або паспорт</label><label class="tbf-check"><input type="checkbox" name="docs[]" value="license"><span class="tbf-check__box"></span>Посвідчення водія</label><label class="tbf-check"><input type="checkbox" name="docs[]" value="record"><span class="tbf-check__box"></span>Довідка про несудимість</label></div>
+       <p class="tbf-error" hidden>Оберіть хоча б один документ.</p></div>
+     </div>
+    </section>
+   </div>
+  </form>
+
+  <div class="tbf-savebar">
+   <button type="button" class="tbf-btn tbf-btn--ghost tbf-btn--lg" id="tbf-cancel">Скасувати</button>
+   <button type="submit" form="tbf-profile" class="tbf-btn tbf-btn--lg" id="tbf-save">Зберегти</button>
+  </div>
+ </div>
+</main>
+
+<div class="tbf-toast tbf-toast--error" id="tbf-toast-err" role="alert" hidden>Помилка сервера. Спробуйте ще раз.</div>
+<div class="tbf-modal" id="tbf-modal" role="dialog" aria-modal="true" aria-labelledby="tbf-modal-t" hidden>
+ <div class="tbf-modal__box"><h2 class="tbf-modal__title" id="tbf-modal-t">Профіль на модерації</h2>
+ <p class="tbf-modal__text">Перевірка займає до 24 годин. А поки можете додати свої авто — оголошення з’являться в каталозі одразу після схвалення профілю.</p>
+ <button type="button" class="tbf-btn tbf-btn--dark" id="tbf-modal-close">Закрити</button></div>
+</div>
+<div class="stub-f">footer (theme)</div>
+<script src="assets/tbf-cabinet.js"></script>
+</body></html>
