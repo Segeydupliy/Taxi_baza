@@ -148,7 +148,11 @@ final class Notifications {
 
 		// Rejected — always notify, the owner must see the reason.
 		if ( 'rejected' === $new_status ) {
-			$reason = (string) get_post_meta( $post->ID, 'rejection_reason', true );
+			// Core stores the reason as `_rejection_reason`; keep the old key as a fallback.
+			$reason = (string) get_post_meta( $post->ID, '_rejection_reason', true );
+			if ( '' === $reason ) {
+				$reason = (string) get_post_meta( $post->ID, 'rejection_reason', true );
+			}
 
 			[ $subj, $html, $headers ] = self::render(
 				'rejected',
@@ -156,7 +160,7 @@ final class Notifications {
 					'name'     => $owner->display_name,
 					'title'    => $title,
 					'reason'   => $reason ?: __( 'neuvedený', 'taxi-rental' ),
-					'edit_url' => add_query_arg( [ 'action' => 'edit', 'listing_id' => $post->ID ], tb_url( '/cabinet/add-listing/' ) ),
+					'edit_url' => add_query_arg( [ 'post_id' => $post->ID ], tb_url( '/cabinet/add-listing/' ) ),
 				]
 			);
 			wp_mail( $owner->user_email, $subj, $html, $headers );
