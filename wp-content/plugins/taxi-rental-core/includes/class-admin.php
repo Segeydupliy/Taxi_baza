@@ -440,8 +440,9 @@ class Admin {
 		}
 
 		$reason = sanitize_textarea_field( wp_unslash( $_GET['rejection_reason'] ?? '' ) );
-		wp_update_post( [ 'ID' => $post_id, 'post_status' => 'rejected' ] );
+		// Save the reason first: the status change sends the e-mail that includes it.
 		update_post_meta( $post_id, '_rejection_reason', $reason );
+		wp_update_post( [ 'ID' => $post_id, 'post_status' => 'rejected' ] );
 		self::redirect_after_action( 'rejected' );
 	}
 
@@ -749,11 +750,12 @@ class Admin {
 			wp_send_json_error( [ 'message' => __( 'Access denied.', 'taxi-rental' ) ], 403 );
 		}
 		$reason = sanitize_textarea_field( wp_unslash( $_POST['rejection_reason'] ?? '' ) );
+		// Save the reason first: the status change sends the e-mail that includes it.
+		update_post_meta( $post_id, '_rejection_reason', $reason );
 		$result = wp_update_post( [ 'ID' => $post_id, 'post_status' => 'rejected' ] );
 		if ( is_wp_error( $result ) || ! $result ) {
 			wp_send_json_error( [ 'message' => __( 'Update error.', 'taxi-rental' ) ] );
 		}
-		update_post_meta( $post_id, '_rejection_reason', $reason );
 		wp_send_json_success( [ 'message' => __( 'Rejected.', 'taxi-rental' ), 'status' => 'rejected' ] );
 	}
 
