@@ -1,0 +1,211 @@
+<?php
+/**
+ * Dependency-free test runner for taxibaza-fleets logic.
+ * Stubs the small part of the WordPress API the plugin uses.
+ *
+ * Run: php wp-content/plugins/taxibaza-fleets/tests/run.php
+ */
+
+// phpcs:ignoreFile
+
+namespace {
+	define( 'ABSPATH', __DIR__ . '/' );
+
+	// ---- tiny WP stub state ----
+	$GLOBALS['__hooks']   = [];
+	$GLOBALS['__meta']    = [];
+	$GLOBALS['__users']   = []; // id => roles[]
+	$GLOBALS['__options'] = [];
+	$GLOBALS['__env']     = [ 'admin' => false, 'ajax' => false, 'tpl' => '', 'did_wp' => 1, 'uid' => 0, 'caps' => [], 'singular' => null ];
+	$GLOBALS['__ajax_out'] = null;
+
+	class WP_Ajax_Exit extends \Exception {}
+	class WP_Redirect_Exit extends \Exception {}
+
+	function add_action( $h, $cb, $p = 10, $a = 1 ) { $GLOBALS['__hooks'][ $h ][ $p ][] = [ $cb, $a ]; }
+	function add_filter( $h, $cb, $p = 10, $a = 1 ) { add_action( $h, $cb, $p, $a ); }
+	function do_action( $h, ...$args ) {
+		if ( empty( $GLOBALS['__hooks'][ $h ] ) ) { return; }
+		ksort( $GLOBALS['__hooks'][ $h ] );
+		foreach ( $GLOBALS['__hooks'][ $h ] as $list ) { foreach ( $list as [ $cb, $n ] ) { call_user_func_array( $cb, array_slice( $args, 0, max( 1, $n ) ) ); } }
+	}
+	function apply_filters( $h, $v, ...$args ) {
+		if ( empty( $GLOBALS['__hooks'][ $h ] ) ) { return $v; }
+		ksort( $GLOBALS['__hooks'][ $h ] );
+		foreach ( $GLOBALS['__hooks'][ $h ] as $list ) { foreach ( $list as [ $cb, $n ] ) { $v = call_user_func_array( $cb, array_merge( [ $v ], array_slice( $args, 0, max( 0, $n - 1 ) ) ) ); } }
+		return $v;
+	}
+	function did_action( $h ) { return 'wp' === $h ? $GLOBALS['__env']['did_wp'] : 0; }
+	function register_activation_hook( $f, $cb ) {}
+	function __( $s, $d = '' ) { return $s; }
+	function sanitize_key( $s ) { return strtolower( preg_replace( '/[^a-z0-9_\-]/i', '', $s ) ); }
+	function sanitize_html_class( $s ) { return preg_replace( '/[^A-Za-z0-9_-]/', '', $s ); }
+	function wp_unslash( $s ) { return $s; }
+	function get_user_meta( $id, $k, $single = false ) { return $GLOBALS['__meta'][ $id ][ $k ] ?? ''; }
+	function update_user_meta( $id, $k, $v ) { $GLOBALS['__meta'][ $id ][ $k ] = $v; return true; }
+	function delete_user_meta( $id, $k ) { unset( $GLOBALS['__meta'][ $id ][ $k ] ); return true; }
+	function get_option( $k, $d = false ) { return array_key_exists( $k, $GLOBALS['__options'] ) ? $GLOBALS['__options'][ $k ] : $d; }
+	function update_option( $k, $v, $al = null ) { $GLOBALS['__options'][ $k ] = $v; return true; }
+	function get_users( $args ) {
+		$out = [];
+		foreach ( $GLOBALS['__users'] as $id => $roles ) { if ( empty( $args['role'] ) || in_array( $args['role'], $roles, true ) ) { $out[] = (string) $id; } }
+		return $out;
+	}
+	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ] ] : false; }
+	function is_admin() { return $GLOBALS['__env']['admin'] || $GLOBALS['__env']['ajax']; }
+	function wp_doing_ajax() { return $GLOBALS['__env']['ajax']; }
+	function is_page_template( $t ) { return $GLOBALS['__env']['tpl'] === $t; }
+	function get_current_user_id() { return $GLOBALS['__env']['uid']; }
+	function current_user_can( $c ) { return in_array( $c, $GLOBALS['__env']['caps'], true ); }
+	function is_singular( $t = '' ) { return null !== $GLOBALS['__env']['singular']; }
+	function get_queried_object() { return $GLOBALS['__env']['singular']; }
+	function status_header( $c ) { $GLOBALS['__status'] = $c; }
+	function nocache_headers() {}
+	function wp_send_json_error( $d = null, $c = null ) { $GLOBALS['__ajax_out'] = [ 'error', $d, $c ]; throw new WP_Ajax_Exit(); }
+	function wp_safe_redirect( $u ) { $GLOBALS['__redirect'] = $u; throw new WP_Redirect_Exit(); }
+	function add_query_arg( $k, $v, $u ) { return $u . ( str_contains( $u, '?' ) ? '&' : '?' ) . $k . '=' . $v; }
+	function home_url( $p = '' ) { return 'https://example.test' . $p; }
+
+	// Simulates WP_User::set_role firing set_user_role.
+	function test_set_role( $id, $role ) {
+		$old = $GLOBALS['__users'][ $id ] ?? [];
+		$GLOBALS['__users'][ $id ] = [ $role ];
+		do_action( 'set_user_role', $id, $role, $old );
+	}
+
+	class Fake_Query {
+		public array $q; public bool $main; public bool $single;
+		function __construct( array $q, bool $main = false, bool $single = false ) { $this->q = $q; $this->main = $main; $this->single = $single; }
+		function get( $k ) { return $this->q[ $k ] ?? ''; }
+		function set( $k, $v ) { $this->q[ $k ] = $v; }
+		function is_main_query() { return $this->main; }
+		function is_singular() { return $this->single; }
+		function set_404() { $GLOBALS['__is404'] = true; }
+	}
+
+	require dirname( __DIR__ ) . '/taxibaza-fleets.php';
+	do_action( 'plugins_loaded' );
+}
+
+namespace TaxiBaza\Fleets\Tests {
+	use TaxiBaza\Fleets\Status;
+	use TaxiBaza\Fleets\Visibility;
+	use TaxiBaza\Fleets\Lock;
+
+	$fails = 0; $n = 0;
+	function check( string $name, $cond ) { global $fails, $n; $n++; if ( $cond ) { echo "  ok  $name\n"; } else { $fails++; echo "FAIL  $name\n"; } }
+	function reset_env() { $GLOBALS['wp_query'] = new \Fake_Query( [] ); $GLOBALS['__env'] = [ 'admin' => false, 'ajax' => false, 'tpl' => '', 'did_wp' => 1, 'uid' => 0, 'caps' => [], 'singular' => null ]; $_REQUEST = []; $GLOBALS['__is404'] = false; }
+
+	// Fixture: 1 admin, 2 car owner, 3 legacy fleet (before plugin), 4 owner who becomes fleet.
+	$GLOBALS['__users'] = [ 1 => [ 'administrator' ], 2 => [ 'car_owner' ], 3 => [ 'fleet' ], 4 => [ 'car_owner' ] ];
+
+	echo "Activation\n";
+	Status::on_activate();
+	check( 'legacy fleet grandfathered as approved', Status::APPROVED === Status::get( 3 ) );
+	check( 'no hidden authors after activation', [] === Status::hidden_authors() );
+	check( 'car owner has no fleet status', '' === Status::get( 2 ) );
+
+	echo "Role switch (owner -> fleet via cabinet)\n";
+	\test_set_role( 4, 'fleet' );
+	check( 'new fleet gets draft', Status::DRAFT === Status::get( 4 ) );
+	check( 'draft fleet is hidden', [ 4 ] === Status::hidden_authors() );
+	check( 'draft fleet cannot add listings', ! Status::can_add_listings( 4 ) );
+	\test_set_role( 4, 'fleet' ); // core re-posts account_type on every profile save
+	check( 're-applying fleet role keeps status', Status::DRAFT === Status::get( 4 ) );
+
+	echo "Transitions\n";
+	check( 'draft -> approved not allowed', false === Status::set( 4, Status::APPROVED ) );
+	check( 'draft -> pending', Status::set( 4, Status::PENDING ) && Status::PENDING === Status::get( 4 ) );
+	check( 'pending can add listings', Status::can_add_listings( 4 ) );
+	check( 'pending still hidden', in_array( 4, Status::hidden_authors(), true ) );
+	$events = [];
+	add_action( 'tbf_status_changed', function ( $id, $to, $from ) use ( &$events ) { $events[] = "$id:$from>$to"; }, 10, 3 );
+	check( 'pending -> approved', Status::set( 4, Status::APPROVED ) );
+	check( 'approved fleet visible', ! in_array( 4, Status::hidden_authors(), true ) );
+	check( 'status_changed event fired', [ '4:pending>approved' ] === $events );
+	check( 'approved -> blocked', Status::set( 4, Status::BLOCKED ) && in_array( 4, Status::hidden_authors(), true ) );
+	check( 'blocked cannot add listings', ! Status::can_add_listings( 4 ) );
+	check( 'blocked -> approved (unblock)', Status::set( 4, Status::APPROVED ) && ! in_array( 4, Status::hidden_authors(), true ) );
+	check( 'unknown status rejected', false === Status::set( 4, 'foo' ) );
+
+	echo "Leaving fleet role\n";
+	Status::set( 4, Status::BLOCKED );
+	\test_set_role( 4, 'car_owner' );
+	check( 'status cleared', '' === Status::get( 4 ) );
+	check( 'not hidden as car owner', ! in_array( 4, Status::hidden_authors(), true ) );
+	\test_set_role( 4, 'fleet' );
+	check( 'coming back starts from draft', Status::DRAFT === Status::get( 4 ) );
+
+	echo "Visibility: which queries are filtered\n";
+	reset_env();
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( 'catalog query gets author__not_in', [ 4 ] === $q->get( 'author__not_in' ) );
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish', 'author__not_in' => [ 99 ] ] );
+	Visibility::filter_query( $q );
+	check( 'existing author__not_in is merged', [ 99, 4 ] === $q->get( 'author__not_in' ) );
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	$GLOBALS['__options']['tbf_hidden_authors'] = [];
+	Visibility::filter_query( $q );
+	check( 'no hidden fleets: query untouched', '' === $q->get( 'author__not_in' ) );
+	Status::refresh_hidden_authors();
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish', 'author' => 4 ] );
+	Visibility::filter_query( $q );
+	check( 'cabinet (author) query untouched', '' === $q->get( 'author__not_in' ) );
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => [ 'publish', 'pending', 'draft' ] ] );
+	Visibility::filter_query( $q );
+	check( 'multi-status admin list untouched', '' === $q->get( 'author__not_in' ) );
+	$q = new \Fake_Query( [ 'post_type' => 'post', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( 'blog posts untouched', '' === $q->get( 'author__not_in' ) );
+	$GLOBALS['__env']['ajax'] = true; $_REQUEST['action'] = 'tb_filter_listings';
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( 'catalog AJAX filtered', [ 4 ] === $q->get( 'author__not_in' ) );
+	$_REQUEST['action'] = 'tb_fa_filter_listings';
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( '/panel/ AJAX untouched', '' === $q->get( 'author__not_in' ) );
+	reset_env(); $GLOBALS['__env']['admin'] = true;
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( 'wp-admin untouched', '' === $q->get( 'author__not_in' ) );
+	reset_env(); $GLOBALS['__env']['tpl'] = 'page-front-admin.php';
+	$q = new \Fake_Query( [ 'post_type' => 'car_listing', 'post_status' => 'publish' ] );
+	Visibility::filter_query( $q );
+	check( '/panel/ server-rendered tab untouched', '' === $q->get( 'author__not_in' ) );
+
+	echo "Visibility: single listing page\n";
+	reset_env(); $GLOBALS['__env']['singular'] = (object) [ 'post_author' => 4 ];
+	Visibility::guard_single();
+	check( 'guest gets 404 for hidden fleet listing', true === $GLOBALS['__is404'] && 404 === $GLOBALS['__status'] );
+	reset_env(); $GLOBALS['__env']['singular'] = (object) [ 'post_author' => 4 ]; $GLOBALS['__env']['uid'] = 4;
+	Visibility::guard_single();
+	check( 'author can preview own listing', false === $GLOBALS['__is404'] );
+	reset_env(); $GLOBALS['__env']['singular'] = (object) [ 'post_author' => 4 ]; $GLOBALS['__env']['caps'] = [ 'manage_options' ];
+	Visibility::guard_single();
+	check( 'admin can see it', false === $GLOBALS['__is404'] );
+	reset_env(); $GLOBALS['__env']['singular'] = (object) [ 'post_author' => 3 ];
+	Visibility::guard_single();
+	check( 'approved fleet listing visible', false === $GLOBALS['__is404'] );
+	reset_env(); $GLOBALS['__env']['singular'] = (object) [ 'post_author' => 2 ];
+	Visibility::guard_single();
+	check( 'car owner listing visible', false === $GLOBALS['__is404'] );
+
+	echo "Lock\n";
+	reset_env(); $GLOBALS['__env']['uid'] = 4;
+	try { Lock::guard_ajax_submit(); $blocked = false; } catch ( \WP_Ajax_Exit $e ) { $blocked = true; }
+	check( 'draft fleet AJAX submit rejected with 403', $blocked && 403 === $GLOBALS['__ajax_out'][2] );
+	try { $GLOBALS['__env']['tpl'] = 'page-add-listing.php'; Lock::guard_add_listing_page(); $r = false; } catch ( \WP_Redirect_Exit $e ) { $r = true; }
+	check( 'draft fleet redirected from add-listing page', $r && str_contains( $GLOBALS['__redirect'], 'tab=profile' ) );
+	check( 'body class tbf-locked', in_array( 'tbf-locked', Lock::body_class( [] ), true ) );
+	Status::set( 4, Status::PENDING );
+	try { Lock::guard_ajax_submit(); $blocked = false; } catch ( \WP_Ajax_Exit $e ) { $blocked = true; }
+	check( 'pending fleet may submit listings', ! $blocked );
+	reset_env(); $GLOBALS['__env']['uid'] = 2;
+	try { Lock::guard_ajax_submit(); $blocked = false; } catch ( \WP_Ajax_Exit $e ) { $blocked = true; }
+	check( 'car owner never locked', ! $blocked );
+
+	echo "\n$n checks, $fails failed\n";
+	exit( $fails ? 1 : 0 );
+}
