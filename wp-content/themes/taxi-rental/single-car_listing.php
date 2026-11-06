@@ -328,7 +328,13 @@ get_header();
 $lb_author     = get_userdata( $author_id );
 $lb_name       = $lb_author ? $lb_author->display_name : '';
 $lb_role_label = tb_opt( 'tb_cat_role_owner', __( 'Власник авто', 'taxi-rental' ) );
-if ( $lb_author && in_array( 'fleet', (array) $lb_author->roles, true ) ) {
+$lb_fleet      = function_exists( 'tbf_listing_owner' ) ? tbf_listing_owner( $post_id ) : null;
+if ( null !== $lb_fleet ) {
+	if ( $lb_fleet['fleet'] ) {
+		$lb_role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
+	}
+	$lb_name = '' !== $lb_fleet['name'] ? $lb_fleet['name'] : $lb_name;
+} elseif ( $lb_author && in_array( 'fleet', (array) $lb_author->roles, true ) ) {
 	$lb_role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
 }
 $lb_initials = '';

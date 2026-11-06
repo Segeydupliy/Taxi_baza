@@ -63,6 +63,10 @@ $consent_tpl      = tb_opt(
  */
 $owner_id    = $post_id ? (int) get_post_field( 'post_author', $post_id ) : 0;
 $owner_name  = $owner_id ? (string) get_the_author_meta( 'display_name', $owner_id ) : '';
+$fleet_owner = ( $post_id && function_exists( 'tbf_listing_owner' ) ) ? tbf_listing_owner( $post_id ) : null;
+if ( $fleet_owner && '' !== $fleet_owner['name'] ) {
+	$owner_name = $fleet_owner['name'];
+}
 $city_terms  = $post_id ? get_the_terms( $post_id, 'city' ) : [];
 $city_slug   = ( $city_terms && ! is_wp_error( $city_terms ) ) ? $city_terms[0]->slug : '';
 $browse_url  = get_post_type_archive_link( 'car_listing' );

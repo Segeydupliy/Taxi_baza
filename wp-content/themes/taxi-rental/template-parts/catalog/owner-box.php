@@ -17,7 +17,14 @@ $author = get_userdata( $author_id );
 $name   = $author ? $author->display_name : '';
 
 $role_label = tb_opt( 'tb_cat_role_owner', __( 'Власник авто', 'taxi-rental' ) );
-if ( $author && in_array( 'fleet', (array) $author->roles, true ) ) {
+// Fleet accounts choose per listing whether it is shown as the fleet's (plugin taxibaza-fleets).
+$fleet_owner = function_exists( 'tbf_listing_owner' ) ? tbf_listing_owner( $post_id ) : null;
+if ( null !== $fleet_owner ) {
+	if ( $fleet_owner['fleet'] ) {
+		$role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
+	}
+	$name = '' !== $fleet_owner['name'] ? $fleet_owner['name'] : $name;
+} elseif ( $author && in_array( 'fleet', (array) $author->roles, true ) ) {
 	$role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
 }
 
