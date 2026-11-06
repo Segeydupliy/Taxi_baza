@@ -78,7 +78,8 @@
 			if ('A' !== a.tagName) { render(); }
 		}
 	});
-	document.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target) && !e.target.closest('.tb-header__bell')) { close(); } });
+	// composedPath(): a tab click re-renders the popup, so e.target is already detached from it.
+	document.addEventListener('click', function (e) { var path = e.composedPath ? e.composedPath() : []; if (!pop.hidden && path.indexOf(pop) < 0 && !pop.contains(e.target) && !(e.target.closest && e.target.closest('.tb-header__bell'))) { close(); } });
 	document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
 	window.addEventListener('resize', function () { if (current) { place(current); } });
 	badge();
