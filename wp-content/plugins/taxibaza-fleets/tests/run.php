@@ -52,8 +52,12 @@ namespace {
 	function update_option( $k, $v, $al = null ) { $GLOBALS['__options'][ $k ] = $v; return true; }
 	function get_users( $args ) {
 		$out = [];
-		foreach ( $GLOBALS['__users'] as $id => $roles ) { if ( empty( $args['role'] ) || in_array( $args['role'], $roles, true ) ) { $out[] = (string) $id; } }
-		return $out;
+		foreach ( $GLOBALS['__users'] as $id => $roles ) {
+			if ( ! empty( $args['role'] ) && ! in_array( $args['role'], $roles, true ) ) { continue; }
+			if ( isset( $args['meta_key'] ) && ( $GLOBALS['__meta'][ $id ][ $args['meta_key'] ] ?? null ) !== $args['meta_value'] ) { continue; }
+			$out[] = (string) $id;
+		}
+		return isset( $args['number'] ) ? array_slice( $out, 0, (int) $args['number'] ) : $out;
 	}
 	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ], 'user_email' => 'u' . $id . '@test.sk', 'display_name' => 'User ' . $id ] : false; }
 	if ( ! function_exists( 'esc_html' ) ) { function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
@@ -88,6 +92,7 @@ namespace {
 		do_action( 'set_user_role', $id, $role, $old );
 	}
 
+	function remove_all_wpml_permalink() { unset( $GLOBALS['__hooks']['wpml_permalink'] ); }
 	class WP_User { public $ID; function __construct( $id ) { $this->ID = $id; } function set_role( $r ) { test_set_role( $this->ID, $r ); } }
 	class Fake_Query {
 		public array $q; public bool $main; public bool $single;
@@ -479,6 +484,207 @@ namespace TaxiBaza\Fleets\Tests {
 	$N::on_rental_request( 900, 'Oleg Driver' );
 	$list = $N::get( 90 );
 	check( 'owner gets an unread "rental_request" notification', 1 === count( $list ) && 'rental_request' === $list[0]['type'] && 900 === $list[0]['args']['listing'] && 1 === $N::unread( 90 ) );
+
+
+	echo "Fleet pages: plural forms\n";
+	add_filter( 'wpml_current_language', fn() => 'uk' );
+	$I = '\TaxiBaza\Fleets\I18n';
+	check( 'uk: 1 one, 2 few, 5 many, 11 many, 21 one, 22 few', 'one' === $I::plural_form( 1, 'uk' ) && 'few' === $I::plural_form( 2, 'uk' ) && 'many' === $I::plural_form( 5, 'uk' ) && 'many' === $I::plural_form( 11, 'uk' ) && 'one' === $I::plural_form( 21, 'uk' ) && 'few' === $I::plural_form( 22, 'uk' ) );
+	check( 'sk: 1 one, 3 few, 5 many, 21 many, 0 many', 'one' === $I::plural_form( 1, 'sk' ) && 'few' === $I::plural_form( 3, 'sk' ) && 'many' === $I::plural_form( 5, 'sk' ) && 'many' === $I::plural_form( 21, 'sk' ) && 'many' === $I::plural_form( 0, 'sk' ) );
+	check( 'en: 1 one, 2 many', 'one' === $I::plural_form( 1, 'en' ) && 'many' === $I::plural_form( 2, 'en' ) );
+	check( 'count text uk / sk / ru / en', 'Доступно 40 флотилій' === $I::plural( 40, 'fl_count', 'uk' ) && 'Dostupné 3 flotily' === $I::plural( 3, 'fl_count', 'sk' ) && 'Доступен 21 таксопарк' === $I::plural( 21, 'fl_count', 'ru' ) && '1 fleet available' === $I::plural( 1, 'fl_count', 'en' ) );
+
+	echo "Fleet pages: slugs\n";
+	$D = '\TaxiBaza\Fleets\Directory';
+	check( 'slug drops legal form', 'gold-fleet' === $D::slugify( 'Gold Fleet s.r.o.' ) );
+	check( 'cyrillic transliterated', 'taksi-best' === $D::slugify( 'Таксі Бест' ) && 'taksopark-iuh' === $D::slugify( 'Таксопарк «Юг»' ) );
+	check( 'accents removed', 'zilina-taxi' === $D::slugify( 'Žilina Taxi' ) );
+	$owner = fn( $s ) => [ 'gold-fleet' => 5, 'gold-fleet-2' => 6 ][ $s ] ?? 0;
+	check( 'taken slug gets the next free suffix', 'gold-fleet-3' === $D::unique_slug( 'gold-fleet', 7, $owner ) );
+	check( 'own slug stays', 'gold-fleet' === $D::unique_slug( 'gold-fleet', 5, $owner ) );
+	check( 'empty / numeric / reserved slugs are prefixed', 'fleet-7' === $D::unique_slug( '', 7, $owner ) && 'fleet-123' === $D::unique_slug( '123', 7, $owner ) && 'fleet-page' === $D::unique_slug( 'page', 7, $owner ) );
+
+	echo "Fleet pages: visibility + slug lifecycle\n";
+	if ( ! function_exists( 'is_wp_error' ) ) { eval( 'function is_wp_error( $x ) { return $x instanceof \WP_Error; } class WP_Error {}' ); }
+	foreach ( [
+		'has_filter' => 'return ! empty( $GLOBALS["__hooks"][ $a[0] ] );',
+		'get_posts' => 'return $GLOBALS["__get_posts"] ?? [];',
+		'wp_get_object_terms' => 'return $GLOBALS["__obj_terms"] ?? [];',
+		'get_term' => 'return $GLOBALS["__terms"][ (int) $a[0] ] ?? null;',
+		'get_terms' => 'return array_keys( $GLOBALS["__terms"] ?? [] );',
+		'wp_parse_url' => 'return parse_url( ...$a );',
+		'get_post_type_archive_link' => 'return "https://example.test/avto/";',
+		'sanitize_title' => 'return strtolower( preg_replace( "/[^a-z0-9-]/i", "", (string) $a[0] ) );',
+		'wp_verify_nonce' => 'return "ok" === $a[0];',
+		'get_transient' => 'return $GLOBALS["__transients"][ $a[0] ] ?? false;',
+		'set_transient' => '$GLOBALS["__transients"][ $a[0] ] = $a[1]; return true;',
+		'wp_send_json_success' => '$GLOBALS["__ajax_out"] = [ "success", $a[0] ?? null ]; throw new \WP_Ajax_Exit();',
+		'get_bloginfo' => 'return "TaxiBaza.sk";',
+		'get_query_var' => 'return $GLOBALS["__qv"][ $a[0] ] ?? "";',
+	] as $fn => $body ) {
+		if ( ! function_exists( $fn ) ) { eval( "function $fn( ...\$a ) { $body }" ); }
+	}
+	$GLOBALS['__users'][100] = [ 'fleet' ]; $GLOBALS['__users'][101] = [ 'fleet' ]; $GLOBALS['__users'][102] = [ 'fleet' ]; $GLOBALS['__users'][103] = [ 'fleet' ]; $GLOBALS['__users'][104] = [ 'car_owner' ];
+	$live = array_merge( \TaxiBaza\Fleets\Profile::defaults(), $p, [ 'name' => 'Silver Line s.r.o.', 'own_fee' => '8', 'own_fee_base' => 'gross', 'rent_dep_on' => true, 'rent_dep' => '200', 'inc' => [ 'insurance', 'service' ], 'langs' => [ 'sk', 'uk' ], 'req_age' => '21', 'req_exp' => '2', 'docs' => [ 'id', 'license', 'record' ], 'pay_method' => [ 'bank' ] ] );
+	update_user_meta( 100, 'tbf_status', 'approved' ); update_user_meta( 100, 'tbf_profile_live', $live );
+	update_user_meta( 101, 'tbf_status', 'approved' );
+	update_user_meta( 102, 'tbf_status', 'blocked' ); update_user_meta( 102, 'tbf_profile_live', $live );
+	update_user_meta( 103, 'tbf_status', 'pending' ); update_user_meta( 103, 'tbf_profile_live', $live );
+	update_user_meta( 104, 'tbf_profile_live', $live );
+	$D::flush_cache();
+	$vis = $D::visible_ids();
+	check( 'approved fleet with live profile is public', in_array( 100, $vis, true ) );
+	check( 'approved without live profile, blocked, pending, non-fleet are not', ! array_intersect( [ 101, 102, 103, 104 ], $vis ) );
+	check( 'ensure_slug stores a slug once', 'silver-line' === $D::ensure_slug( 100 ) && 'silver-line' === get_user_meta( 100, 'tbf_slug' ) );
+	update_user_meta( 100, 'tbf_profile_live', array_merge( $live, [ 'name' => 'Renamed Fleet' ] ) );
+	check( 'slug stays after a rename', 'silver-line' === $D::ensure_slug( 100 ) );
+	$GLOBALS['__users'][105] = [ 'fleet' ];
+	update_user_meta( 105, 'tbf_profile_live', array_merge( $live, [ 'name' => 'Silver Line' ] ) );
+	update_user_meta( 105, 'tbf_status', 'pending' );
+	\TaxiBaza\Fleets\Status::set( 105, \TaxiBaza\Fleets\Status::APPROVED );
+	check( 'approval generates a unique slug for a namesake', 'silver-line-2' === get_user_meta( 105, 'tbf_slug' ) );
+	check( 'find by slug', 100 === $D::find( 'silver-line' ) && 105 === $D::find( 'silver-line-2' ) );
+	check( 'find by user ID fallback', 100 === $D::find( '100' ) );
+	update_user_meta( 102, 'tbf_slug', 'blocked-fleet' );
+	check( 'blocked / unknown / non-fleet -> 0 (404)', 0 === $D::find( 'blocked-fleet' ) && 0 === $D::find( 'nope' ) && 0 === $D::find( '104' ) );
+	check( 'fleet URL', 'https://example.test/flotily/silver-line/' === $D::fleet_url( 100 ) );
+	check( 'catalog URL keeps only real filters', 'https://example.test/flotily/?f_city=bratislava' === $D::catalog_url( [ 'f_city' => 'bratislava', 'f_platform' => '', 'sort' => 'new', 'pg' => 1 ] ) );
+	add_filter( 'wpml_permalink', fn( $u, $l = null ) => str_replace( 'https://example.test/', 'https://example.test/' . ( $l ?: 'uk' ) . '/', $u ), 10, 2 );
+	check( 'language-aware base URL (WPML)', 'https://example.test/en/flotily/' === $D::base_url( 'en' ) );
+	remove_all_wpml_permalink();
+
+	echo "Fleet pages: listings of a fleet\n";
+	check( 'one copy per translation group, current language preferred', [ 11, 20, 30 ] === $D::one_per_group( [ [ 'id' => 10, 'trid' => 1, 'lang' => 'sk' ], [ 'id' => 11, 'trid' => 1, 'lang' => 'uk' ], [ 'id' => 20, 'trid' => 2, 'lang' => 'sk' ], [ 'id' => 30, 'trid' => 0, 'lang' => '' ] ], 'uk' ) );
+	$GLOBALS['__posts'][901] = [ 'post_author' => 100 ]; $GLOBALS['__posts'][902] = [ 'post_author' => 100 ];
+	$GLOBALS['__pmeta'][902]['tbf_fleet_listing'] = '0';
+	$GLOBALS['__get_posts'] = [ 901, 902 ];
+	$D::flush_cache();
+	check( 'listing unticked as fleet listing is left out', [ 901 ] === $D::listing_ids( 100 ) );
+
+	echo "Fleet pages: card data\n";
+	check( 'initials', 'GF' === $D::initials( 'Gold Fleet s.r.o.' ) && 'DR' === $D::initials( 'DriveRent Partner s.r.o.' ) && 'TB' === $D::initials( 'taxi best' ) && 'ТБ' === $D::initials( 'Таксі Бест' ) );
+	$h = $D::headline( [ 'models' => [ 'own', 'fleet' ], 'own_pay_type' => 'percent', 'own_fee' => '8' ] );
+	check( 'own-car commission in % of earnings', '8 %' === $h['value'] && 'з виручки' === $h['unit'] );
+	$h = $D::headline( [ 'models' => [ 'own' ], 'own_pay_type' => 'fixed', 'own_fee' => '20' ] );
+	check( 'fixed commission per week', '20 €' === $h['value'] && '/ тиждень' === $h['unit'] );
+	$h = $D::headline( [ 'models' => [ 'fleet' ], 'rent_comm_on' => false, 'rent_price' => '210', 'rent_period' => 'week' ] );
+	check( 'fleet-only without commission shows the rent', '210 €' === $h['value'] && 'Оренда авто' === $h['label'] );
+	check( 'nothing set -> no headline (no placeholder numbers)', null === $D::headline( [ 'models' => [ 'own' ], 'own_fee' => '' ] ) );
+	$f = array_column( $D::features( [ 'models' => [ 'own' ], 'pay_freq' => 'weekly', 'perk_fuel' => true ] ), 'text' );
+	check( 'feature chips from the profile', [ 'Тижневі виплати', 'Власне авто', 'Паливна картка' ] === $f );
+	check( 'money format', '8,5' === $D::money( '8.5' ) && '1 200' === $D::money( 1200 ) );
+
+	echo "Fleet pages: filter, sort, paginate\n";
+	$cards = [
+		[ 'id' => 1, 'name' => 'Zeta', 'since' => 100, 'cities' => [ 5 => [ 'name' => 'Bratislava', 'slug' => 'bratislava' ] ], 'platforms' => [ 'bolt', 'uber' ] ],
+		[ 'id' => 2, 'name' => 'alpha', 'since' => 300, 'cities' => [ 6 => [ 'name' => 'Košice', 'slug' => 'kosice' ] ], 'platforms' => [ 'uber' ] ],
+		[ 'id' => 3, 'name' => 'Beta', 'since' => 200, 'cities' => [ 5 => [ 'name' => 'Bratislava', 'slug' => 'bratislava' ], 6 => [ 'name' => 'Košice', 'slug' => 'kosice' ] ], 'platforms' => [ 'hopin' ] ],
+	];
+	check( 'newest first by default', [ 2, 3, 1 ] === array_column( $D::filter( $cards, 0, '', 'new' ), 'id' ) );
+	check( 'sort by name, case-insensitive', [ 2, 3, 1 ] === array_column( $D::filter( $cards, 0, '', 'name' ), 'id' ) && 'alpha' === $D::filter( $cards, 0, '', 'name' )[0]['name'] );
+	check( 'city filter', [ 3, 1 ] === array_column( $D::filter( $cards, 5, '', 'new' ), 'id' ) );
+	check( 'platform filter', [ 2, 1 ] === array_column( $D::filter( $cards, 0, 'uber', 'new' ), 'id' ) );
+	check( 'city + platform', [ 1 ] === array_column( $D::filter( $cards, 5, 'uber', 'new' ), 'id' ) && [] === $D::filter( $cards, 6, 'bolt', 'new' ) );
+	$opts = $D::city_options( $cards );
+	check( 'city options (unique, by name) and slug lookup', [ 5, 6 ] === array_keys( $opts ) && 6 === $D::city_key( $opts, 'kosice' ) && 0 === $D::city_key( $opts, 'x' ) );
+	check( 'platform options in fixed order', [ 'bolt', 'uber', 'hopin' ] === $D::platform_options( $cards ) );
+	$pg = $D::paginate( range( 1, 30 ), 3, 12 );
+	check( 'pagination: 30 items, page 3 of 3 has 6', 3 === $pg['pages'] && 3 === $pg['page'] && [ 25, 26, 27, 28, 29, 30 ] === $pg['items'] );
+	check( 'page out of range is clamped', 1 === $D::paginate( [], 9 )['page'] && 3 === $D::paginate( range( 1, 30 ), 99, 12 )['page'] );
+	check( 'page links with gaps', [ 1, 2, 3, 0, 11 ] === $D::page_links( 1, 11 ) && [ 1, 0, 5, 6, 7, 0, 11 ] === $D::page_links( 6, 11 ) && [ 1, 2, 3 ] === $D::page_links( 2, 3 ) );
+
+	echo "Fleet pages: profile -> page texts\n";
+	$V = '\TaxiBaza\Fleets\Fleet_View';
+	$terms = $V::terms( $live );
+	check( 'both models -> two columns', [ 'own', 'fleet' ] === array_keys( $terms ) );
+	check( 'own column metric 8 % (gross)', '8 %' === $terms['own']['value'] && str_contains( $terms['own']['value_text'], 'загальної' ) );
+	check( 'fleet column metric from 210 €', 'від 210 €' === $terms['fleet']['value'] );
+	$titles = array_column( $terms['fleet']['perks'], 'title' );
+	check( 'fleet perks: commission, deposit, included, min term', in_array( 'Комісія з виручки', $titles, true ) && in_array( 'Депозит', $titles, true ) && in_array( 'Включено в оренду', $titles, true ) && in_array( 'Мінімальний термін', $titles, true ) );
+	check( 'payouts text', 'Щотижня, понеділок, на банківський рахунок.' === $terms['own']['perks'][0]['text'] );
+	$t2 = $V::terms( array_merge( $live, [ 'models' => [ 'fleet' ], 'rent_dep_on' => false, 'inc' => [], 'rent_comm_on' => false ] ) );
+	check( 'fleet-only: one column, empty blocks left out', [ 'fleet' ] === array_keys( $t2 ) && ! in_array( 'Депозит', array_column( $t2['fleet']['perks'], 'title' ), true ) );
+	$req = $V::requirements( $live );
+	check( 'requirements: age with plural, experience, docs, languages', '21 рік' === $req[0]['text'] && 'Від 2 років' === $req[1]['text'] && 2 === substr_count( $req[2]['text'], ',' ) && 'Словацька, українська' === $req[3]['text'] );
+
+	echo "Work request: validation\n";
+	$W = '\TaxiBaza\Fleets\Work_Request';
+	$ok = [ 'car' => 'fleet', 'license' => 'yes', 'city' => '5', 'name' => ' Oleh  Driver ', 'phone' => '+421 902 123 456', 'email' => 'oleh@example.com', 'message' => 'Dobrý deň, chcem jazdiť u vás od budúceho týždňa.' ];
+	[ $d, $e ] = $W::validate( $ok, [ 5, 6 ] );
+	check( 'valid application', [] === $e && 'Oleh Driver' === $d['name'] && 5 === $d['city'] );
+	[ , $e ] = $W::validate( [], [ 5 ] );
+	check( 'empty form: every required field flagged', [ 'car', 'license', 'city', 'name', 'phone', 'message' ] === array_keys( $e ) && 'fl_m_err_pick' === $e['car'] );
+	[ , $e ] = $W::validate( array_merge( $ok, [ 'message' => 'Привіт!' ] ), [ 5 ] );
+	check( 'short message (min 20)', [ 'message' => 'fl_m_err_short' ] === $e );
+	[ , $e ] = $W::validate( array_merge( $ok, [ 'phone' => '123', 'email' => 'bad@', 'car' => 'bike', 'city' => '9' ] ), [ 5 ] );
+	check( 'bad phone, email, choice, unknown city', isset( $e['phone'], $e['email'], $e['car'], $e['city'] ) && 'err_phone' === $e['phone'] );
+	[ $d, ] = $W::validate( array_merge( $ok, [ 'message' => '<script>x</script>Hello there, I would like to drive.' ] ), [ 5 ] );
+	check( 'tags stripped from the message', ! str_contains( $d['message'], '<' ) );
+	check( 'honeypot', $W::is_spam( [ 'tbf_website' => 'http://spam' ] ) && ! $W::is_spam( [] ) );
+
+	echo "Work request: AJAX end-to-end\n";
+	$GLOBALS['__terms'] = [ 5 => (object) [ 'term_id' => 5, 'name' => 'Bratislava' ], 6 => (object) [ 'term_id' => 6, 'name' => 'Košice' ] ];
+	$GLOBALS['__mail'] = []; $GLOBALS['__transients'] = [];
+	update_user_meta( 100, 'tbf_lang', 'en' );
+	$N = '\TaxiBaza\Fleets\Notifications';
+	$before = count( $N::get( 100 ) );
+	$run = function ( array $post ) use ( $W ) { $_POST = $post; $GLOBALS['__ajax_out'] = null; try { $W::handle(); } catch ( \WP_Ajax_Exit $e ) {} $_POST = []; return $GLOBALS['__ajax_out']; };
+	$out = $run( $ok + [ '_wpnonce' => 'bad', 'fleet' => '100', 'lang' => 'uk' ] );
+	check( 'bad nonce -> 403', 'error' === $out[0] && 403 === $out[2] );
+	$out = $run( $ok + [ '_wpnonce' => 'ok', 'fleet' => '102', 'lang' => 'uk' ] );
+	check( 'blocked fleet -> 404', 'error' === $out[0] && 404 === $out[2] );
+	$out = $run( array_merge( $ok, [ 'message' => 'short' ] ) + [ '_wpnonce' => 'ok', 'fleet' => '100', 'lang' => 'sk' ] );
+	check( 'invalid -> 422 with texts in the page language', 'error' === $out[0] && 422 === $out[2] && str_contains( $out[1]['errors']['message'], 'príliš krátka' ) && [] === $GLOBALS['__mail'] );
+	$out = $run( $ok + [ '_wpnonce' => 'ok', 'fleet' => '100', 'lang' => 'uk', 'tbf_website' => 'x' ] );
+	check( 'honeypot: fake success, nothing sent', 'success' === $out[0] && [] === $GLOBALS['__mail'] );
+	$out = $run( $ok + [ '_wpnonce' => 'ok', 'fleet' => '100', 'lang' => 'uk' ] );
+	check( 'valid -> success text names the fleet (uk)', 'success' === $out[0] && str_contains( $out[1]['text'], 'Renamed Fleet' ) && str_contains( $out[1]['title'], 'успішно' ) );
+	$m = $GLOBALS['__mail'][0] ?? [];
+	check( 'email to the fleet in its language (en)', 'u100@test.sk' === ( $m['to'] ?? '' ) && str_contains( $m['subj'] ?? '', 'job application' ) && str_contains( $m['body'] ?? '', 'lang="en"' ) && str_contains( $m['body'] ?? '', 'Oleh Driver' ) && str_contains( $m['body'] ?? '', 'Bratislava' ) );
+	check( 'email links to the fleet page', str_contains( $m['body'] ?? '', '/flotily/silver-line/' ) );
+	$wn = $N::get( 100 )[0];
+	check( 'bell notification for the fleet', count( $N::get( 100 ) ) === $before + 1 && 'work_request' === $wn['type'] );
+	$pres = $N::present( $wn );
+	check( 'notification text: title + name · phone, links to the cabinet', 'Нова заявка на роботу' === $pres['t'] && 'Oleh Driver · +421 902 123 456' === $pres['d'] && str_contains( $pres['url'], 'tab=profile' ) );
+	check( 'application stored for the fleet', 'Oleh Driver' === get_user_meta( 100, 'tbf_work_requests' )[0]['name'] );
+	for ( $i = 0; $i < 5; $i++ ) { $out = $run( $ok + [ '_wpnonce' => 'ok', 'fleet' => '100', 'lang' => 'uk' ] ); }
+	check( 'rate limit: 6th request from one IP in 10 min -> 429', 'error' === $out[0] && 429 === $out[2] );
+	$mail_html = \TaxiBaza\Fleets\Mailer::build_work_request( 'sk', 'X', [ 'name' => '<b>A</b>', 'message' => "<img src=x>\nline2", 'phone' => '+421 1', 'email' => '', 'car' => 'own', 'license' => 'no', 'city_name' => 'Nitra' ], 'https://example.test/flotily/x/' )[1];
+	check( 'email escapes user input', ! str_contains( $mail_html, '<img src=x>' ) && ! str_contains( $mail_html, '<b>A</b>' ) && str_contains( $mail_html, 'Mám vlastné auto' ) );
+
+
+	echo "Fleet pages: routing\n";
+	$FP = '\TaxiBaza\Fleets\Fleet_Pages';
+	$GLOBALS['__qv'] = [ 'tbf_fleet' => 'nope' ]; $GLOBALS['wp_query'] = new \Fake_Query( [] ); $GLOBALS['__is404'] = false; $GLOBALS['__status'] = 0;
+	$FP::route();
+	check( 'unknown fleet slug -> 404', true === $GLOBALS['__is404'] && 404 === $GLOBALS['__status'] && ! $FP::is_fleet_page() );
+	check( 'WP canonical redirect is off on fleet URLs', false === $FP::no_canonical_redirect( 'https://example.test/' ) );
+	$GLOBALS['__qv'] = [ 'tbf_fleet' => '100' ];
+	try { $FP::route(); $r = ''; } catch ( \WP_Redirect_Exit $e ) { $r = $GLOBALS['__redirect']; }
+	check( 'user-ID URL redirects to the slug URL', 'https://example.test/flotily/silver-line/' === $r );
+	$GLOBALS['__qv'] = [ 'tbf_fleet' => 'silver-line' ]; $GLOBALS['__is404'] = false;
+	$FP::route();
+	check( 'known slug -> fleet page', 100 === $FP::current_fleet() && $FP::is_fleet_page() && false === $GLOBALS['__is404'] );
+	check( 'document title with the fleet name', str_starts_with( $FP::document_title( 'x' ), 'Renamed Fleet – Флотилії – ' ) );
+	check( 'body class', in_array( 'tbf-page-fleet', $FP::body_class( [ 'blog', 'home' ] ), true ) && ! in_array( 'blog', $FP::body_class( [ 'blog' ] ), true ) );
+	$GLOBALS['__qv'] = [ 'tbf_fleets' => '1' ];
+	check( 'catalogue: 404 handling skipped', true === $FP::skip_404( false, new \Fake_Query( [ 'tbf_fleets' => '1' ] ) ) && false === $FP::skip_404( false, new \Fake_Query( [] ) ) );
+	check( 'template swap', str_ends_with( $FP::template( 'theme.php' ), 'templates/fleets-catalog.php' ) );
+	$GLOBALS['__qv'] = [];
+	echo "Menu\n";
+	$M = '\TaxiBaza\Fleets\Menu';
+	$item = [ 'label' => 'Flotily', 'url' => 'https://example.test/uk/flotily/' ];
+	$menu = [ [ 'label' => 'Каталог авто', 'url' => 'https://example.test/uk/avto/' ], [ 'label' => 'Міста', 'url' => '' ], [ 'label' => 'Контакти', 'url' => '/kontakt/' ] ];
+	check( 'inserted right after the catalogue', [ 'Каталог авто', 'Flotily', 'Міста', 'Контакти' ] === array_column( $M::insert( $menu, $item, '/avto/' ), 'label' ) );
+	check( 'no catalogue item -> second position', [ 'Міста', 'Flotily', 'Контакти' ] === array_column( $M::insert( array_slice( $menu, 1 ), $item, '/avto/' ), 'label' ) );
+	$menu2 = [ [ 'label' => 'Katalóg', 'url' => '/avto/' ], [ 'label' => 'Flotily (admin)', 'url' => '/flotily/' ] ];
+	$r = $M::insert( $menu2, $item + [ 'current' => true ], '/avto/' );
+	check( 'already in the menu -> not duplicated, marked current', 2 === count( $r ) && true === $r[1]['current'] );
+	check( 'empty menu', [ 'Flotily' ] === array_column( $M::insert( [], $item, '/avto/' ), 'label' ) );
+	$h = $M::header( [ [ 'label' => 'Catalog', 'url' => 'https://example.test/avto/' ] ] );
+	check( 'header filter adds "Флотилії", current on a fleet page', 'Флотилії' === $h[1]['label'] && 'https://example.test/flotily/' === $h[1]['url'] && true === $h[1]['current'] );
+	$f = $M::footer( [ [ 'label' => 'Domov', 'url' => '/' ], [ 'label' => 'Katalóg', 'url' => '/avto/' ] ] );
+	check( 'footer filter adds an internal link after the catalogue', 'Флотилії' === $f[2]['label'] && true === $f[2]['internal'] );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );

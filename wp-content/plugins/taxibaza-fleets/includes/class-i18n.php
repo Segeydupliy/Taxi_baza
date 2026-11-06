@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class I18n {
 
 	public const CONTEXT = 'taxibaza-fleets';
-	private const SEEDED = 'tbf_strings_registered_v2';
+	private const SEEDED = 'tbf_strings_registered_v3';
 
 	/** Column of each language in strings.php. */
 	public const LANGS = [ 'sk' => 0, 'uk' => 1, 'en' => 2, 'ru' => 3 ];
@@ -57,6 +57,38 @@ final class I18n {
 		}
 		$col = self::LANGS[ strtolower( substr( $lang, 0, 2 ) ) ] ?? 0;
 		return '' !== ( $row[ $col ] ?? '' ) ? $row[ $col ] : $sk;
+	}
+
+	/**
+	 * Plural form for a count: 'one' | 'few' | 'many'.
+	 * SK: 1 / 2–4 / rest. UK, RU: 1, 21, 31… / 2–4, 22–24… / rest (11–14 = many). EN: 1 / rest.
+	 */
+	public static function plural_form( int $n, string $lang ): string {
+		$n    = abs( $n );
+		$lang = strtolower( substr( $lang, 0, 2 ) );
+		if ( 'en' === $lang ) {
+			return 1 === $n ? 'one' : 'many';
+		}
+		if ( in_array( $lang, [ 'uk', 'ru' ], true ) ) {
+			$m10  = $n % 10;
+			$m100 = $n % 100;
+			if ( 1 === $m10 && 11 !== $m100 ) {
+				return 'one';
+			}
+			return ( $m10 >= 2 && $m10 <= 4 && ( $m100 < 12 || $m100 > 14 ) ) ? 'few' : 'many';
+		}
+		if ( 1 === $n ) {
+			return 'one';
+		}
+		return ( $n >= 2 && $n <= 4 ) ? 'few' : 'many';
+	}
+
+	/**
+	 * "%d …" with the right plural form: keys "{$stem}_one", "_few", "_many".
+	 */
+	public static function plural( int $n, string $stem, ?string $lang = null ): string {
+		$lang = $lang ?? self::lang();
+		return sprintf( self::t_in( $stem . '_' . self::plural_form( $n, $lang ), $lang ), $n );
 	}
 
 	/** Register all strings once so admins can edit them in WPML → String Translation. */

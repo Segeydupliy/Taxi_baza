@@ -97,6 +97,47 @@ final class Mailer {
 		return [ $subject, self::wrap( $content, $lang ) ];
 	}
 
+	/**
+	 * Email to a fleet about a driver's job application.
+	 *
+	 * @param array<string,mixed> $d Application (name, phone, email, car, license, city_name, message).
+	 * @return array{0:string,1:string} Subject, HTML body.
+	 */
+	public static function build_work_request( string $lang, string $fleet_name, array $d, string $page_url ): array {
+		$tr   = static fn( $k ) => I18n::t_in( $k, $lang );
+		$rows = [
+			[ $tr( 'fl_m_name' ), (string) ( $d['name'] ?? '' ) ],
+			[ $tr( 'f_phone' ), (string) ( $d['phone'] ?? '' ) ],
+			[ $tr( 'f_email' ), (string) ( $d['email'] ?? '' ) ],
+			[ $tr( 'mail_work_car' ), 'own' === ( $d['car'] ?? '' ) ? $tr( 'fl_m_car_own' ) : ( 'fleet' === ( $d['car'] ?? '' ) ? $tr( 'fl_m_car_fleet' ) : '' ) ],
+			[ $tr( 'mail_work_lic' ), 'yes' === ( $d['license'] ?? '' ) ? $tr( 'fl_m_lic_yes' ) : ( 'no' === ( $d['license'] ?? '' ) ? $tr( 'fl_m_lic_no' ) : '' ) ],
+			[ $tr( 'fl_m_city' ), (string) ( $d['city_name'] ?? '' ) ],
+		];
+		$table = '';
+		foreach ( $rows as [ $k, $v ] ) {
+			if ( '' === trim( $v ) ) {
+				continue;
+			}
+			if ( $tr( 'f_phone' ) === $k ) {
+				$v = '<a href="tel:' . esc_attr( preg_replace( '/[^\d+]/', '', $v ) ) . '" style="color:#000000;">' . esc_html( $v ) . '</a>';
+			} elseif ( $tr( 'f_email' ) === $k ) {
+				$v = '<a href="mailto:' . esc_attr( $v ) . '" style="color:#000000;">' . esc_html( $v ) . '</a>';
+			} else {
+				$v = esc_html( $v );
+			}
+			$table .= '<tr><td style="padding:6px 16px 6px 0;color:#666666;vertical-align:top;white-space:nowrap;">' . esc_html( $k ) . '</td><td style="padding:6px 0;color:#1a1a1a;">' . $v . '</td></tr>';
+		}
+		$content = '<p style="margin:0 0 16px;font-size:18px;font-weight:700;">' . esc_html( sprintf( $tr( 'mail_hello' ), $fleet_name ) ) . '</p>'
+			. '<p style="margin:0 0 16px;">' . esc_html( $tr( 'mail_work_body' ) ) . '</p>'
+			. '<table cellpadding="0" cellspacing="0" style="margin:0 0 16px;font-size:15px;line-height:22px;">' . $table . '</table>'
+			. '<p style="margin:0 0 8px;color:#666666;">' . esc_html( $tr( 'fl_m_msg' ) ) . '</p>'
+			. '<p style="margin:0 0 24px;padding:16px;background:#f5f5f5;border-radius:12px;">' . nl2br( esc_html( (string) ( $d['message'] ?? '' ) ) ) . '</p>'
+			. '<p style="margin:0 0 24px;">' . esc_html( $tr( 'mail_work_reply' ) ) . '</p>'
+			. '<p style="margin:0 0 24px;"><a href="' . esc_url( $page_url ) . '" style="display:inline-block;background:#02F797;color:#000000;text-decoration:none;font-weight:700;padding:14px 28px;border-radius:100px;">' . esc_html( $tr( 'mail_work_page' ) ) . '</a></p>'
+			. '<p style="margin:0;color:#666666;">' . esc_html( $tr( 'mail_sign' ) ) . '</p>';
+		return [ $tr( 'mail_work_subject' ), self::wrap( $content, $lang ) ];
+	}
+
 	/** Same shell as the core's emails (black header, white card). */
 	private static function wrap( string $content, string $lang ): string {
 		$site = esc_url( home_url( '/' ) );

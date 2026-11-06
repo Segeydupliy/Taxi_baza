@@ -146,6 +146,9 @@ final class Notifications {
 				$listing = (int) ( $args['listing'] ?? 0 );
 				$url     = $listing ? (string) get_permalink( (int) apply_filters( 'wpml_object_id', $listing, 'car_listing', true ) ) : '';
 				return [ 't' => t( 'n_request_t' ), 'd' => sprintf( t( 'n_request_d' ), '' !== $name ? $name : '—', (string) ( $args['title'] ?? '' ) ), 'url' => $url ];
+			case 'work_request':
+				// Driver's job application from the public fleet page; details went by email.
+				return [ 't' => t( 'n_work_t' ), 'd' => sprintf( t( 'n_work_d' ), '' !== $name ? $name : '—', (string) ( $args['phone'] ?? '' ) ), 'url' => Cabinet::profile_url() ];
 		}
 		return [ 't' => '', 'd' => '', 'url' => '' ];
 	}
