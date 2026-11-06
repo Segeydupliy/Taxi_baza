@@ -318,7 +318,12 @@ function tb_opt( string $name, $fallback = '' ) {
  * Telegram community URL (global option).
  */
 function tb_telegram_url(): string {
-	return (string) tb_opt( 'tb_telegram_url', 'https://t.me/taxibaza_sk' );
+	$url = trim( (string) tb_opt( 'tb_telegram_url', '' ) );
+	// The channel moved to t.me/TaxiBazaSK; the old default is replaced too.
+	if ( '' === $url || preg_match( '#t\.me/taxibaza_sk/?$#i', $url ) ) {
+		$url = 'https://t.me/TaxiBazaSK';
+	}
+	return $url;
 }
 
 /**

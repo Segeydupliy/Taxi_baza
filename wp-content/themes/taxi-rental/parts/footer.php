@@ -73,6 +73,10 @@ $resolve_url = static function ( string $url ): string {
 	if ( preg_match( '#^/(umovy|podmienky-pouzivania)/?$#', $url ) ) {
 		return tb_legal_url( 'terms' );
 	}
+	// Telegram: the current channel, whatever an old saved item says.
+	if ( preg_match( '#t\.me/#i', $url ) ) {
+		return tb_telegram_url();
+	}
 	return str_starts_with( $url, 'http' ) ? $url : home_url( $url );
 };
 ?>
