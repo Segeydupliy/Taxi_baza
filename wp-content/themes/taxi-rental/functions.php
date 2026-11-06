@@ -1029,3 +1029,68 @@ function tb_fleet_logo_url( int $post_id, string $size = 'thumbnail' ): string {
 	$logo_id = is_array( $profile ) ? (int) ( $profile['logo_id'] ?? 0 ) : 0;
 	return $logo_id ? (string) wp_get_attachment_image_url( $logo_id, $size ) : '';
 }
+
+/**
+ * The core's catalogue asks for listings of every language ('lang' => 'all',
+ * one copy per translation group via post__in) so a listing that exists in one
+ * language only still shows on the other language versions. WPML kept
+ * filtering such queries by the current language anyway, so a Ukrainian-only
+ * listing never appeared on /avto/ (and a listing without a Ukrainian copy was
+ * missing on /uk/avto/). Switch WPML's language filter off for exactly those
+ * queries.
+ *
+ * @param WP_Query $q Query.
+ */
+function tb_listing_queries_all_languages( WP_Query $q ): void {
+	$type = $q->get( 'post_type' );
+	if ( 'all' === $q->get( 'lang' ) && ( 'car_listing' === $type || ( is_array( $type ) && in_array( 'car_listing', $type, true ) ) ) ) {
+		$q->set( 'suppress_wpml_where_and_join_filter', true );
+		// A listing keeps the terms of its own language, so a filter by a term
+		// (city, category …) must match that term in every language.
+		$tax = $q->get( 'tax_query' );
+		if ( is_array( $tax ) && $tax ) {
+			$q->set( 'tax_query', tb_tax_query_all_languages( $tax ) );
+		}
+	}
+}
+
+/**
+ * @param array<int|string,mixed> $tax Tax query.
+ * @return array<int|string,mixed>
+ */
+function tb_tax_query_all_languages( array $tax ): array {
+	$langs = array_keys( (array) apply_filters( 'wpml_active_languages', null, [ 'skip_missing' => 0 ] ) ) ?: [ 'sk', 'uk', 'en', 'ru' ];
+	foreach ( $tax as $k => $clause ) {
+		if ( ! is_array( $clause ) ) {
+			continue;
+		}
+		if ( ! isset( $clause['taxonomy'] ) ) {
+			$tax[ $k ] = tb_tax_query_all_languages( $clause ); // Nested group.
+			continue;
+		}
+		if ( ! in_array( $clause['taxonomy'], [ 'city', 'ride_category', 'platform', 'car_make' ], true ) ) {
+			continue;
+		}
+		$field = $clause['field'] ?? 'term_id';
+		$ids   = [];
+		foreach ( (array) ( $clause['terms'] ?? [] ) as $t ) {
+			$term = 'slug' === $field ? get_term_by( 'slug', (string) $t, $clause['taxonomy'] ) : get_term( (int) $t, $clause['taxonomy'] );
+			if ( ! $term instanceof WP_Term ) {
+				continue;
+			}
+			$ids[] = (int) $term->term_id;
+			foreach ( $langs as $l ) {
+				$tid = (int) apply_filters( 'wpml_object_id', (int) $term->term_id, $clause['taxonomy'], false, $l );
+				if ( $tid ) {
+					$ids[] = $tid;
+				}
+			}
+		}
+		if ( $ids ) {
+			$tax[ $k ]['field'] = 'term_id';
+			$tax[ $k ]['terms'] = array_values( array_unique( $ids ) );
+		}
+	}
+	return $tax;
+}
+add_action( 'pre_get_posts', 'tb_listing_queries_all_languages', 1 );
