@@ -183,6 +183,31 @@ final class WPML_Repair {
 	}
 
 	/**
+	 * Save existing complete translations again through the WPML API so WPML
+	 * refreshes whatever it keeps besides the table (it skips unchanged text,
+	 * hence the two writes).
+	 *
+	 * @param string[] $names String names.
+	 */
+	public static function touch( array $names ): int {
+		global $wpdb;
+		if ( ! $names || ! function_exists( 'icl_add_string_translation' ) ) {
+			return 0;
+		}
+		$n = 0;
+		foreach ( $names as $name ) {
+			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT t.string_id, t.language, t.value FROM {$wpdb->prefix}icl_string_translations t JOIN {$wpdb->prefix}icl_strings s ON s.id = t.string_id WHERE s.context = %s AND s.name = %s AND t.status = %d AND t.language <> s.language", WPML_Guard::OPTIONS_CTX, $name, self::STATUS ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			foreach ( $rows as $t ) {
+				icl_add_string_translation( (int) $t['string_id'], $t['language'], $t['value'] . ' ', self::STATUS );
+				icl_add_string_translation( (int) $t['string_id'], $t['language'], $t['value'], self::STATUS );
+				$n++;
+			}
+		}
+		wp_cache_flush();
+		return $n;
+	}
+
+	/**
 	 * Full picture of the options strings (read only), for review.
 	 *
 	 * @return array<int,array<string,mixed>>
@@ -215,8 +240,26 @@ final class WPML_Repair {
 			echo '<div class="wrap"><h1>TaxiBaza WPML — matrix</h1><script type="application/json" id="tbs-matrix">' . wp_json_encode( self::matrix(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script><p>Rows: ' . count( self::matrix() ) . '</p></div>';
 			return;
 		}
+		if ( isset( $_GET['probe'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
+			$name = sanitize_key( wp_unslash( $_GET['probe'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$src  = (string) $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT value FROM {$GLOBALS['wpdb']->prefix}icl_strings WHERE context = %s AND name = %s", WPML_Guard::OPTIONS_CTX, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$out  = [];
+			foreach ( [ 'sk', 'uk', 'en', 'ru' ] as $l ) {
+				$out[ $l ] = apply_filters( 'wpml_translate_single_string', $src, WPML_Guard::OPTIONS_CTX, $name, $l );
+			}
+			echo '<div class="wrap"><pre id="tbs-probe">' . esc_html( (string) wp_json_encode( $out, JSON_UNESCAPED_UNICODE ) ) . '</pre></div>';
+			return;
+		}
+		if ( isset( $_POST['tbs_touch'] ) && check_admin_referer( self::NONCE ) ) {
+			$names = array_filter( array_map( 'sanitize_key', preg_split( '/[\s,]+/', (string) wp_unslash( $_POST['tbs_touch'] ) ) ) );
+			$n     = self::touch( $names );
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Re-saved %d translations through WPML.', $n ) ) . '</p></div>';
+		}
 		$plan = self::plan();
 		echo '<div class="wrap"><h1>TaxiBaza: WPML — options strings (taxi-rental-options)</h1>';
+		echo '<form method="post" id="tbs-touch-form">';
+		wp_nonce_field( self::NONCE );
+		echo '<p><label>Re-save translations through WPML (string names): <input type="text" name="tbs_touch" class="regular-text"></label> <button class="button">Re-save</button></p></form>';
 		if ( isset( $_POST['tbs_apply'] ) && check_admin_referer( self::NONCE ) ) {
 			$done = self::apply( $plan );
 			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Done: %d strings repaired.', $done ) ) . '</p></div>';
