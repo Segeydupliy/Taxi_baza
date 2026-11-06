@@ -343,6 +343,11 @@ final class Profile {
 
 	/** POST handler for the cabinet form. */
 	public static function handle_save(): void {
+		$admin_for = isset( $_POST['tbf_admin_fleet'] ) ? absint( $_POST['tbf_admin_fleet'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked below.
+		if ( $admin_for ) {
+			self::handle_admin_save( $admin_for );
+			return;
+		}
 		$user_id = get_current_user_id();
 		$back    = Cabinet::profile_url();
 
@@ -368,6 +373,49 @@ final class Profile {
 		$result = self::submit( $user_id, $profile );
 		wp_safe_redirect( add_query_arg( 'tbf_saved', $result, $back ) );
 		exit;
+	}
+
+	/**
+	 * An admin edits a fleet's profile from the panel (like "Edit" on a listing
+	 * in moderation). A profile waiting for moderation (new or edits) is changed
+	 * in place and stays in the queue; an approved profile without pending edits
+	 * is updated directly. No moderation request, no email to the fleet.
+	 */
+	public static function handle_admin_save( int $fleet ): void {
+		$panel = Admin_Panel::panel_url( [ 'fleet' => $fleet ] );
+		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		if ( ! current_user_can( 'manage_options' ) || ! Status::is_fleet( $fleet ) || ! wp_verify_nonce( $nonce, self::NONCE ) ) {
+			wp_safe_redirect( add_query_arg( 'tbf_done', 'error', $panel ) );
+			exit;
+		}
+		$raw            = wp_unslash( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised field by field in sanitize().
+		$raw['logo_id'] = self::handle_logo( $fleet, (int) ( $raw['logo_id'] ?? 0 ), ! empty( $raw['logo_delete'] ) );
+		$profile        = self::sanitize( (array) $raw );
+		$errors         = self::validate( $profile );
+		if ( $errors ) {
+			set_transient( 'tbf_form_admin_' . $fleet, [ 'values' => $profile, 'errors' => $errors ], 10 * MINUTE_IN_SECONDS );
+			wp_safe_redirect( add_query_arg( [ 'edit' => 1, 'tbf_error' => 'form' ], $panel ) );
+			exit;
+		}
+		self::admin_store( $fleet, $profile );
+		wp_safe_redirect( add_query_arg( 'tbf_done', 'saved', $panel ) );
+		exit;
+	}
+
+	/**
+	 * Where an admin's edit goes: the version under moderation, else the live one.
+	 *
+	 * @param array<string,mixed> $profile Sanitised, valid profile.
+	 * @return string 'draft' | 'live'
+	 */
+	public static function admin_store( int $fleet, array $profile ): string {
+		if ( self::get_draft( $fleet ) || ! self::get_live( $fleet ) ) {
+			update_user_meta( $fleet, self::META_DRAFT, $profile );
+			return 'draft';
+		}
+		update_user_meta( $fleet, self::META_LIVE, $profile );
+		self::sync_core( $fleet, $profile );
+		return 'live';
 	}
 
 	/**

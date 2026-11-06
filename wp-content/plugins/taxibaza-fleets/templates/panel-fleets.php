@@ -29,6 +29,8 @@ $tbf_fleet  = isset( $_GET['fleet'] ) ? absint( $_GET['fleet'] ) : 0;
 $tbf_filter = isset( $_GET['fstatus'] ) ? sanitize_key( wp_unslash( $_GET['fstatus'] ) ) : 'all';
 $tbf_q      = isset( $_GET['fs'] ) ? sanitize_text_field( wp_unslash( $_GET['fs'] ) ) : '';
 $tbf_done   = isset( $_GET['tbf_done'] ) ? sanitize_key( wp_unslash( $_GET['tbf_done'] ) ) : '';
+$tbf_edit   = ! empty( $_GET['edit'] );
+$tbf_err    = isset( $_GET['tbf_error'] ) ? sanitize_key( wp_unslash( $_GET['tbf_error'] ) ) : '';
 // phpcs:enable
 
 $tbf_opt   = static fn( string $k, string $fb ) => function_exists( 'tb_opt' ) ? tb_opt( $k, $fb ) : $fb;
@@ -103,6 +105,7 @@ if ( $tbf_fleet && Status::is_fleet( $tbf_fleet ) ) :
 		</div>
 		<div class="tbf-actions">
 			<a class="tb-fa-btn tb-fa-btn--outline" href="<?php echo esc_url( add_query_arg( [ 'tab' => 'users', 'user' => $tbf_fleet ], $panel ) ); ?>"><?php echo esc_html( t( 'fa_user_page' ) ); ?></a>
+			<?php if ( ! $tbf_edit ) : ?><a class="tb-fa-btn tb-fa-btn--outline" href="<?php echo esc_url( Admin_Panel::panel_url( [ 'fleet' => $tbf_fleet, 'edit' => 1 ] ) ); ?>"><?php echo esc_html( t( 'edit' ) ); ?></a><?php endif; ?>
 			<?php
 			foreach ( Admin_Panel::actions_for( $tbf_fleet ) as $act ) {
 				$cls = 'approve' === $act ? 'tb-fa-btn tbf-btn-accent' : ( in_array( $act, [ 'block' ], true ) ? 'tb-fa-btn tb-fa-btn--dark' : 'tb-fa-btn tb-fa-btn--outline' );
@@ -115,7 +118,24 @@ if ( $tbf_fleet && Status::is_fleet( $tbf_fleet ) ) :
 	<?php
 	$tbf_email    = $u->user_email;
 	$tbf_edit_url = '';
-	if ( $draft && $live ) :
+	if ( $tbf_edit ) :
+		// ---------------- EDIT (admin) ----------------
+		$tbf_user        = $u;
+		$tbf_form        = Profile::get_for_form( $tbf_fleet );
+		$tbf_errors      = [];
+		$tbf_flash       = get_transient( 'tbf_form_admin_' . $tbf_fleet );
+		if ( is_array( $tbf_flash ) && 'form' === $tbf_err ) {
+			$tbf_form   = array_merge( $tbf_form, (array) $tbf_flash['values'] );
+			$tbf_errors = (array) $tbf_flash['errors'];
+			delete_transient( 'tbf_form_admin_' . $tbf_fleet );
+		}
+		$tbf_cancel_url  = $back;
+		$tbf_admin_fleet = $tbf_fleet;
+		?>
+		<?php if ( 'form' === $tbf_err ) : ?><p class="tbf-notice tbf-notice--error" role="alert"><?php echo esc_html( t( 'err_form' ) ); ?></p><?php endif; ?>
+		<p class="tbf-notice" role="status"><?php echo esc_html( t( $draft || ! $live ? 'fa_edit_draft_note' : 'fa_edit_live_note' ) ); ?></p>
+		<div class="tbf-cab"><?php require __DIR__ . '/parts/profile-form.php'; ?></div>
+	<?php elseif ( $draft && $live ) :
 		?>
 		<div class="tbf-versions">
 			<div><h2 class="tbf-version-title"><?php echo esc_html( t( 'fa_new_version' ) ); ?></h2><div class="tbf-cab"><?php $tbf_p = $draft; require __DIR__ . '/parts/profile-view.php'; ?></div></div>
@@ -202,6 +222,7 @@ else :
 						echo Admin_Panel::button( $id, $act, $back, $cls ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					}
 					?>
+					<a href="<?php echo esc_url( Admin_Panel::panel_url( [ 'fleet' => $id, 'edit' => 1 ] ) ); ?>" class="tb-fa-btn tb-fa-btn--outline"><?php echo esc_html( t( 'edit' ) ); ?></a>
 					<a href="<?php echo esc_url( $detail ); ?>" class="tb-fa-btn tb-fa-btn--outline"><?php echo esc_html( t( 'fa_view' ) ); ?></a>
 				</div>
 			</div>

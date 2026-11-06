@@ -52,6 +52,9 @@ final class Admin_Panel {
 			$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/taxibaza-fleets.php' );
 			wp_enqueue_style( 'tbf-cabinet', $base . 'cabinet.css', [], VERSION );
 			wp_enqueue_style( 'tbf-panel', $base . 'panel.css', [ 'tbf-cabinet' ], VERSION );
+			if ( ! empty( $_GET['edit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- which assets to load.
+				Cabinet::enqueue_form_script();
+			}
 		}
 	}
 

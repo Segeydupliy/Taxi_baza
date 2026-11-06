@@ -43,6 +43,10 @@ namespace {
 	function wp_unslash( $s ) { return $s; }
 	function get_user_meta( $id, $k, $single = false ) { return $GLOBALS['__meta'][ $id ][ $k ] ?? ''; }
 	function update_user_meta( $id, $k, $v ) { $GLOBALS['__meta'][ $id ][ $k ] = $v; return true; }
+	$GLOBALS['__posts'] = []; $GLOBALS['__pmeta'] = [];
+	function get_post_field( $f, $id ) { return $GLOBALS['__posts'][ $id ][ $f ] ?? ''; }
+	function get_post_meta( $id, $k, $single = false ) { return $GLOBALS['__pmeta'][ $id ][ $k ] ?? ''; }
+	function update_post_meta( $id, $k, $v ) { $GLOBALS['__pmeta'][ $id ][ $k ] = $v; return true; }
 	function delete_user_meta( $id, $k ) { unset( $GLOBALS['__meta'][ $id ][ $k ] ); return true; }
 	function get_option( $k, $d = false ) { return array_key_exists( $k, $GLOBALS['__options'] ) ? $GLOBALS['__options'][ $k ] : $d; }
 	function update_option( $k, $v, $al = null ) { $GLOBALS['__options'][ $k ] = $v; return true; }
@@ -51,7 +55,11 @@ namespace {
 		foreach ( $GLOBALS['__users'] as $id => $roles ) { if ( empty( $args['role'] ) || in_array( $args['role'], $roles, true ) ) { $out[] = (string) $id; } }
 		return $out;
 	}
-	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ] ] : false; }
+	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ], 'user_email' => 'u' . $id . '@test.sk', 'display_name' => 'User ' . $id ] : false; }
+	if ( ! function_exists( 'esc_html' ) ) { function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
+	if ( ! function_exists( 'esc_attr' ) ) { function esc_attr( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
+	if ( ! function_exists( 'esc_url' ) ) { function esc_url( $s ) { return (string) $s; } }
+	function wp_mail( $to, $subj, $body, $h = [] ) { $GLOBALS['__mail'][] = compact( 'to', 'subj', 'body' ); return true; }
 	function is_admin() { return $GLOBALS['__env']['admin'] || $GLOBALS['__env']['ajax']; }
 	function wp_doing_ajax() { return $GLOBALS['__env']['ajax']; }
 	function is_page_template( $t ) { return $GLOBALS['__env']['tpl'] === $t; }
@@ -260,6 +268,26 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'slovak by default', 'Uložiť' === \TaxiBaza\Fleets\t( 'save' ) );
 	add_filter( 'wpml_current_language', fn() => 'uk' );
 	check( 'ukrainian when WPML says uk', 'Зберегти' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'en' );
+	check( 'english when WPML says en', 'Save' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	check( 'russian when WPML says ru', 'Сохранить' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'de' );
+	check( 'unknown language falls back to slovak', 'Uložiť' === \TaxiBaza\Fleets\t( 'save' ) );
+	$tbl  = require dirname( __DIR__ ) . '/includes/strings.php';
+	$bad  = [];
+	foreach ( $tbl as $k => $row ) {
+		preg_match_all( '/%(?:\d\$)?[sd]/', $row[0], $m0 );
+		sort( $m0[0] );
+		for ( $i = 0; $i < 4; $i++ ) {
+			preg_match_all( '/%(?:\d\$)?[sd]/', $row[ $i ] ?? '', $mi );
+			sort( $mi[0] );
+			if ( '' === trim( $row[ $i ] ?? '' ) || $mi[0] !== $m0[0] ) { $bad[] = "$k#$i"; }
+		}
+	}
+	check( 'all strings have 4 languages with matching placeholders (' . count( $tbl ) . ')', [] === $bad );
+	if ( $bad ) { echo '    ', implode( ', ', $bad ), "\n"; }
+	add_filter( 'wpml_current_language', fn() => 'uk' );
 	add_filter( 'wpml_translate_single_string', fn( $v, $c = '', $k = '', $l = '' ) => 'save' === $k ? 'Зберегти зміни' : $v, 10, 4 );
 	check( 'WPML override wins', 'Зберегти зміни' === \TaxiBaza\Fleets\t( 'save' ) );
 
@@ -328,6 +356,120 @@ namespace TaxiBaza\Fleets\Tests {
 	for ( $i = 0; $i < 40; $i++ ) { $N::add( 30, 'approved' ); }
 	check( 'list capped at 30', 30 === count( $N::get( 30 ) ) );
 	check( 'car owner gets nothing', [] === $N::get( 2 ) );
+
+	echo "Email on approval\n";
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][40] = [ 'car_owner' ]; \test_set_role( 40, 'fleet' );
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet' ] ) );
+	check( 'no email on submit', [] === $GLOBALS['__mail'] );
+	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin moderates in SK
+	$AP::apply( 40, 'approve' );
+	$m = $GLOBALS['__mail'][0] ?? [];
+	check( 'approval email sent to the fleet', 1 === count( $GLOBALS['__mail'] ) && 'u40@test.sk' === ( $m['to'] ?? '' ) );
+	check( 'email in the language the fleet used (ru)', str_contains( $m['subj'] ?? '', 'прошёл модерацию' ) && str_contains( $m['body'] ?? '', 'Mail Fleet' ) && str_contains( $m['body'] ?? '', 'lang="ru"' ) );
+	check( 'email links to the profile tab', str_contains( $m['body'] ?? '', '/cabinet/?tab=profile' ) );
+	$GLOBALS['__mail'] = [];
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet 2' ] ) );
+	add_filter( 'wpml_current_language', fn() => 'sk' );
+	$AP::apply( 40, 'approve' );
+	check( 'edits approval email', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'Изменения профиля' ) );
+	$GLOBALS['__mail'] = [];
+	$AP::apply( 40, 'block' );
+	$AP::apply( 40, 'unblock' );
+	check( 'no email on block; unblock back to approved sends one', 1 === count( $GLOBALS['__mail'] ) );
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][41] = [ 'car_owner' ]; \test_set_role( 41, 'fleet' );
+	update_user_meta( 41, 'tb_notify_moderation', '0' );
+	$P::submit( 41, array_merge( $p, [ 'name' => 'Quiet Fleet' ] ) );
+	$AP::apply( 41, 'approve' );
+	check( 'respects "moderation emails" opt-out', [] === $GLOBALS['__mail'] );
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][42] = [ 'car_owner' ]; \test_set_role( 42, 'fleet' );
+	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin-post.php: WPML sees the default language
+	$_POST = [ 'tbf_lang' => 'en' ];
+	$P::submit( 42, array_merge( $p, [ 'name' => 'Form Lang Fleet' ] ) );
+	$_POST = [];
+	$AP::apply( 42, 'approve' );
+	check( 'email language = language of the form page, not admin-post default', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'passed moderation' ) );
+	$_POST = [ 'tbf_lang' => 'xx' ];
+	check( 'unknown posted language ignored', 'sk' === \TaxiBaza\Fleets\Mailer::form_lang() );
+	$_POST = [];
+	$GLOBALS['__mail'] = [];
+	$AP::apply( 41, 'reject' );
+	check( 'no email on reject', [] === $GLOBALS['__mail'] );
+
+	echo "Dashboard: one moderation queue\n";
+	foreach ( [ 'is_ssl' => 'return true;', 'remove_query_arg' => 'return $a[1] ?? "";', 'wp_get_attachment_image_url' => 'return "";', 'sanitize_text_field' => 'return (string) $a[0];', 'esc_url_raw' => 'return (string) $a[0];', 'wp_json_encode' => 'return json_encode($a[0]);', 'admin_url' => 'return "https://www.taxibaza.sk/wp-admin/" . ($a[0] ?? "");', 'wp_nonce_field' => 'return "<input type=hidden name=_wpnonce value=x>";' ] as $fn => $body ) {
+		if ( ! function_exists( $fn ) ) { eval( "function $fn( ...\$a ) { $body }" ); }
+	}
+	$_SERVER['HTTP_HOST'] = 'www.taxibaza.sk'; $_SERVER['REQUEST_URI'] = '/panel/';
+	$DQ = '\TaxiBaza\Fleets\Dashboard_Queue';
+	$GLOBALS['__users'][50] = [ 'car_owner' ]; \test_set_role( 50, 'fleet' );
+	$P::submit( 50, array_merge( $p, [ 'name' => 'Queue Fleet' ] ) );
+	check( 'pending fleet is in the queue', in_array( 50, $DQ::queue(), true ) );
+	$withCards = '<h2>Q</h2><div class="tb-fa-cards" role="list"><article class="tb-fa-mod-card">CAR</article></div>';
+	$out = $DQ::inject( $withCards );
+	if ( getenv( 'TBF_DUMP' ) ) { file_put_contents( getenv( 'TBF_DUMP' ), $out ); }
+	check( 'fleet cards added before listing cards', strpos( $out, 'Queue Fleet' ) < strpos( $out, 'CAR' ) && 1 === substr_count( $out, 'tb-fa-cards' ) );
+	check( 'card has approve + reject + view', str_contains( $out, 'value="approve"' ) && str_contains( $out, 'value="reject"' ) && str_contains( $out, 'fleet=50' ) && ! str_contains( $out, 'value="block"' ) );
+	$withEmpty = '<h2>Q</h2><div class="tb-fa-empty"><svg></svg><p>No listings.</p></div><footer>F</footer>';
+	$out = $DQ::inject( $withEmpty );
+	check( 'empty state replaced by fleet cards', str_contains( $out, 'Queue Fleet' ) && ! str_contains( $out, 'tb-fa-empty' ) && str_contains( $out, '<footer>F</footer>' ) );
+	check( 'unknown markup left untouched', '<main>x</main>' === $DQ::inject( '<main>x</main>' ) );
+	$AP::apply( 50, 'approve' );
+	foreach ( $DQ::queue() as $q ) { $AP::apply( $q, 'approve' ); }
+	check( 'nothing pending -> page untouched', $withEmpty === $DQ::inject( $withEmpty ) );
+
+	echo "Consent\n";
+	$C = '\TaxiBaza\Fleets\Consent';
+	$_POST = [ 'tb_action' => 'register', 'tbf_terms' => '1' ]; $GLOBALS['__users'][60] = [ 'car_owner' ];
+	$C::on_user_register( 60 );
+	check( 'form consent stores the date (UTC) and how', preg_match( '/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/', (string) get_user_meta( 60, 'tbf_terms_accepted_at' ) ) && 'register_form' === get_user_meta( 60, 'tbf_terms_accepted_via' ) );
+	$_POST = []; $_GET = [ 'tb_google' => 'callback' ]; $GLOBALS['__users'][61] = [ 'car_owner' ];
+	$C::on_user_register( 61 );
+	check( 'new Google account must accept on first login', 1 == get_user_meta( 61, 'tbf_terms_pending' ) && '' === get_user_meta( 61, 'tbf_terms_accepted_at' ) );
+	$C::record( 61, 'google_first_login' );
+	check( 'accepting clears the gate and stores the date', '' === get_user_meta( 61, 'tbf_terms_pending' ) && 'google_first_login' === get_user_meta( 61, 'tbf_terms_accepted_via' ) );
+	$_GET = []; $GLOBALS['__users'][62] = [ 'car_owner' ];
+	$C::on_user_register( 62 );
+	check( 'other account creation (admin) is not gated', '' === get_user_meta( 62, 'tbf_terms_pending' ) );
+	if ( ! function_exists( 'get_permalink' ) ) { eval( 'function get_permalink( $id ) { return "https://www.taxibaza.sk/?page_id=" . $id; }' ); }
+	$h = $C::label_html();
+	check( 'label links both legal pages', 2 === substr_count( $h, '<a href=' ) && str_contains( $h, 'target="_blank"' ) );
+
+	echo "Fleet listing\n";
+	$L = '\TaxiBaza\Fleets\Listing_Fleet';
+	$GLOBALS['__users'][70] = [ 'fleet' ]; $GLOBALS['__users'][71] = [ 'car_owner' ];
+	update_user_meta( 70, 'tbf_profile_live', [ 'name' => 'Rapid Fleet s.r.o.' ] );
+	$GLOBALS['__posts'][700] = [ 'post_author' => 70 ]; $GLOBALS['__posts'][701] = [ 'post_author' => 71 ];
+	check( 'old fleet listing (no meta) counts as fleet listing', $L::is_fleet_listing( 700 ) && [ 'fleet' => true, 'name' => 'Rapid Fleet s.r.o.' ] === tbf_listing_owner( 700 ) );
+	check( 'owner listing never belongs to a fleet', ! $L::is_fleet_listing( 701 ) && null === tbf_listing_owner( 701 ) );
+	$GLOBALS['__env']['ajax'] = true;
+	$_POST = [ 'action' => 'tb_submit_listing', 'tbf_fleet_listing_sent' => '1' ];
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'unchecked box -> independent listing', '0' === get_post_meta( 700, 'tbf_fleet_listing' ) && [ 'fleet' => false, 'name' => 'User 70' ] === tbf_listing_owner( 700 ) );
+	$_POST['tbf_fleet_listing'] = '1';
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'checked box -> fleet listing', '1' === get_post_meta( 700, 'tbf_fleet_listing' ) && $L::is_fleet_listing( 700 ) );
+	$_POST = [ 'action' => 'tb_submit_listing' ];
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'save without our field (other form) keeps the choice', '1' === get_post_meta( 700, 'tbf_fleet_listing' ) );
+	$_POST = [ 'action' => 'tb_submit_listing', 'tbf_fleet_listing_sent' => '1' ];
+	$L::on_save( 701, (object) [ 'post_author' => 71 ] );
+	check( 'car owner listing gets no fleet meta', '' === get_post_meta( 701, 'tbf_fleet_listing' ) );
+	$GLOBALS['__env']['ajax'] = false; $_POST = [];
+
+	echo "Admin edits a fleet profile\n";
+	$P = '\TaxiBaza\Fleets\Profile';
+	$GLOBALS['__users'][80] = [ 'fleet' ];
+	update_user_meta( 80, 'tbf_profile_live', [ 'name' => 'Live' ] );
+	update_user_meta( 80, 'tbf_profile_draft', [ 'name' => 'Draft' ] );
+	check( 'pending version is edited in place', 'draft' === $P::admin_store( 80, [ 'name' => 'Fixed draft' ] + $P::defaults() ) && 'Fixed draft' === get_user_meta( 80, 'tbf_profile_draft' )['name'] && 'Live' === get_user_meta( 80, 'tbf_profile_live' )['name'] );
+	$GLOBALS['__users'][81] = [ 'fleet' ];
+	update_user_meta( 81, 'tbf_profile_live', [ 'name' => 'Live' ] );
+	check( 'approved profile without edits is updated directly', 'live' === $P::admin_store( 81, [ 'name' => 'New name' ] + $P::defaults() ) && 'New name' === get_user_meta( 81, 'tbf_profile_live' )['name'] && '' === get_user_meta( 81, 'tbf_profile_draft' ) && 'New name' === get_user_meta( 81, 'company_name' ) );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
