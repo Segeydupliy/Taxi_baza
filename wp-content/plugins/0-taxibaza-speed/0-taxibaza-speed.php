@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       TaxiBaza Speed
  * Description:       Production fixes for speed and safety: Google Fonts served locally, 301 redirects from the old legal-page addresses, stops WPML from rewriting the theme's options strings on every page view (Slovak value is always the source), stops logging PHP notices and deprecations on every request (WP_DEBUG_LOG is on in wp-config.php) and blocks public access to *.log files in wp-content. Deactivating restores the previous behaviour.
- * Version:           1.2.8
+ * Version:           1.2.9
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Focus Emotion

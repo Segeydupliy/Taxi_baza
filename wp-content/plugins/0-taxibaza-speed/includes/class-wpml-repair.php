@@ -247,6 +247,15 @@ final class WPML_Repair {
 			echo '<div class="wrap"><script type="application/json" id="tbs-ctx">' . wp_json_encode( $rows, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script></div>';
 			return;
 		}
+		if ( isset( $_GET['opts'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
+			global $wpdb;
+			$like = $wpdb->esc_like( sanitize_key( wp_unslash( $_GET['opts'] ) ) ) . '%'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT option_name, LENGTH(option_value) AS len, LEFT(option_value, 300) AS head FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s ORDER BY option_name", $like, '_transient_' . $like ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$table  = $wpdb->prefix . 'cmplz_cookiebanners';
+			$banner = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) ? $wpdb->get_results( "SELECT * FROM {$table}", ARRAY_A ) : []; // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			echo '<div class="wrap"><script type="application/json" id="tbs-opts">' . wp_json_encode( [ 'options' => $rows, 'banners' => $banner ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script></div>';
+			return;
+		}
 		if ( isset( $_GET['probe'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
 			$name = sanitize_key( wp_unslash( $_GET['probe'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$src  = (string) $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT value FROM {$GLOBALS['wpdb']->prefix}icl_strings WHERE context = %s AND name = %s", WPML_Guard::OPTIONS_CTX, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
