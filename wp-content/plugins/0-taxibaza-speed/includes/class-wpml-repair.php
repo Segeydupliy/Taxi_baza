@@ -96,6 +96,12 @@ final class WPML_Repair {
 				continue;
 			}
 			$row = [ 'id' => $r['id'], 'name' => $r['n'], 'from' => $r['src'], 'old' => $r['v'], 'sk' => $sk, 'set_lang' => 'sk' !== $r['src'], 'set_value' => $r['v'] !== $sk, 'acf_sk' => ( $r['acf']['sk'] ?? null ) !== $sk ? $sk : null, 'tr' => [], 'fix' => (bool) $fix ];
+			// WPML serves an existing Slovak "translation" row even when the source is
+			// Slovak, so it must say the same as the source.
+			$cur_sk = $r['tr']['sk'] ?? null;
+			if ( is_array( $cur_sk ) && '' !== (string) $cur_sk[0] && $cur_sk[0] !== $sk ) {
+				$row['tr']['sk'] = [ 'from' => $cur_sk[0], 'to' => $sk ];
+			}
 			foreach ( self::LANGS as $l ) {
 				$cur  = $r['tr'][ $l ] ?? null;
 				$want = $fix[ $l ] ?? null;

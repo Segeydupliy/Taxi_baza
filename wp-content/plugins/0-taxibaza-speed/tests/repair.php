@@ -30,6 +30,7 @@ $R='TaxiBaza\Speed\WPML_Repair'; $plan=$R::plan(); $by=[]; foreach($plan['rows']
 $n=0;$f=0; $ck=function($t,$c)use(&$n,&$f){$n++; echo ($c?"  ok  ":"FAIL  ").$t."\n"; if(!$c)$f++;};
 $ck('curated SK kept as new source and written to ACF SK', 'Upozornenia'===$by[1]['sk'] && 'Upozornenia'===$by[1]['acf_sk'] && $by[1]['set_lang']);
 $ck('uk-source: UK keeps what it showed (ACF UK), written as translation', ($by[1]['tr']['uk']['to']??null)==='Сповіщення');
+$ck('Slovak translation row aligned with the new source', ($by[2]['tr']['sk']['to']??null)==='Mesto' && !isset($by[1]['tr']['sk']));
 $ck('content fix applied to SK and all languages', 'Mesto'===$by[2]['sk'] && 'Mesto'===$by[2]['acf_sk'] && 'City'===$by[2]['tr']['en']['to'] && 'Город'===$by[2]['tr']['ru']['to']);
 $ck('ping-pong source text reset to Slovak, nothing else', 'Odhlásiť sa'===$by[3]['sk'] && $by[3]['set_value'] && !$by[3]['set_lang'] && []===$by[3]['tr'] && null===$by[3]['acf_sk']);
 $ck('stale UK translation replaced by what UK visitors saw', 'Зареєструватись'===$by[4]['tr']['uk']['to'] && 'Registrovať sa'===$by[4]['sk'] && null===$by[4]['acf_sk']);
