@@ -868,7 +868,7 @@ function tb_city_car_counts(): array {
 	if ( null !== $counts ) {
 		return $counts;
 	}
-	$cached = get_transient( 'tb_city_car_counts' );
+	$cached = get_transient( 'tb_city_car_counts_v2' );
 	if ( is_array( $cached ) ) {
 		$counts = $cached;
 		return $counts;
@@ -884,26 +884,33 @@ function tb_city_car_counts(): array {
 	] );
 	$groups = [];
 	$def    = tb_default_lang();
-	foreach ( $ids as $id ) {
-		$trid  = (int) apply_filters( 'wpml_element_trid', null, $id, 'post_car_listing' );
-		$group = $trid ? 't' . $trid : 'p' . $id;
-		$terms = wp_get_object_terms( $id, 'city', [ 'fields' => 'ids' ] );
-		if ( is_wp_error( $terms ) ) {
-			continue;
+	// Read the city terms straight from the DB: wp_get_object_terms() is filtered
+	// by WPML to the current language, so a listing whose city term is in
+	// another language (e.g. a Ukrainian-only listing) was not counted.
+	global $wpdb;
+	$rows = [];
+	if ( $ids ) {
+		$in   = implode( ',', array_map( 'intval', $ids ) );
+		$rows = $wpdb->get_results( "SELECT tr.object_id, tt.term_id FROM {$wpdb->term_relationships} tr JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id WHERE tt.taxonomy = 'city' AND tr.object_id IN ($in)", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- integer list.
+	}
+	$trids = [];
+	foreach ( $rows as $r ) {
+		$id = (int) $r['object_id'];
+		if ( ! isset( $trids[ $id ] ) ) {
+			$trid         = (int) apply_filters( 'wpml_element_trid', null, $id, 'post_car_listing' );
+			$trids[ $id ] = $trid ? 't' . $trid : 'p' . $id;
 		}
-		foreach ( $terms as $tid ) {
-			$sk_id                      = (int) apply_filters( 'wpml_object_id', (int) $tid, 'city', true, $def );
-			$groups[ $sk_id ][ $group ] = true;
-		}
+		$sk_id                             = (int) apply_filters( 'wpml_object_id', (int) $r['term_id'], 'city', true, $def );
+		$groups[ $sk_id ][ $trids[ $id ] ] = true;
 	}
 	$counts = array_map( 'count', $groups );
-	set_transient( 'tb_city_car_counts', $counts, 10 * MINUTE_IN_SECONDS );
+	set_transient( 'tb_city_car_counts_v2', $counts, 10 * MINUTE_IN_SECONDS );
 	return $counts;
 }
 
-add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts' ) );
-add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts' ) );
-add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts' ) );
+add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
+add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
+add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
 
 /**
  * Cards for the city grids.
