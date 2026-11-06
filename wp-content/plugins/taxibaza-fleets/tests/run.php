@@ -461,6 +461,16 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'car owner listing gets no fleet meta', '' === get_post_meta( 701, 'tbf_fleet_listing' ) );
 	$GLOBALS['__env']['ajax'] = false; $_POST = [];
 
+	echo "Admin edits a fleet profile\n";
+	$P = '\TaxiBaza\Fleets\Profile';
+	$GLOBALS['__users'][80] = [ 'fleet' ];
+	update_user_meta( 80, 'tbf_profile_live', [ 'name' => 'Live' ] );
+	update_user_meta( 80, 'tbf_profile_draft', [ 'name' => 'Draft' ] );
+	check( 'pending version is edited in place', 'draft' === $P::admin_store( 80, [ 'name' => 'Fixed draft' ] + $P::defaults() ) && 'Fixed draft' === get_user_meta( 80, 'tbf_profile_draft' )['name'] && 'Live' === get_user_meta( 80, 'tbf_profile_live' )['name'] );
+	$GLOBALS['__users'][81] = [ 'fleet' ];
+	update_user_meta( 81, 'tbf_profile_live', [ 'name' => 'Live' ] );
+	check( 'approved profile without edits is updated directly', 'live' === $P::admin_store( 81, [ 'name' => 'New name' ] + $P::defaults() ) && 'New name' === get_user_meta( 81, 'tbf_profile_live' )['name'] && '' === get_user_meta( 81, 'tbf_profile_draft' ) && 'New name' === get_user_meta( 81, 'company_name' ) );
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }

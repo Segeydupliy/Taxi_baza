@@ -283,4 +283,7 @@ return [
 	'listing_fleet_title'    => [ 'Inzerát flotily', 'Оголошення флотилії', 'Fleet listing', 'Объявление таксопарка' ],
 	'listing_fleet_label'    => [ 'Toto auto patrí mojej flotile „%s“', 'Це авто належить моїй флотилії «%s»', 'This car belongs to my fleet “%s”', 'Это авто принадлежит моему таксопарку «%s»' ],
 	'listing_fleet_hint'     => [ 'Ak nezaškrtnete, inzerát sa zobrazí ako samostatný, bez názvu flotily.', 'Якщо не позначити, оголошення буде показане як незалежне, без назви флотилії.', 'If unchecked, the listing is shown as an independent one, without the fleet name.', 'Если не отмечать, объявление будет показано как независимое, без названия таксопарка.' ],
+	'fa_edit_draft_note'     => [ 'Upravujete verziu, ktorá čaká na moderáciu. Po uložení ju ešte schváľte.', 'Ви редагуєте версію, що чекає на модерацію. Після збереження її ще треба схвалити.', 'You are editing the version awaiting moderation. Approve it after saving.', 'Вы редактируете версию, ожидающую модерации. После сохранения её нужно одобрить.' ],
+	'fa_edit_live_note'      => [ 'Zmeny sa po uložení hneď zobrazia v profile flotily.', 'Після збереження зміни одразу з’являться в профілі флотилії.', 'Changes appear in the fleet profile right after saving.', 'После сохранения изменения сразу появятся в профиле таксопарка.' ],
+	'fa_done_saved'          => [ 'Profil flotily bol uložený.', 'Профіль флотилії збережено.', 'The fleet profile has been saved.', 'Профиль таксопарка сохранён.' ],
 ];

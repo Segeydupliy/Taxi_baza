@@ -109,7 +109,7 @@ final class Dashboard_Queue {
 			$cls    = 'approve' === $act ? 'tb-fa-btn tb-fa-btn--accent' : 'tb-fa-btn tb-fa-btn--dark';
 			$acts[] = Admin_Panel::button( $fleet, $act, $back, $cls );
 		}
-		array_splice( $acts, max( 0, count( $acts ) - 1 ), 0, '<a href="' . esc_url( $view ) . '" class="tb-fa-btn tb-fa-btn--outline">' . esc_html( t( 'fa_view' ) ) . '</a>' );
+		array_splice( $acts, max( 0, count( $acts ) - 1 ), 0, '<a href="' . esc_url( Admin_Panel::panel_url( [ 'fleet' => $fleet, 'edit' => 1 ] ) ) . '" class="tb-fa-btn tb-fa-btn--outline">' . esc_html( t( 'edit' ) ) . '</a><a href="' . esc_url( $view ) . '" class="tb-fa-btn tb-fa-btn--outline">' . esc_html( t( 'fa_view' ) ) . '</a>' );
 
 		return '<article class="tb-fa-mod-card tbf-mod-card" data-fleet-id="' . (int) $fleet . '" role="listitem">'
 			. '<div class="tb-fa-mod-card__body">'
