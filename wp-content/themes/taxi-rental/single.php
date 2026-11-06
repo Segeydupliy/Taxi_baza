@@ -61,7 +61,7 @@ while ( have_posts() ) :
 				</a>
 				<?php endif; ?>
 				<p class="tb-post-card__meta">
-					<?php echo esc_html( get_the_date( 'j F Y' ) ); ?> · <?php echo esc_html( taxi_rental_reading_time( get_the_ID() ) ); ?>
+					<?php echo esc_html( tb_date_label( (int) get_post_timestamp() ) ); ?>
 				</p>
 			</div>
 		</header>
@@ -72,7 +72,7 @@ while ( have_posts() ) :
 		</div>
 		<?php endif; ?>
 
-		<div class="tb-post__layout">
+		<div class="tb-post__layout<?php echo $toc ? '' : ' tb-post__layout--no-toc'; ?>">
 
 			<?php if ( $toc ) : ?>
 			<aside class="tb-post__toc">

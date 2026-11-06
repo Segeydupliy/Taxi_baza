@@ -223,8 +223,8 @@ $lbl_ok_btn   = tb_opt( 'tb_sng_ok_btn', 'Nájsť iné auto' );
 						$consent_tpl,
 						[ 'a' => [ 'href' => [], 'target' => [], 'rel' => [] ] ]
 					),
-					'<a href="' . esc_url( home_url( '/konfidenzialnist/' ) ) . '">' . esc_html( $lbl_privacy ) . '</a>',
-					'<a href="' . esc_url( home_url( '/umovy/' ) ) . '">' . esc_html( $lbl_terms_link ) . '</a>'
+					'<a href="' . esc_url( tb_legal_url( 'privacy' ) ) . '">' . esc_html( $lbl_privacy ) . '</a>',
+					'<a href="' . esc_url( tb_legal_url( 'terms' ) ) . '">' . esc_html( $lbl_terms_link ) . '</a>'
 				);
 				?>
 			</p>

@@ -527,6 +527,115 @@ function tb_user_avatar_id( int $user_id = 0 ): int {
 }
 
 /**
+ * Current WPML language code (sk when WPML is off).
+ */
+function tb_lang(): string {
+	$lang = apply_filters( 'wpml_current_language', null );
+	return is_string( $lang ) && '' !== $lang ? $lang : 'sk';
+}
+
+/**
+ * Month names per language, lower case as the languages require. Nominative
+ * for "október 2026", genitive for "1. novembra 2026" / "1 листопада 2026".
+ *
+ * @return array{nom:string[],gen:string[]}
+ */
+function tb_month_names( string $lang ): array {
+	$m = [
+		'sk' => [
+			'nom' => [ 'január', 'február', 'marec', 'apríl', 'máj', 'jún', 'júl', 'august', 'september', 'október', 'november', 'december' ],
+			'gen' => [ 'januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra' ],
+		],
+		'uk' => [
+			'nom' => [ 'січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень' ],
+			'gen' => [ 'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня' ],
+		],
+		'ru' => [
+			'nom' => [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+			'gen' => [ 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' ],
+		],
+		'en' => [
+			'nom' => [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+			'gen' => [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+		],
+	];
+	return $m[ $lang ] ?? $m['sk'];
+}
+
+/**
+ * Date in the page language, built with wp_date() (no ucfirst):
+ * sk "1. novembra 2026", uk "1 листопада 2026", ru "1 ноября 2026", en "1 November 2026".
+ * With $month_only: "október 2026", "листопад 2026", "October 2026".
+ */
+function tb_date_label( int $timestamp, bool $month_only = false, ?string $lang = null ): string {
+	$lang  = $lang ?? tb_lang();
+	$names = tb_month_names( $lang );
+	$month = (int) wp_date( 'n', $timestamp ) - 1;
+	$year  = wp_date( 'Y', $timestamp );
+	if ( $month_only ) {
+		return $names['nom'][ $month ] . ' ' . $year;
+	}
+	$day = wp_date( 'j', $timestamp );
+	return ( 'sk' === $lang ? $day . '.' : $day ) . ' ' . $names['gen'][ $month ] . ' ' . $year;
+}
+
+/**
+ * Link to a legal page by ID, in the current language (survives slug changes).
+ *
+ * @param string $which 'privacy' (page 3) or 'terms' (page 17).
+ */
+function tb_legal_url( string $which ): string {
+	$id  = 'terms' === $which ? 17 : 3;
+	$tid = (int) apply_filters( 'wpml_object_id', $id, 'page', true );
+	$url = $tid ? get_permalink( $tid ) : '';
+	return $url ? $url : home_url( '/' );
+}
+
+/**
+ * "Updated:" prefix for the legal pages, per language.
+ */
+function tb_legal_updated_prefix( ?string $lang = null ): string {
+	$p = [ 'sk' => 'Aktualizované:', 'uk' => 'Оновлено:', 'en' => 'Updated:', 'ru' => 'Обновлено:' ];
+	return $p[ $lang ?? tb_lang() ] ?? $p['sk'];
+}
+
+// Editable "last updated" date for text pages (Privacy, Terms). ACFML copies it
+// to the translations, so one date serves every language.
+add_action(
+	'acf/init',
+	static function (): void {
+		if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+			return;
+		}
+		acf_add_local_field_group(
+			[
+				'key'      => 'group_tb_legal_updated',
+				'title'    => 'Dátum aktualizácie',
+				'fields'   => [
+					[
+						'key'                 => 'field_tb_legal_updated_date',
+						'label'               => 'Dátum poslednej aktualizácie',
+						'name'                => 'tb_updated_date',
+						'type'                => 'date_picker',
+						'instructions'        => 'Zobrazí sa pod nadpisom ako „Aktualizované: október 2026“ v jazyku stránky. Ak je prázdne, použije sa dátum poslednej úpravy stránky.',
+						'display_format'      => 'd.m.Y',
+						'return_format'       => 'Ymd',
+						'wpml_cf_preferences' => 1,
+					],
+				],
+				'location' => [
+					[
+						[ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ],
+						[ 'param' => 'page_template', 'operator' => '==', 'value' => 'default' ],
+					],
+				],
+				'position' => 'side',
+			]
+		);
+	}
+);
+
+/**
  * Pick the right plural form for a Slavic count.
  *
  * _n() cannot do this job here. It delegates to the locale's plural rules,

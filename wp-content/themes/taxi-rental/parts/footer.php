@@ -52,8 +52,8 @@ if ( empty( $support_links ) ) {
 		[ 'label' => __( 'Контакти',                  'taxi-rental' ), 'url' => '/kontakt/'              ],
 		[ 'label' => __( 'Питання та відповіді',      'taxi-rental' ), 'url' => '/pro-nas/#faq'           ],
 		[ 'label' => __( 'Telegram',                  'taxi-rental' ), 'url' => tb_telegram_url()         ],
-		[ 'label' => __( 'Політика конфіденційності', 'taxi-rental' ), 'url' => '/konfidenzialnist/'      ],
-		[ 'label' => __( 'Правила користування',      'taxi-rental' ), 'url' => '/umovy/'                 ],
+		[ 'label' => __( 'Політика конфіденційності', 'taxi-rental' ), 'url' => '/ochrana-osobnych-udajov/' ],
+		[ 'label' => __( 'Правила користування',      'taxi-rental' ), 'url' => '/podmienky-pouzivania/'    ],
 	];
 }
 
@@ -61,6 +61,14 @@ if ( empty( $support_links ) ) {
  * Resolve a repeater item URL: absolute URLs pass through; relative paths get home_url() prepended.
  */
 $resolve_url = static function ( string $url ): string {
+	// Legal pages by ID: the menu items saved in the options still carry the old
+	// slugs (/konfidenzialnist/, /umovy/, renamed 1.11.2026) or the new ones.
+	if ( preg_match( '#^/(konfidenzialnist|ochrana-osobnych-udajov)/?$#', $url ) ) {
+		return tb_legal_url( 'privacy' );
+	}
+	if ( preg_match( '#^/(umovy|podmienky-pouzivania)/?$#', $url ) ) {
+		return tb_legal_url( 'terms' );
+	}
 	return str_starts_with( $url, 'http' ) ? $url : home_url( $url );
 };
 ?>
@@ -160,10 +168,10 @@ $resolve_url = static function ( string $url ): string {
 				</span>
 			</p>
 			<div class="tb-footer__bottom-links">
-				<a href="<?php echo esc_url( home_url( tb_opt( 'tb_footer_privacy_url', __( '/konfidenzialnist/', 'taxi-rental' ) ) ) ); ?>" class="tb-footer__bottom-link">
+				<a href="<?php echo esc_url( tb_legal_url( 'privacy' ) ); ?>" class="tb-footer__bottom-link">
 					<?php echo esc_html( tb_opt( 'tb_footer_privacy_label', __( 'Zásady ochrany osobných údajov', 'taxi-rental' ) ) ); ?>
 				</a>
-				<a href="<?php echo esc_url( home_url( tb_opt( 'tb_footer_terms_url', __( '/umovy/', 'taxi-rental' ) ) ) ); ?>" class="tb-footer__bottom-link">
+				<a href="<?php echo esc_url( tb_legal_url( 'terms' ) ); ?>" class="tb-footer__bottom-link">
 					<?php echo esc_html( tb_opt( 'tb_footer_terms_label', __( 'Podmienky používania', 'taxi-rental' ) ) ); ?>
 				</a>
 				<span class="tb-footer__lang">

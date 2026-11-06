@@ -31,7 +31,7 @@ $category = get_the_category();
 			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 		</h3>
 		<p class="tb-post-card__meta">
-			<?php echo esc_html( get_the_date( 'j F Y' ) ); ?> · <?php echo esc_html( taxi_rental_reading_time( get_the_ID() ) ); ?>
+			<?php echo esc_html( tb_date_label( (int) get_post_timestamp() ) ); ?>
 		</p>
 	</div>
 </article>
