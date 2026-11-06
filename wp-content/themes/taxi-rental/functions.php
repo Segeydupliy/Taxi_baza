@@ -987,3 +987,23 @@ function tb_footer_rows( $rows ): array {
 		return is_array( $r ) && '' !== trim( (string) ( $r['label'] ?? '' ) );
 	} ) );
 }
+
+/**
+ * Year of manufacture can't be in the future (the form only offers years up to
+ * the current one; this also stops a hand-made request). Runs before the core
+ * handlers of the listing form and the front admin.
+ */
+function tb_reject_future_year(): void {
+	$year = absint( wp_unslash( $_POST['year'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read only; the core handler verifies its nonce.
+	if ( $year > (int) wp_date( 'Y' ) ) {
+		$msg = [
+			'sk' => 'Rok výroby nemôže byť v budúcnosti.',
+			'uk' => 'Рік випуску не може бути в майбутньому.',
+			'en' => 'The year of manufacture can’t be in the future.',
+			'ru' => 'Год выпуска не может быть в будущем.',
+		];
+		wp_send_json_error( [ 'message' => $msg[ tb_lang() ] ?? $msg['sk'] ] );
+	}
+}
+add_action( 'wp_ajax_tb_submit_listing', 'tb_reject_future_year', 0 );
+add_action( 'wp_ajax_tb_fa_save_listing', 'tb_reject_future_year', 0 );
