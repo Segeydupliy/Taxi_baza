@@ -240,6 +240,13 @@ final class WPML_Repair {
 			echo '<div class="wrap"><h1>TaxiBaza WPML — matrix</h1><script type="application/json" id="tbs-matrix">' . wp_json_encode( self::matrix(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script><p>Rows: ' . count( self::matrix() ) . '</p></div>';
 			return;
 		}
+		if ( isset( $_GET['ctx'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
+			global $wpdb;
+			$like = $wpdb->esc_like( sanitize_text_field( wp_unslash( $_GET['ctx'] ) ) ) . '%'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT s.id, s.context, s.name, s.language, s.value, t.language AS tl, t.value AS tv, t.status FROM {$wpdb->prefix}icl_strings s LEFT JOIN {$wpdb->prefix}icl_string_translations t ON t.string_id = s.id WHERE s.context LIKE %s ORDER BY s.id", $like ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			echo '<div class="wrap"><script type="application/json" id="tbs-ctx">' . wp_json_encode( $rows, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . '</script></div>';
+			return;
+		}
 		if ( isset( $_GET['probe'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
 			$name = sanitize_key( wp_unslash( $_GET['probe'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$src  = (string) $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT value FROM {$GLOBALS['wpdb']->prefix}icl_strings WHERE context = %s AND name = %s", WPML_Guard::OPTIONS_CTX, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
@@ -249,6 +256,19 @@ final class WPML_Repair {
 			}
 			echo '<div class="wrap"><pre id="tbs-probe">' . esc_html( (string) wp_json_encode( $out, JSON_UNESCAPED_UNICODE ) ) . '</pre></div>';
 			return;
+		}
+		if ( isset( $_POST['tbs_add_tr'] ) && check_admin_referer( self::NONCE ) && function_exists( 'icl_add_string_translation' ) ) {
+			// [[string_id, lang, text], …] — complete translations written through WPML.
+			$items = json_decode( (string) wp_unslash( $_POST['tbs_add_tr'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- texts are stored by WPML as entered.
+			$n     = 0;
+			foreach ( (array) $items as $it ) {
+				if ( is_array( $it ) && 3 === count( $it ) && in_array( $it[1], [ 'sk', 'uk', 'en', 'ru' ], true ) ) {
+					icl_add_string_translation( (int) $it[0], $it[1], wp_kses_post( (string) $it[2] ), self::STATUS );
+					$n++;
+				}
+			}
+			wp_cache_flush();
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Translations written: %d.', $n ) ) . '</p></div>';
 		}
 		if ( isset( $_POST['tbs_touch'] ) && check_admin_referer( self::NONCE ) ) {
 			$names = array_filter( array_map( 'sanitize_key', preg_split( '/[\s,]+/', (string) wp_unslash( $_POST['tbs_touch'] ) ) ) );
