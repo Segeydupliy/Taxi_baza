@@ -973,3 +973,17 @@ function tb_page_template_by_source_slug( array $templates ): array {
 	return $templates;
 }
 add_filter( 'page_template_hierarchy', 'tb_page_template_by_source_slug' );
+
+/**
+ * Footer link rows from an ACF repeater. A language whose repeater was never
+ * filled returns false or '' from ACF, which (array) turned into one empty
+ * row — the column showed nothing instead of the built-in default links.
+ *
+ * @param mixed $rows Repeater value.
+ * @return array<int,array{label:string,url:string}>
+ */
+function tb_footer_rows( $rows ): array {
+	return array_values( array_filter( is_array( $rows ) ? $rows : [], static function ( $r ) {
+		return is_array( $r ) && '' !== trim( (string) ( $r['label'] ?? '' ) );
+	} ) );
+}

@@ -5,13 +5,8 @@ $catalog_url  = get_post_type_archive_link( 'car_listing' );
 $register_url = add_query_arg( 'action', 'register', tb_url( '/login/' ) );
 
 // City terms for Міста column — top 8 by count.
-$footer_cities = get_terms( [
-	'taxonomy'   => 'city',
-	'hide_empty' => false,
-	'number'     => 8,
-	'orderby'    => 'count',
-	'order'      => 'DESC',
-] );
+// Same cities in every language (see tb_city_cards()).
+$footer_cities = array_column( tb_city_cards( 'count', 8 ), 'term' );
 
 // -------------------------------------------------------------------------
 // ACF nav column data (repeaters seeded on first admin visit).
@@ -24,7 +19,7 @@ $sup_heading  = tb_opt( 'tb_footer_support_heading',  __( 'Підтримка', 
 $lbl_all_cities = tb_opt( 'tb_footer_cities_all',     __( 'Всі міста', 'taxi-rental' ) );
 $lbl_lang       = tb_opt( 'tb_footer_lang_label',     __( 'Українська', 'taxi-rental' ) );
 
-$nav_links = (array) tb_opt( 'tb_footer_nav_links', [] );
+$nav_links = tb_footer_rows( tb_opt( 'tb_footer_nav_links', [] ) );
 if ( empty( $nav_links ) ) {
 	$nav_links = [
 		[ 'label' => __( 'Головна',      'taxi-rental' ), 'url' => '/'         ],
@@ -36,7 +31,7 @@ if ( empty( $nav_links ) ) {
 	];
 }
 
-$platform_links = (array) tb_opt( 'tb_footer_platform_links', [] );
+$platform_links = tb_footer_rows( tb_opt( 'tb_footer_platform_links', [] ) );
 if ( empty( $platform_links ) ) {
 	$platform_links = [
 		[ 'label' => __( 'Як це працює?', 'taxi-rental' ), 'url' => '/pro-nas/'                                                   ],
@@ -46,7 +41,7 @@ if ( empty( $platform_links ) ) {
 	];
 }
 
-$support_links = (array) tb_opt( 'tb_footer_support_links', [] );
+$support_links = tb_footer_rows( tb_opt( 'tb_footer_support_links', [] ) );
 if ( empty( $support_links ) ) {
 	$support_links = [
 		[ 'label' => __( 'Контакти',                  'taxi-rental' ), 'url' => '/kontakt/'              ],
