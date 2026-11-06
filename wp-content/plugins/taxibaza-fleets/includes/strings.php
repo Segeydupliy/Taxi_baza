@@ -272,4 +272,12 @@ return [
 	'mail_button'            => [ 'Otvoriť profil', 'Відкрити профіль', 'Open profile', 'Открыть профиль' ],
 	'mail_sign'              => [ 'Tím TaxiBaza.sk', 'Команда TaxiBaza.sk', 'The TaxiBaza.sk team', 'Команда TaxiBaza.sk' ],
 	'fa_queue_type'          => [ 'Flotila', 'Флотилія', 'Fleet', 'Таксопарк' ],
+	'terms_label'            => [ 'Súhlasím s %1$s a %2$s.', 'Погоджуюсь з %1$s та %2$s.', 'I agree to the %1$s and the %2$s.', 'Я соглашаюсь с %1$s и %2$s.' ],
+	'terms_link_terms'       => [ 'Podmienkami používania', 'Умовами користування', 'Terms of Use', 'Условиями использования' ],
+	'terms_link_privacy'     => [ 'Zásadami ochrany osobných údajov', 'Політикою конфіденційності', 'Privacy Policy', 'Политикой конфиденциальности' ],
+	'terms_error'            => [ 'Na pokračovanie je potrebný súhlas s podmienkami.', 'Щоб продовжити, потрібна згода з умовами.', 'Please accept the terms to continue.', 'Чтобы продолжить, нужно согласие с условиями.' ],
+	'terms_title'            => [ 'Ešte jeden krok', 'Ще один крок', 'One more step', 'Ещё один шаг' ],
+	'terms_lead'             => [ 'Pred prvým použitím účtu potvrďte, prosím, súhlas s podmienkami.', 'Перед першим використанням акаунта підтвердьте, будь ласка, згоду з умовами.', 'Before using your account for the first time, please confirm that you accept the terms.', 'Перед первым использованием аккаунта подтвердите, пожалуйста, согласие с условиями.' ],
+	'terms_accept'           => [ 'Pokračovať', 'Продовжити', 'Continue', 'Продолжить' ],
+	'terms_logout'           => [ 'Odhlásiť sa', 'Вийти', 'Log out', 'Выйти' ],
 ];

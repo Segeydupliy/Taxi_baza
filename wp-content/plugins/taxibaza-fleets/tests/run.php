@@ -418,6 +418,23 @@ namespace TaxiBaza\Fleets\Tests {
 	foreach ( $DQ::queue() as $q ) { $AP::apply( $q, 'approve' ); }
 	check( 'nothing pending -> page untouched', $withEmpty === $DQ::inject( $withEmpty ) );
 
+	echo "Consent\n";
+	$C = '\TaxiBaza\Fleets\Consent';
+	$_POST = [ 'tb_action' => 'register', 'tbf_terms' => '1' ]; $GLOBALS['__users'][60] = [ 'car_owner' ];
+	$C::on_user_register( 60 );
+	check( 'form consent stores the date (UTC) and how', preg_match( '/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/', (string) get_user_meta( 60, 'tbf_terms_accepted_at' ) ) && 'register_form' === get_user_meta( 60, 'tbf_terms_accepted_via' ) );
+	$_POST = []; $_GET = [ 'tb_google' => 'callback' ]; $GLOBALS['__users'][61] = [ 'car_owner' ];
+	$C::on_user_register( 61 );
+	check( 'new Google account must accept on first login', 1 == get_user_meta( 61, 'tbf_terms_pending' ) && '' === get_user_meta( 61, 'tbf_terms_accepted_at' ) );
+	$C::record( 61, 'google_first_login' );
+	check( 'accepting clears the gate and stores the date', '' === get_user_meta( 61, 'tbf_terms_pending' ) && 'google_first_login' === get_user_meta( 61, 'tbf_terms_accepted_via' ) );
+	$_GET = []; $GLOBALS['__users'][62] = [ 'car_owner' ];
+	$C::on_user_register( 62 );
+	check( 'other account creation (admin) is not gated', '' === get_user_meta( 62, 'tbf_terms_pending' ) );
+	if ( ! function_exists( 'get_permalink' ) ) { eval( 'function get_permalink( $id ) { return "https://www.taxibaza.sk/?page_id=" . $id; }' ); }
+	$h = $C::label_html();
+	check( 'label links both legal pages', 2 === substr_count( $h, '<a href=' ) && str_contains( $h, 'target="_blank"' ) );
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }
