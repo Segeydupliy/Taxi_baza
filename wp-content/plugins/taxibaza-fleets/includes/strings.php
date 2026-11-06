@@ -280,4 +280,7 @@ return [
 	'terms_lead'             => [ 'Pred prvým použitím účtu potvrďte, prosím, súhlas s podmienkami.', 'Перед першим використанням акаунта підтвердьте, будь ласка, згоду з умовами.', 'Before using your account for the first time, please confirm that you accept the terms.', 'Перед первым использованием аккаунта подтвердите, пожалуйста, согласие с условиями.' ],
 	'terms_accept'           => [ 'Pokračovať', 'Продовжити', 'Continue', 'Продолжить' ],
 	'terms_logout'           => [ 'Odhlásiť sa', 'Вийти', 'Log out', 'Выйти' ],
+	'listing_fleet_title'    => [ 'Inzerát flotily', 'Оголошення флотилії', 'Fleet listing', 'Объявление таксопарка' ],
+	'listing_fleet_label'    => [ 'Toto auto patrí mojej flotile „%s“', 'Це авто належить моїй флотилії «%s»', 'This car belongs to my fleet “%s”', 'Это авто принадлежит моему таксопарку «%s»' ],
+	'listing_fleet_hint'     => [ 'Ak nezaškrtnete, inzerát sa zobrazí ako samostatný, bez názvu flotily.', 'Якщо не позначити, оголошення буде показане як незалежне, без назви флотилії.', 'If unchecked, the listing is shown as an independent one, without the fleet name.', 'Если не отмечать, объявление будет показано как независимое, без названия таксопарка.' ],
 ];

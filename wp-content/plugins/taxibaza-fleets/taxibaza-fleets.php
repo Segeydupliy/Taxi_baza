@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       TaxiBaza Fleets
  * Description:       Fleet (flotila) profiles, profile moderation and visibility of fleet listings for TaxiBaza.sk. Works on top of taxi-rental-core without changing its data.
- * Version:           0.5.0
+ * Version:           0.6.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Focus Emotion
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 const FILE    = __FILE__;
 
 require_once __DIR__ . '/includes/class-i18n.php';
@@ -33,6 +33,8 @@ require_once __DIR__ . '/includes/class-notifications.php';
 require_once __DIR__ . '/includes/class-mailer.php';
 require_once __DIR__ . '/includes/class-dashboard-queue.php';
 require_once __DIR__ . '/includes/class-consent.php';
+require_once __DIR__ . '/includes/class-listing-fleet.php';
+require_once __DIR__ . '/includes/functions.php';
 
 add_action(
 	'plugins_loaded',
@@ -50,6 +52,7 @@ add_action(
 		Mailer::init();
 		Dashboard_Queue::init();
 		Consent::init();
+		Listing_Fleet::init();
 	},
 	20
 );

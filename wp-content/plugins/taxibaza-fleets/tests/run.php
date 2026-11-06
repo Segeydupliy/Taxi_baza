@@ -43,6 +43,10 @@ namespace {
 	function wp_unslash( $s ) { return $s; }
 	function get_user_meta( $id, $k, $single = false ) { return $GLOBALS['__meta'][ $id ][ $k ] ?? ''; }
 	function update_user_meta( $id, $k, $v ) { $GLOBALS['__meta'][ $id ][ $k ] = $v; return true; }
+	$GLOBALS['__posts'] = []; $GLOBALS['__pmeta'] = [];
+	function get_post_field( $f, $id ) { return $GLOBALS['__posts'][ $id ][ $f ] ?? ''; }
+	function get_post_meta( $id, $k, $single = false ) { return $GLOBALS['__pmeta'][ $id ][ $k ] ?? ''; }
+	function update_post_meta( $id, $k, $v ) { $GLOBALS['__pmeta'][ $id ][ $k ] = $v; return true; }
 	function delete_user_meta( $id, $k ) { unset( $GLOBALS['__meta'][ $id ][ $k ] ); return true; }
 	function get_option( $k, $d = false ) { return array_key_exists( $k, $GLOBALS['__options'] ) ? $GLOBALS['__options'][ $k ] : $d; }
 	function update_option( $k, $v, $al = null ) { $GLOBALS['__options'][ $k ] = $v; return true; }
@@ -434,6 +438,28 @@ namespace TaxiBaza\Fleets\Tests {
 	if ( ! function_exists( 'get_permalink' ) ) { eval( 'function get_permalink( $id ) { return "https://www.taxibaza.sk/?page_id=" . $id; }' ); }
 	$h = $C::label_html();
 	check( 'label links both legal pages', 2 === substr_count( $h, '<a href=' ) && str_contains( $h, 'target="_blank"' ) );
+
+	echo "Fleet listing\n";
+	$L = '\TaxiBaza\Fleets\Listing_Fleet';
+	$GLOBALS['__users'][70] = [ 'fleet' ]; $GLOBALS['__users'][71] = [ 'car_owner' ];
+	update_user_meta( 70, 'tbf_profile_live', [ 'name' => 'Rapid Fleet s.r.o.' ] );
+	$GLOBALS['__posts'][700] = [ 'post_author' => 70 ]; $GLOBALS['__posts'][701] = [ 'post_author' => 71 ];
+	check( 'old fleet listing (no meta) counts as fleet listing', $L::is_fleet_listing( 700 ) && [ 'fleet' => true, 'name' => 'Rapid Fleet s.r.o.' ] === tbf_listing_owner( 700 ) );
+	check( 'owner listing never belongs to a fleet', ! $L::is_fleet_listing( 701 ) && null === tbf_listing_owner( 701 ) );
+	$GLOBALS['__env']['ajax'] = true;
+	$_POST = [ 'action' => 'tb_submit_listing', 'tbf_fleet_listing_sent' => '1' ];
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'unchecked box -> independent listing', '0' === get_post_meta( 700, 'tbf_fleet_listing' ) && [ 'fleet' => false, 'name' => 'User 70' ] === tbf_listing_owner( 700 ) );
+	$_POST['tbf_fleet_listing'] = '1';
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'checked box -> fleet listing', '1' === get_post_meta( 700, 'tbf_fleet_listing' ) && $L::is_fleet_listing( 700 ) );
+	$_POST = [ 'action' => 'tb_submit_listing' ];
+	$L::on_save( 700, (object) [ 'post_author' => 70 ] );
+	check( 'save without our field (other form) keeps the choice', '1' === get_post_meta( 700, 'tbf_fleet_listing' ) );
+	$_POST = [ 'action' => 'tb_submit_listing', 'tbf_fleet_listing_sent' => '1' ];
+	$L::on_save( 701, (object) [ 'post_author' => 71 ] );
+	check( 'car owner listing gets no fleet meta', '' === get_post_meta( 701, 'tbf_fleet_listing' ) );
+	$GLOBALS['__env']['ajax'] = false; $_POST = [];
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
