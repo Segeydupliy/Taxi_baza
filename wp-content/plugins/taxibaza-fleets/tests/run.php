@@ -471,6 +471,15 @@ namespace TaxiBaza\Fleets\Tests {
 	update_user_meta( 81, 'tbf_profile_live', [ 'name' => 'Live' ] );
 	check( 'approved profile without edits is updated directly', 'live' === $P::admin_store( 81, [ 'name' => 'New name' ] + $P::defaults() ) && 'New name' === get_user_meta( 81, 'tbf_profile_live' )['name'] && '' === get_user_meta( 81, 'tbf_profile_draft' ) && 'New name' === get_user_meta( 81, 'company_name' ) );
 
+	echo "Rental request in the bell\n";
+	$N = '\TaxiBaza\Fleets\Notifications';
+	$GLOBALS['__users'][90] = [ 'car_owner' ];
+	$GLOBALS['__posts'][900] = [ 'post_author' => 90 ];
+	if ( ! function_exists( 'get_the_title' ) ) { eval( 'function get_the_title( $id ) { return "Audi A1 2018"; }' ); }
+	$N::on_rental_request( 900, 'Oleg Driver' );
+	$list = $N::get( 90 );
+	check( 'owner gets an unread "rental_request" notification', 1 === count( $list ) && 'rental_request' === $list[0]['type'] && 900 === $list[0]['args']['listing'] && 1 === $N::unread( 90 ) );
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }

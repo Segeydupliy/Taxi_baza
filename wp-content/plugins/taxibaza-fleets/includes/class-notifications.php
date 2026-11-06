@@ -27,6 +27,9 @@ final class Notifications {
 		add_action( 'tbf_edits_rejected', [ self::class, 'on_edits_rejected' ] );
 		add_action( 'wp_ajax_tbf_notifications_read', [ self::class, 'ajax_read' ] );
 		add_action( 'wp_footer', [ self::class, 'render_bell' ], 60 );
+		// Rental request from a listing page ("Kontaktovať vlastníka", core action).
+		add_action( 'wp_ajax_taxi_rental_owner_message', [ self::class, 'watch_request' ], 1 );
+		add_action( 'wp_ajax_nopriv_taxi_rental_owner_message', [ self::class, 'watch_request' ], 1 );
 	}
 
 	/**
@@ -139,8 +142,46 @@ final class Notifications {
 				return [ 't' => t( 'n_rejected_t' ), 'd' => t( 'n_rejected_d' ), 'url' => Cabinet::profile_url() ];
 			case 'blocked':
 				return [ 't' => t( 'n_blocked_t' ), 'd' => t( 'n_blocked_d' ), 'url' => Cabinet::profile_url() ];
+			case 'rental_request':
+				$listing = (int) ( $args['listing'] ?? 0 );
+				$url     = $listing ? (string) get_permalink( (int) apply_filters( 'wpml_object_id', $listing, 'car_listing', true ) ) : '';
+				return [ 't' => t( 'n_request_t' ), 'd' => sprintf( t( 'n_request_d' ), '' !== $name ? $name : '—', (string) ( $args['title'] ?? '' ) ), 'url' => $url ];
 		}
 		return [ 't' => '', 'd' => '', 'url' => '' ];
+	}
+
+	/**
+	 * The core handler answers with wp_send_json() and exits, so its result is
+	 * read from the output buffer at shutdown: only a request that was really
+	 * sent produces a bell notification for the listing's owner.
+	 */
+	public static function watch_request(): void {
+		$listing_id = isset( $_POST['listing_id'] ) ? absint( $_POST['listing_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- the core handler checks its nonce; nothing is stored unless it succeeds.
+		if ( ! $listing_id ) {
+			return;
+		}
+		$name = trim( sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) ) . ' ' . sanitize_text_field( wp_unslash( $_POST['last_name'] ?? '' ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		ob_start();
+		add_action(
+			'shutdown',
+			static function () use ( $listing_id, $name ): void {
+				$out  = (string) ob_get_contents();
+				$json = json_decode( $out, true );
+				if ( empty( $json['success'] ) ) {
+					return;
+				}
+				self::on_rental_request( $listing_id, $name );
+			},
+			0
+		);
+	}
+
+	public static function on_rental_request( int $listing_id, string $name ): void {
+		$owner = (int) get_post_field( 'post_author', $listing_id );
+		if ( ! $owner ) {
+			return;
+		}
+		self::add( $owner, 'rental_request', [ 'listing' => $listing_id, 'name' => $name, 'title' => (string) get_the_title( $listing_id ) ] );
 	}
 
 	public static function ajax_read(): void {

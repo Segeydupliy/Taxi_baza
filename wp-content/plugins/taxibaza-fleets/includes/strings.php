@@ -286,4 +286,6 @@ return [
 	'fa_edit_draft_note'     => [ 'Upravujete verziu, ktorá čaká na moderáciu. Po uložení ju ešte schváľte.', 'Ви редагуєте версію, що чекає на модерацію. Після збереження її ще треба схвалити.', 'You are editing the version awaiting moderation. Approve it after saving.', 'Вы редактируете версию, ожидающую модерации. После сохранения её нужно одобрить.' ],
 	'fa_edit_live_note'      => [ 'Zmeny sa po uložení hneď zobrazia v profile flotily.', 'Після збереження зміни одразу з’являться в профілі флотилії.', 'Changes appear in the fleet profile right after saving.', 'После сохранения изменения сразу появятся в профиле таксопарка.' ],
 	'fa_done_saved'          => [ 'Profil flotily bol uložený.', 'Профіль флотилії збережено.', 'The fleet profile has been saved.', 'Профиль таксопарка сохранён.' ],
+	'n_request_t'            => [ 'Nová žiadosť o prenájom', 'Новий запит на оренду', 'New rental request', 'Новый запрос на аренду' ],
+	'n_request_d'            => [ '%1$s · %2$s. Podrobnosti sme poslali e-mailom.', '%1$s · %2$s. Деталі надіслали на пошту.', '%1$s · %2$s. The details have been sent by email.', '%1$s · %2$s. Подробности отправили на почту.' ],
 ];
