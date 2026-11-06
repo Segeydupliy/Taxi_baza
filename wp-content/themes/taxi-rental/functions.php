@@ -868,26 +868,25 @@ function tb_city_car_counts(): array {
 	if ( null !== $counts ) {
 		return $counts;
 	}
-	$cached = get_transient( 'tb_city_car_counts_v2' );
+	$cached = get_transient( 'tb_city_car_counts_v3' );
 	if ( is_array( $cached ) ) {
 		$counts = $cached;
 		return $counts;
 	}
-	$ids = get_posts( [
-		'post_type'        => 'car_listing',
-		'post_status'      => 'publish',
-		'posts_per_page'   => -1,
-		'fields'           => 'ids',
-		'lang'             => 'all',
-		'suppress_filters' => false,
-		'no_found_rows'    => true,
-	] );
+	// Published listings of every language, straight from the DB (WP_Query is
+	// limited to the current language by WPML). Listings of blocked fleets
+	// (taxibaza-fleets) are left out like in the catalogue.
+	global $wpdb;
+	$ids    = array_map( 'intval', (array) $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'car_listing' AND post_status = 'publish'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$hidden = array_map( 'intval', (array) get_option( 'tbf_hidden_authors', [] ) );
+	if ( $hidden && $ids ) {
+		$authors = $wpdb->get_results( 'SELECT ID, post_author FROM ' . $wpdb->posts . ' WHERE ID IN (' . implode( ',', $ids ) . ')', OBJECT_K ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- integer list.
+		$ids     = array_values( array_filter( $ids, static fn( $id ) => ! in_array( (int) ( $authors[ $id ]->post_author ?? 0 ), $hidden, true ) ) );
+	}
 	$groups = [];
 	$def    = tb_default_lang();
-	// Read the city terms straight from the DB: wp_get_object_terms() is filtered
-	// by WPML to the current language, so a listing whose city term is in
-	// another language (e.g. a Ukrainian-only listing) was not counted.
-	global $wpdb;
+	// City terms straight from the DB as well (wp_get_object_terms() is filtered
+	// by WPML to the current language).
 	$rows = [];
 	if ( $ids ) {
 		$in   = implode( ',', array_map( 'intval', $ids ) );
@@ -904,13 +903,13 @@ function tb_city_car_counts(): array {
 		$groups[ $sk_id ][ $trids[ $id ] ] = true;
 	}
 	$counts = array_map( 'count', $groups );
-	set_transient( 'tb_city_car_counts_v2', $counts, 10 * MINUTE_IN_SECONDS );
+	set_transient( 'tb_city_car_counts_v3', $counts, 10 * MINUTE_IN_SECONDS );
 	return $counts;
 }
 
-add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
-add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
-add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v2' ) );
+add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
 
 /**
  * Cards for the city grids.
@@ -1044,7 +1043,18 @@ function tb_fleet_logo_url( int $post_id, string $size = 'thumbnail' ): string {
 function tb_listing_queries_all_languages( WP_Query $q ): void {
 	$type = $q->get( 'post_type' );
 	if ( 'all' === $q->get( 'lang' ) && ( 'car_listing' === $type || ( is_array( $type ) && in_array( 'car_listing', $type, true ) ) ) ) {
-		$q->set( 'suppress_wpml_where_and_join_filter', true );
+		// WPML filters by the language that is current when the SQL is built;
+		// 'all' turns that off. The previous language comes back right after.
+		$cur = (string) apply_filters( 'wpml_current_language', null );
+		if ( $cur && 'all' !== $cur && ! in_array( $q->get( 'fields' ), [ 'ids', 'id=>parent' ], true ) ) { // posts_results (the restore point) does not run for ID-only queries.
+			do_action( 'wpml_switch_language', 'all' );
+			$restore = static function ( $posts ) use ( $cur, &$restore ) {
+				do_action( 'wpml_switch_language', $cur );
+				remove_filter( 'posts_results', $restore, 999 );
+				return $posts;
+			};
+			add_filter( 'posts_results', $restore, 999 );
+		}
 		// A listing keeps the terms of its own language, so a filter by a term
 		// (city, category …) must match that term in every language.
 		$tax = $q->get( 'tax_query' );
