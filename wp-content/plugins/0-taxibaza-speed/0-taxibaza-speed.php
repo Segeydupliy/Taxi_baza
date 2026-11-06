@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       TaxiBaza Speed
- * Description:       Production fixes for speed and safety: Google Fonts served locally, 301 redirects from the old legal-page addresses, stops WPML from rewriting the theme's options strings on every page view (Slovak value is always the source), stops logging PHP notices and deprecations on every request (WP_DEBUG_LOG is on in wp-config.php) and blocks public access to *.log files in wp-content. Deactivating restores the previous behaviour.
- * Version:           1.3.0
+ * Description:       Production fixes for speed and safety: Google Fonts served locally, 301 redirects from the old legal-page addresses, stops WPML from rewriting the theme's options strings on every page view (Slovak value is always the source), stops logging PHP notices and deprecations on every request (WP_DEBUG_LOG is on in wp-config.php) and blocks public access to *.log files in wp-content, runs WP-Cron from the Forpsi Timer instead of page views (DISABLE_WP_CRON). Deactivating restores the previous behaviour.
+ * Version:           1.3.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Focus Emotion
@@ -46,6 +46,16 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 	foreach ( [ 'deprecated_function_trigger_error', 'deprecated_argument_trigger_error', 'deprecated_class_trigger_error', 'deprecated_file_trigger_error', 'deprecated_hook_trigger_error', 'doing_it_wrong_trigger_error' ] as $filter ) {
 		add_filter( $filter, '__return_false', 99 );
 	}
+}
+
+/**
+ * 1b. WP-Cron is started by the Forpsi Timer every 5 minutes
+ *     (https://www.taxibaza.sk/wp-cron.php?doing_wp_cron), not on visitors' page
+ *     views. Same as DISABLE_WP_CRON in wp-config.php; deactivating the plugin
+ *     brings back the default behaviour.
+ */
+if ( ! defined( 'DISABLE_WP_CRON' ) ) {
+	define( 'DISABLE_WP_CRON', true );
 }
 
 /**
