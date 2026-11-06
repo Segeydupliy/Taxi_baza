@@ -25,6 +25,9 @@ $GLOBALS['opt']['options_tb_logout_label']='Odhlásiť sa';
 $wpdb->strings[]=['id'=>4,'name'=>'tb_test_register_label','language'=>'uk','value'=>'Зареєструватись','status'=>1];
 $wpdb->tr[]=['string_id'=>4,'language'=>'uk','value'=>'Зареєструватися','status'=>10];
 $GLOBALS['opt']['options_tb_test_register_label']='Registrovať sa'; $GLOBALS['opt']['options_uk_tb_test_register_label']='Зареєструватись';
+$wpdb->strings[]=['id'=>5,'name'=>'tb_cat_filter_mobile_btn','language'=>'sk','value'=>'Filtre','status'=>1];
+$wpdb->tr[]=['string_id'=>5,'language'=>'uk','value'=>'Фільтри','status'=>2];
+$GLOBALS['opt']['options_tb_cat_filter_mobile_btn']='Filtre';
 require __DIR__.'/../includes/class-wpml-guard.php'; require __DIR__.'/../includes/class-wpml-repair.php';
 $R='TaxiBaza\Speed\WPML_Repair'; $plan=$R::plan(); $by=[]; foreach($plan['rows'] as $r) $by[$r['id']]=$r;
 $n=0;$f=0; $ck=function($t,$c)use(&$n,&$f){$n++; echo ($c?"  ok  ":"FAIL  ").$t."\n"; if(!$c)$f++;};
@@ -34,6 +37,7 @@ $ck('Slovak translation row aligned with the new source', ($by[2]['tr']['sk']['t
 $ck('content fix applied to SK and all languages', 'Mesto'===$by[2]['sk'] && 'Mesto'===$by[2]['acf_sk'] && 'City'===$by[2]['tr']['en']['to'] && 'Город'===$by[2]['tr']['ru']['to']);
 $ck('ping-pong source text reset to Slovak, nothing else', 'Odhlásiť sa'===$by[3]['sk'] && $by[3]['set_value'] && !$by[3]['set_lang'] && []===$by[3]['tr'] && null===$by[3]['acf_sk']);
 $ck('stale UK translation replaced by what UK visitors saw', 'Зареєструватись'===$by[4]['tr']['uk']['to'] && 'Registrovať sa'===$by[4]['sk'] && null===$by[4]['acf_sk']);
+$ck('ready translation "in progress" is marked complete', ($by[5]['tr']['uk']['to']??null)==='Фільтри');
 $R::apply($plan);
 $ck('apply: ACF SK options written', 'Mesto'===$GLOBALS['opt']['options_tb_cat_filter_city'] && 'Upozornenia'===$GLOBALS['opt']['options_tb_cab_settings_notif_title']);
 $ck('apply: source language + value updated', in_array([2,['language'=>'sk','value'=>'Mesto']],$GLOBALS['upd'],true));

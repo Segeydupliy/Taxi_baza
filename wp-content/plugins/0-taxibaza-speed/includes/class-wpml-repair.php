@@ -121,6 +121,12 @@ final class WPML_Repair {
 				if ( null === $want && $r['src'] === $l ) {
 					$want = self::visible( $r, $l ); // Keep what the old source language showed.
 				}
+				// A ready translation left "in progress" (status 2) is not shown, so
+				// visitors see the Slovak text instead: mark it complete.
+				if ( null === $want && is_array( $cur ) && 2 === (int) $cur[1] && '' !== (string) $cur[0] && $cur[0] !== $sk
+					&& ( null === ( $r['acf'][ $l ] ?? null ) || '' === $r['acf'][ $l ] ) ) {
+					$want = (string) $cur[0];
+				}
 				if ( null !== $want && '' !== $want && ! ( self::used( $cur ) && $cur[0] === $want ) ) {
 					$row['tr'][ $l ] = [ 'from' => $cur[0] ?? null, 'to' => $want ];
 				}
