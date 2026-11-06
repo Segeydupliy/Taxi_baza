@@ -462,7 +462,14 @@ $lb_wa_href       = $whatsapp ? 'https://wa.me/' . preg_replace( '/[^\d]/', '', 
 
     <div class="tb-lightbox__sb-owner">
       <div class="tb-lightbox__owner-row">
-        <div class="tb-lightbox__owner-avatar" aria-hidden="true"><?php echo esc_html( $lb_initials ?: '?' ); ?></div>
+        <?php $lb_logo = tb_fleet_logo_url( $post_id ); ?>
+        <div class="tb-lightbox__owner-avatar<?php echo $lb_logo ? ' tb-owner-box__avatar--logo' : ''; ?>" aria-hidden="true"><?php
+          if ( $lb_logo ) {
+            echo '<img src="' . esc_url( $lb_logo ) . '" alt="" width="40" height="40" loading="lazy">';
+          } else {
+            echo esc_html( $lb_initials ?: '?' );
+          }
+        ?></div>
         <div>
           <span class="tb-lightbox__owner-name"><?php echo esc_html( $lb_name ); ?></span>
           <span class="tb-lightbox__owner-role"><?php echo esc_html( $lb_role_label ); ?></span>

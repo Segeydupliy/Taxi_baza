@@ -63,7 +63,14 @@ $label_tg_join = tb_opt( 'tb_cat_owner_tg_btn', __( 'Приєднатись до
   <hr class="tb-owner-box__divider">
 
   <div class="tb-owner-box__owner">
-    <div class="tb-owner-box__avatar" aria-hidden="true"><?php echo esc_html( $initials ?: '?' ); ?></div>
+    <?php $owner_logo = tb_fleet_logo_url( $post_id ); ?>
+    <div class="tb-owner-box__avatar<?php echo $owner_logo ? ' tb-owner-box__avatar--logo' : ''; ?>" aria-hidden="true"><?php
+      if ( $owner_logo ) {
+        echo '<img src="' . esc_url( $owner_logo ) . '" alt="" width="40" height="40" loading="lazy">';
+      } else {
+        echo esc_html( $initials ?: '?' );
+      }
+    ?></div>
     <div>
       <span class="tb-owner-box__name"><?php echo esc_html( $name ); ?></span>
       <span class="tb-owner-box__role"><?php echo esc_html( $role_label ); ?></span>

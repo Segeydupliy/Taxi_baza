@@ -7598,3 +7598,17 @@ main:has( > .tb-cta-tg:last-child ) {
 	grid-template-columns: minmax(0, 800px);
 	justify-content: center;
 }
+
+/* Fleet logo instead of initials (listing page owner box and lightbox). */
+.tb-owner-box__avatar--logo {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+}
+
+.tb-owner-box__avatar--logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}

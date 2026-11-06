@@ -1007,3 +1007,18 @@ function tb_reject_future_year(): void {
 }
 add_action( 'wp_ajax_tb_submit_listing', 'tb_reject_future_year', 0 );
 add_action( 'wp_ajax_tb_fa_save_listing', 'tb_reject_future_year', 0 );
+
+/**
+ * Logo of a fleet (approved profile of the taxibaza-fleets plugin) for the
+ * listing page, when the listing is shown as the fleet's.
+ */
+function tb_fleet_logo_url( int $post_id, string $size = 'thumbnail' ): string {
+	$owner = function_exists( 'tbf_listing_owner' ) ? tbf_listing_owner( $post_id ) : null;
+	if ( ! $owner || empty( $owner['fleet'] ) ) {
+		return '';
+	}
+	$author  = (int) get_post_field( 'post_author', $post_id );
+	$profile = get_user_meta( $author, 'tbf_profile_live', true );
+	$logo_id = is_array( $profile ) ? (int) ( $profile['logo_id'] ?? 0 ) : 0;
+	return $logo_id ? (string) wp_get_attachment_image_url( $logo_id, $size ) : '';
+}
