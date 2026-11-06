@@ -827,27 +827,33 @@ function tb_default_lang(): string {
  */
 function tb_city_in_lang( WP_Term $term, string $lang ): WP_Term {
 	$id = (int) apply_filters( 'wpml_object_id', $term->term_id, 'city', false, $lang );
-	if ( $id && $id !== (int) $term->term_id ) {
-		$t = get_term( $id, 'city' );
-		if ( $t instanceof WP_Term ) {
-			return $t;
-		}
+	if ( ! $id || $id === (int) $term->term_id ) {
+		return $term;
 	}
-	return $term;
+	// WPML swaps get_term() results to the current language; read it in $lang.
+	$cur = (string) apply_filters( 'wpml_current_language', null );
+	if ( $cur && $cur !== $lang ) {
+		do_action( 'wpml_switch_language', $lang );
+	}
+	$t = get_term( $id, 'city' );
+	if ( $cur && $cur !== $lang ) {
+		do_action( 'wpml_switch_language', $cur );
+	}
+	return ( $t instanceof WP_Term && (int) $t->term_id === $id ) ? $t : $term;
 }
 
 /**
  * City photo: the term's own, else the Slovak original's, else ''.
  */
-function tb_city_image_url( WP_Term $term, string $size = 'medium_large' ): string {
-	foreach ( [ $term, tb_city_in_lang( $term, tb_default_lang() ) ] as $t ) {
+function tb_city_image_url( WP_Term $term, string $size = 'medium_large', ?WP_Term $sk = null ): string {
+	$sk = $sk ?? tb_city_in_lang( $term, tb_default_lang() );
+	foreach ( [ $term, $sk ] as $t ) {
 		$img_id = (int) get_term_meta( $t->term_id, 'tb_image_id', true );
 		$url    = $img_id ? (string) wp_get_attachment_image_url( $img_id, $size ) : '';
 		if ( $url ) {
 			return $url;
 		}
 	}
-	$sk   = tb_city_in_lang( $term, tb_default_lang() );
 	$file = '/assets/img/cities/' . sanitize_file_name( $sk->slug ) . '.jpg';
 	return file_exists( TAXI_THEME_DIR . $file ) ? TAXI_THEME_URL . $file : '';
 }
@@ -929,7 +935,7 @@ function tb_city_cards( string $orderby = 'count', int $limit = 0 ): array {
 			'name'  => $t->name,
 			'link'  => is_wp_error( $link ) ? '' : (string) $link,
 			'count' => (int) ( $counts[ (int) $sk->term_id ] ?? 0 ),
-			'img'   => tb_city_image_url( $t ),
+			'img'   => tb_city_image_url( $t, 'medium_large', $sk ),
 			'sk_id' => (int) $sk->term_id,
 		];
 	}
