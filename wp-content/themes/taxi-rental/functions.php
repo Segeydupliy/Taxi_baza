@@ -1043,18 +1043,10 @@ function tb_fleet_logo_url( int $post_id, string $size = 'thumbnail' ): string {
 function tb_listing_queries_all_languages( WP_Query $q ): void {
 	$type = $q->get( 'post_type' );
 	if ( 'all' === $q->get( 'lang' ) && ( 'car_listing' === $type || ( is_array( $type ) && in_array( 'car_listing', $type, true ) ) ) ) {
-		// WPML filters by the language that is current when the SQL is built;
-		// 'all' turns that off. The previous language comes back right after.
-		$cur = (string) apply_filters( 'wpml_current_language', null );
-		if ( $cur && 'all' !== $cur && ! in_array( $q->get( 'fields' ), [ 'ids', 'id=>parent' ], true ) ) { // posts_results (the restore point) does not run for ID-only queries.
-			do_action( 'wpml_switch_language', 'all' );
-			$restore = static function ( $posts ) use ( $cur, &$restore ) {
-				do_action( 'wpml_switch_language', $cur );
-				remove_filter( 'posts_results', $restore, 999 );
-				return $posts;
-			};
-			add_filter( 'posts_results', $restore, 999 );
-		}
+		// WPML still limited these queries to the current language through its
+		// posts_join / posts_where filters. The query already restricts itself to
+		// one copy per translation group (post__in), so SQL filters are not needed.
+		$q->set( 'suppress_filters', true );
 		// A listing keeps the terms of its own language, so a filter by a term
 		// (city, category …) must match that term in every language.
 		$tax = $q->get( 'tax_query' );
