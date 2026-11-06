@@ -33,6 +33,7 @@ final class Consent {
 	public static function init(): void {
 		add_action( 'init', [ self::class, 'check_register_post' ], 5 ); // Before the core's form handler (init:10).
 		add_action( 'user_register', [ self::class, 'on_user_register' ], 5 );
+		add_action( 'set_logged_in_cookie', [ self::class, 'on_google_login' ], 10, 4 );
 		add_action( 'template_redirect', [ self::class, 'gate' ], 1 );
 		add_filter( 'template_include', [ self::class, 'screen' ], 100 );
 		add_action( 'wp_footer', [ self::class, 'print_field_script' ], 51 );
@@ -87,6 +88,28 @@ final class Consent {
 		if ( isset( $_GET['tb_google'] ) && 'callback' === sanitize_key( wp_unslash( $_GET['tb_google'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			update_user_meta( $user_id, self::PENDING, 1 );
 		}
+	}
+
+	/**
+	 * Signing in with Google to an account that has never accepted the terms
+	 * (an account created before consent existed, or one that was registered
+	 * earlier with the same email) gets the consent screen too — not only a
+	 * brand-new Google account.
+	 *
+	 * @param string $cookie     Cookie value.
+	 * @param int    $expire     Expire.
+	 * @param int    $expiration Expiration.
+	 * @param int    $user_id    User.
+	 */
+	public static function on_google_login( $cookie, $expire, $expiration, $user_id ): void {
+		if ( ! isset( $_GET['tb_google'] ) || 'callback' !== sanitize_key( wp_unslash( $_GET['tb_google'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Google's redirect; the core checks its state.
+			return;
+		}
+		$user_id = (int) $user_id;
+		if ( ! $user_id || user_can( $user_id, 'manage_options' ) || get_user_meta( $user_id, self::META_AT, true ) ) {
+			return;
+		}
+		update_user_meta( $user_id, self::PENDING, 1 );
 	}
 
 	public static function record( int $user_id, string $via ): void {

@@ -206,27 +206,41 @@ final class Notifications {
 	}
 
 	/** Dropdown for the theme's bell (logged-in users only). */
+	/** 'req' — requests from drivers (rental, work); 'sys' — everything else. */
+	public static function category( string $type ): string {
+		return in_array( $type, [ 'rental_request', 'work_request' ], true ) ? 'req' : 'sys';
+	}
+
 	public static function render_bell(): void {
 		$uid = get_current_user_id();
 		if ( ! $uid ) {
 			return;
 		}
-		$today = strtotime( 'today', current_time( 'timestamp' ) );
-		$items = [];
-		foreach ( array_slice( self::get( $uid ), 0, 20 ) as $n ) {
+		$today     = strtotime( 'today', current_time( 'timestamp' ) );
+		$yesterday = $today - DAY_IN_SECONDS;
+		$items     = [];
+		foreach ( array_slice( self::get( $uid ), 0, 30 ) as $n ) {
 			$p = self::present( $n );
 			if ( '' === $p['t'] ) {
 				continue;
 			}
-			$local   = (int) $n['time'] + (int) ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+			$local = (int) $n['time'] + (int) ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+			if ( $local >= $today ) {
+				$day = t( 'n_today' );
+			} elseif ( $local >= $yesterday ) {
+				$day = t( 'n_yesterday' );
+			} else {
+				$day = gmdate( 'd.m.Y', $local );
+			}
 			$items[] = [
-				'id'    => $n['id'],
-				't'     => $p['t'],
-				'd'     => $p['d'],
-				'url'   => $p['url'],
-				'read'  => ! empty( $n['read'] ),
-				'when'  => $local >= $today ? gmdate( 'H:i', $local ) : gmdate( 'd.m.Y', $local ),
-				'today' => $local >= $today,
+				'id'   => $n['id'],
+				't'    => $p['t'],
+				'd'    => $p['d'],
+				'url'  => $p['url'],
+				'read' => ! empty( $n['read'] ),
+				'when' => gmdate( 'H:i', $local ),
+				'day'  => $day,
+				'cat'  => self::category( (string) ( $n['type'] ?? '' ) ),
 			];
 		}
 		$data = [
@@ -234,11 +248,13 @@ final class Notifications {
 			'nonce' => wp_create_nonce( self::NONCE ),
 			'items' => $items,
 			'i18n'  => [
-				'title'   => t( 'n_title' ),
-				'readAll' => t( 'n_read_all' ),
-				'empty'   => t( 'n_empty' ),
-				'today'   => t( 'n_today' ),
-				'earlier' => t( 'n_earlier' ),
+				'title'    => t( 'n_title' ),
+				'readAll'  => t( 'n_read_all' ),
+				'empty'    => t( 'n_empty' ),
+				'all'      => t( 'n_tab_all' ),
+				'requests' => t( 'n_tab_requests' ),
+				'system'   => t( 'n_tab_system' ),
+				'close'    => t( 'n_close' ),
 			],
 		];
 		$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/taxibaza-fleets.php' );

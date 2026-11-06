@@ -429,6 +429,7 @@ namespace TaxiBaza\Fleets\Tests {
 
 	echo "Consent\n";
 	$C = '\TaxiBaza\Fleets\Consent';
+	if ( ! function_exists( 'user_can' ) ) { eval( 'function user_can( $u, $c ) { return in_array( "administrator", $GLOBALS["__users"][ $u ] ?? [], true ); }' ); }
 	$_POST = [ 'tb_action' => 'register', 'tbf_terms' => '1' ]; $GLOBALS['__users'][60] = [ 'car_owner' ];
 	$C::on_user_register( 60 );
 	check( 'form consent stores the date (UTC) and how', preg_match( '/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/', (string) get_user_meta( 60, 'tbf_terms_accepted_at' ) ) && 'register_form' === get_user_meta( 60, 'tbf_terms_accepted_via' ) );
@@ -685,6 +686,21 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'header filter adds "Флотилії", current on a fleet page', 'Флотилії' === $h[1]['label'] && 'https://example.test/flotily/' === $h[1]['url'] && true === $h[1]['current'] );
 	$f = $M::footer( [ [ 'label' => 'Domov', 'url' => '/' ], [ 'label' => 'Katalóg', 'url' => '/avto/' ] ] );
 	check( 'footer filter adds an internal link after the catalogue', 'Флотилії' === $f[2]['label'] && true === $f[2]['internal'] );
+
+	echo "Consent on Google sign-in\n";
+	$C = '\TaxiBaza\Fleets\Consent';
+	$_GET = [ 'tb_google' => 'callback' ];
+	$GLOBALS['__users'][95] = [ 'car_owner' ];
+	$C::on_google_login( '', 0, 0, 95 );
+	check( 'existing account without consent gets the consent screen', 1 == get_user_meta( 95, 'tbf_terms_pending' ) );
+	$GLOBALS['__users'][96] = [ 'car_owner' ];
+	update_user_meta( 96, 'tbf_terms_accepted_at', '2026-11-06 10:00:00' );
+	$C::on_google_login( '', 0, 0, 96 );
+	check( 'account that already accepted is not asked again', '' === get_user_meta( 96, 'tbf_terms_pending' ) );
+	$_GET = [];
+	$GLOBALS['__users'][97] = [ 'car_owner' ];
+	$C::on_google_login( '', 0, 0, 97 );
+	check( 'ordinary password login is not affected', '' === get_user_meta( 97, 'tbf_terms_pending' ) );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );

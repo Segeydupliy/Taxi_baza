@@ -399,4 +399,9 @@ return [
 	'mail_work_car'          => [ 'Auto', 'Авто', 'Car', 'Авто' ],
 	'mail_work_lic'          => [ 'Vodičský preukaz', 'Посвідчення водія', 'Driving licence', 'Водительское удостоверение' ],
 	'mail_work_page'         => [ 'Stránka flotily', 'Сторінка флотилії', 'Fleet page', 'Страница таксопарка' ],
+	'n_yesterday'            => [ 'Včera', 'Вчора', 'Yesterday', 'Вчера' ],
+	'n_tab_all'              => [ 'Všetky', 'Всі', 'All', 'Все' ],
+	'n_tab_requests'         => [ 'Žiadosti', 'Запити', 'Requests', 'Запросы' ],
+	'n_tab_system'           => [ 'Systémové', 'Системні', 'System', 'Системные' ],
+	'n_close'                => [ 'Zavrieť', 'Закрити', 'Close', 'Закрыть' ],
 ];
