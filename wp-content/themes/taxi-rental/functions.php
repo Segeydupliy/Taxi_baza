@@ -868,7 +868,7 @@ function tb_city_car_counts(): array {
 	if ( null !== $counts ) {
 		return $counts;
 	}
-	$cached = get_transient( 'tb_city_car_counts_v3' );
+	$cached = get_transient( 'tb_city_car_counts_v4' );
 	if ( is_array( $cached ) ) {
 		$counts = $cached;
 		return $counts;
@@ -903,16 +903,16 @@ function tb_city_car_counts(): array {
 		$groups[ $sk_id ][ $trids[ $id ] ] = true;
 	}
 	$counts = array_map( 'count', $groups );
-	set_transient( 'tb_city_car_counts_v3', $counts, 10 * MINUTE_IN_SECONDS );
+	set_transient( 'tb_city_car_counts_v4', $counts, 10 * MINUTE_IN_SECONDS );
 	return $counts;
 }
 
-add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
-add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
-add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v4' ) );
+add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v4' ) );
+add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v4' ) );
 // A fleet blocked / unblocked (taxibaza-fleets) hides or shows its listings.
-add_action( 'update_option_tbf_hidden_authors', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
-add_action( 'add_option_tbf_hidden_authors', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'update_option_tbf_hidden_authors', static fn() => delete_transient( 'tb_city_car_counts_v4' ) );
+add_action( 'add_option_tbf_hidden_authors', static fn() => delete_transient( 'tb_city_car_counts_v4' ) );
 
 /**
  * Cards for the city grids.
