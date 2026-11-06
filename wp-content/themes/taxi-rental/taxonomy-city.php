@@ -28,13 +28,10 @@ unset( $city_args['city'] );
 $query_args = \TaxiRental\Core\Queries::to_query_args( $city_args );
 
 // City hero image: ACF term meta → fallback static asset.
-$city_img_id  = (int) get_term_meta( $city_term->term_id, 'tb_image_id', true );
-$city_img_url = $city_img_id ? (string) wp_get_attachment_image_url( $city_img_id, 'full' ) : '';
-if ( ! $city_img_url ) {
-	$city_img_url = TAXI_THEME_URL . '/assets/img/cities/' . sanitize_file_name( $city_term->slug ) . '.jpg';
-}
+$city_img_url = tb_city_image_url( $city_term, 'full' ); // Falls back to the Slovak city's photo.
 
-$city_count = (int) $city_term->count;
+$city_counts = tb_city_car_counts();
+$city_count  = (int) ( $city_counts[ (int) tb_city_in_lang( $city_term, tb_default_lang() )->term_id ] ?? 0 );
 
 get_header();
 ?>

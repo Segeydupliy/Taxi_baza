@@ -7590,3 +7590,25 @@ main:has( > .tb-cta-tg:last-child ) {
 	transition: opacity 0.15s ease;
 	pointer-events: none;
 }
+
+/* Articles and text pages without H2: no table of contents, so the content
+   takes one centred column instead of falling into the narrow TOC column. */
+.tb-post__layout--no-toc,
+.tb-legal__inner--no-toc {
+	grid-template-columns: minmax(0, 800px);
+	justify-content: center;
+}
+
+/* Fleet logo instead of initials (listing page owner box and lightbox). */
+.tb-owner-box__avatar--logo {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+}
+
+.tb-owner-box__avatar--logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}

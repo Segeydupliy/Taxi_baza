@@ -35,26 +35,28 @@ while ( have_posts() ) :
 		$content
 	);
 
-	// #98 — the label was reported missing on both legal pages. It is set as a
-	// custom field, and WPML does not copy custom fields into a translation, so
-	// only the Slovak originals ever had one. Fall back to the post's real
-	// modified date, which exists in every language; the manual label still wins
-	// when an editor has set one.
-	$updated = (string) get_post_meta( get_the_ID(), 'tb_updated_label', true );
-	if ( '' === $updated ) {
-		$updated_ts = get_post_timestamp( get_the_ID(), 'modified' );
-		if ( $updated_ts ) {
-			$updated = sprintf(
-				/* translators: %s: date the page was last modified */
-				tb_opt( 'tb_legal_updated_prefix', __( 'Aktualizované: %s', 'taxi-rental' ) ),
-				wp_date( 'j F Y', $updated_ts )
-			);
-		}
+	// "Aktualizované: október 2026" — prefix and month in the page's language.
+	// Date: the editable "Dátum aktualizácie" field (side box on the page),
+	// otherwise the page's last-modified date. The old free-text custom field
+	// tb_updated_label held a Ukrainian text on the Slovak pages, so it is no
+	// longer used.
+	$updated    = '';
+	$updated_ts = 0;
+	$picked     = (string) get_post_meta( get_the_ID(), 'tb_updated_date', true );
+	if ( preg_match( '/^\d{8}$/', $picked ) ) {
+		$picked_date = DateTimeImmutable::createFromFormat( '!Ymd', $picked, wp_timezone() );
+		$updated_ts  = $picked_date ? $picked_date->getTimestamp() : 0;
+	}
+	if ( ! $updated_ts ) {
+		$updated_ts = (int) get_post_timestamp( get_the_ID(), 'modified' );
+	}
+	if ( $updated_ts ) {
+		$updated = tb_legal_updated_prefix() . ' ' . tb_date_label( $updated_ts, true );
 	}
 	?>
 
 <main class="tb-legal">
-	<div class="tb-container tb-legal__inner">
+	<div class="tb-container tb-legal__inner<?php echo $toc ? '' : ' tb-legal__inner--no-toc'; ?>">
 
 		<?php if ( $toc ) : ?>
 		<aside class="tb-legal__toc">

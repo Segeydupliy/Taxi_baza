@@ -527,6 +527,115 @@ function tb_user_avatar_id( int $user_id = 0 ): int {
 }
 
 /**
+ * Current WPML language code (sk when WPML is off).
+ */
+function tb_lang(): string {
+	$lang = apply_filters( 'wpml_current_language', null );
+	return is_string( $lang ) && '' !== $lang ? $lang : 'sk';
+}
+
+/**
+ * Month names per language, lower case as the languages require. Nominative
+ * for "október 2026", genitive for "1. novembra 2026" / "1 листопада 2026".
+ *
+ * @return array{nom:string[],gen:string[]}
+ */
+function tb_month_names( string $lang ): array {
+	$m = [
+		'sk' => [
+			'nom' => [ 'január', 'február', 'marec', 'apríl', 'máj', 'jún', 'júl', 'august', 'september', 'október', 'november', 'december' ],
+			'gen' => [ 'januára', 'februára', 'marca', 'apríla', 'mája', 'júna', 'júla', 'augusta', 'septembra', 'októbra', 'novembra', 'decembra' ],
+		],
+		'uk' => [
+			'nom' => [ 'січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень' ],
+			'gen' => [ 'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня' ],
+		],
+		'ru' => [
+			'nom' => [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+			'gen' => [ 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' ],
+		],
+		'en' => [
+			'nom' => [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+			'gen' => [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+		],
+	];
+	return $m[ $lang ] ?? $m['sk'];
+}
+
+/**
+ * Date in the page language, built with wp_date() (no ucfirst):
+ * sk "1. novembra 2026", uk "1 листопада 2026", ru "1 ноября 2026", en "1 November 2026".
+ * With $month_only: "október 2026", "листопад 2026", "October 2026".
+ */
+function tb_date_label( int $timestamp, bool $month_only = false, ?string $lang = null ): string {
+	$lang  = $lang ?? tb_lang();
+	$names = tb_month_names( $lang );
+	$month = (int) wp_date( 'n', $timestamp ) - 1;
+	$year  = wp_date( 'Y', $timestamp );
+	if ( $month_only ) {
+		return $names['nom'][ $month ] . ' ' . $year;
+	}
+	$day = wp_date( 'j', $timestamp );
+	return ( 'sk' === $lang ? $day . '.' : $day ) . ' ' . $names['gen'][ $month ] . ' ' . $year;
+}
+
+/**
+ * Link to a legal page by ID, in the current language (survives slug changes).
+ *
+ * @param string $which 'privacy' (page 3) or 'terms' (page 17).
+ */
+function tb_legal_url( string $which ): string {
+	$id  = 'terms' === $which ? 17 : 3;
+	$tid = (int) apply_filters( 'wpml_object_id', $id, 'page', true );
+	$url = $tid ? get_permalink( $tid ) : '';
+	return $url ? $url : home_url( '/' );
+}
+
+/**
+ * "Updated:" prefix for the legal pages, per language.
+ */
+function tb_legal_updated_prefix( ?string $lang = null ): string {
+	$p = [ 'sk' => 'Aktualizované:', 'uk' => 'Оновлено:', 'en' => 'Updated:', 'ru' => 'Обновлено:' ];
+	return $p[ $lang ?? tb_lang() ] ?? $p['sk'];
+}
+
+// Editable "last updated" date for text pages (Privacy, Terms). ACFML copies it
+// to the translations, so one date serves every language.
+add_action(
+	'acf/init',
+	static function (): void {
+		if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+			return;
+		}
+		acf_add_local_field_group(
+			[
+				'key'      => 'group_tb_legal_updated',
+				'title'    => 'Dátum aktualizácie',
+				'fields'   => [
+					[
+						'key'                 => 'field_tb_legal_updated_date',
+						'label'               => 'Dátum poslednej aktualizácie',
+						'name'                => 'tb_updated_date',
+						'type'                => 'date_picker',
+						'instructions'        => 'Zobrazí sa pod nadpisom ako „Aktualizované: október 2026“ v jazyku stránky. Ak je prázdne, použije sa dátum poslednej úpravy stránky.',
+						'display_format'      => 'd.m.Y',
+						'return_format'       => 'Ymd',
+						'wpml_cf_preferences' => 1,
+					],
+				],
+				'location' => [
+					[
+						[ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ],
+						[ 'param' => 'page_template', 'operator' => '==', 'value' => 'default' ],
+					],
+				],
+				'position' => 'side',
+			]
+		);
+	}
+);
+
+/**
  * Pick the right plural form for a Slavic count.
  *
  * _n() cannot do this job here. It delegates to the locale's plural rules,
@@ -694,3 +803,296 @@ function taxi_rental_reading_time( int $post_id ): string {
 }
 
 
+
+/*
+ * ---------------------------------------------------------------------------
+ * Cities in every language version (home page grid, /mista/, city page).
+ *
+ * The Slovak city list is the master: every language shows the same cities in
+ * the same order, with the translated name when WPML has one (otherwise the
+ * Slovak one), the photo of the Slovak city when the translation has none, and
+ * the number of cars counted the way the catalogue shows them (one car per
+ * WPML translation group, whatever language its city term is in).
+ * ---------------------------------------------------------------------------
+ */
+
+/** Default (source) language of the site. */
+function tb_default_lang(): string {
+	$l = apply_filters( 'wpml_default_language', null );
+	return is_string( $l ) && '' !== $l ? $l : 'sk';
+}
+
+/**
+ * Same term in another language (or the term itself).
+ */
+function tb_city_in_lang( WP_Term $term, string $lang ): WP_Term {
+	$id = (int) apply_filters( 'wpml_object_id', $term->term_id, 'city', false, $lang );
+	if ( ! $id || $id === (int) $term->term_id ) {
+		return $term;
+	}
+	// WPML swaps get_term() results to the current language; read it in $lang.
+	$cur = (string) apply_filters( 'wpml_current_language', null );
+	if ( $cur && $cur !== $lang ) {
+		do_action( 'wpml_switch_language', $lang );
+	}
+	$t = get_term( $id, 'city' );
+	if ( $cur && $cur !== $lang ) {
+		do_action( 'wpml_switch_language', $cur );
+	}
+	return ( $t instanceof WP_Term && (int) $t->term_id === $id ) ? $t : $term;
+}
+
+/**
+ * City photo: the term's own, else the Slovak original's, else ''.
+ */
+function tb_city_image_url( WP_Term $term, string $size = 'medium_large', ?WP_Term $sk = null ): string {
+	$sk = $sk ?? tb_city_in_lang( $term, tb_default_lang() );
+	foreach ( [ $term, $sk ] as $t ) {
+		$img_id = (int) get_term_meta( $t->term_id, 'tb_image_id', true );
+		$url    = $img_id ? (string) wp_get_attachment_image_url( $img_id, $size ) : '';
+		if ( $url ) {
+			return $url;
+		}
+	}
+	$file = '/assets/img/cities/' . sanitize_file_name( $sk->slug ) . '.jpg';
+	return file_exists( TAXI_THEME_DIR . $file ) ? TAXI_THEME_URL . $file : '';
+}
+
+/**
+ * Cars per city, keyed by the Slovak city term ID.
+ *
+ * @return array<int,int>
+ */
+function tb_city_car_counts(): array {
+	static $counts = null;
+	if ( null !== $counts ) {
+		return $counts;
+	}
+	$cached = get_transient( 'tb_city_car_counts_v3' );
+	if ( is_array( $cached ) ) {
+		$counts = $cached;
+		return $counts;
+	}
+	// Published listings of every language, straight from the DB (WP_Query is
+	// limited to the current language by WPML). Listings of blocked fleets
+	// (taxibaza-fleets) are left out like in the catalogue.
+	global $wpdb;
+	$ids    = array_map( 'intval', (array) $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'car_listing' AND post_status = 'publish'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$hidden = array_map( 'intval', (array) get_option( 'tbf_hidden_authors', [] ) );
+	if ( $hidden && $ids ) {
+		$authors = $wpdb->get_results( 'SELECT ID, post_author FROM ' . $wpdb->posts . ' WHERE ID IN (' . implode( ',', $ids ) . ')', OBJECT_K ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.NotPrepared -- integer list.
+		$ids     = array_values( array_filter( $ids, static fn( $id ) => ! in_array( (int) ( $authors[ $id ]->post_author ?? 0 ), $hidden, true ) ) );
+	}
+	$groups = [];
+	$def    = tb_default_lang();
+	// City terms straight from the DB as well (wp_get_object_terms() is filtered
+	// by WPML to the current language).
+	$rows = [];
+	if ( $ids ) {
+		$in   = implode( ',', array_map( 'intval', $ids ) );
+		$rows = $wpdb->get_results( "SELECT tr.object_id, tt.term_id FROM {$wpdb->term_relationships} tr JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id WHERE tt.taxonomy = 'city' AND tr.object_id IN ($in)", ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- integer list.
+	}
+	$trids = [];
+	foreach ( $rows as $r ) {
+		$id = (int) $r['object_id'];
+		if ( ! isset( $trids[ $id ] ) ) {
+			$trid         = (int) apply_filters( 'wpml_element_trid', null, $id, 'post_car_listing' );
+			$trids[ $id ] = $trid ? 't' . $trid : 'p' . $id;
+		}
+		$sk_id                             = (int) apply_filters( 'wpml_object_id', (int) $r['term_id'], 'city', true, $def );
+		$groups[ $sk_id ][ $trids[ $id ] ] = true;
+	}
+	$counts = array_map( 'count', $groups );
+	set_transient( 'tb_city_car_counts_v3', $counts, 10 * MINUTE_IN_SECONDS );
+	return $counts;
+}
+
+add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts_v3' ) );
+
+/**
+ * Cards for the city grids.
+ *
+ * @param string $orderby 'count' (most cars first) or 'name'.
+ * @param int    $limit   0 = all.
+ * @return array<int,array{term:WP_Term,name:string,link:string,count:int,img:string}>
+ */
+function tb_city_cards( string $orderby = 'count', int $limit = 0 ): array {
+	$cur = (string) apply_filters( 'wpml_current_language', null );
+	$def = tb_default_lang();
+	if ( $cur && $cur !== $def ) {
+		do_action( 'wpml_switch_language', $def );
+	}
+	$sk_terms = get_terms( [ 'taxonomy' => 'city', 'hide_empty' => false ] );
+	if ( $cur && $cur !== $def ) {
+		do_action( 'wpml_switch_language', $cur );
+	}
+	if ( is_wp_error( $sk_terms ) || ! $sk_terms ) {
+		return [];
+	}
+	$counts = tb_city_car_counts();
+	$cards  = [];
+	foreach ( $sk_terms as $sk ) {
+		$t    = $cur ? tb_city_in_lang( $sk, $cur ) : $sk;
+		$link = get_term_link( $t );
+		$cards[] = [
+			'term'  => $t,
+			'name'  => $t->name,
+			'link'  => is_wp_error( $link ) ? '' : (string) $link,
+			'count' => (int) ( $counts[ (int) $sk->term_id ] ?? 0 ),
+			'img'   => tb_city_image_url( $t, 'medium_large', $sk ),
+			'sk_id' => (int) $sk->term_id,
+		];
+	}
+	usort( $cards, static function ( $a, $b ) use ( $orderby ) {
+		if ( 'count' === $orderby ) {
+			return [ $b['count'], $a['sk_id'] ] <=> [ $a['count'], $b['sk_id'] ];
+		}
+		return strcoll( $a['name'], $b['name'] );
+	} );
+	return $limit > 0 ? array_slice( $cards, 0, $limit ) : $cards;
+}
+
+/**
+ * page-mista.php and page-pro-nas.php are picked by the page slug, and the
+ * translations have other slugs (/en/cities/, /ru/goroda/, /en/about-us/ …),
+ * so those versions fell back to the empty default template. Use the template
+ * of the Slovak original's slug for every translation.
+ *
+ * @param string[] $templates Candidate templates.
+ * @return string[]
+ */
+function tb_page_template_by_source_slug( array $templates ): array {
+	$id = (int) get_queried_object_id();
+	if ( ! $id ) {
+		return $templates;
+	}
+	$src = (int) apply_filters( 'wpml_object_id', $id, 'page', true, tb_default_lang() );
+	if ( ! $src || $src === $id ) {
+		return $templates;
+	}
+	$slug = (string) get_post_field( 'post_name', $src );
+	if ( in_array( $slug, [ 'mista', 'pro-nas' ], true ) && ! in_array( 'page-' . $slug . '.php', $templates, true ) ) {
+		array_unshift( $templates, 'page-' . $slug . '.php' );
+	}
+	return $templates;
+}
+add_filter( 'page_template_hierarchy', 'tb_page_template_by_source_slug' );
+
+/**
+ * Footer link rows from an ACF repeater. A language whose repeater was never
+ * filled returns false or '' from ACF, which (array) turned into one empty
+ * row — the column showed nothing instead of the built-in default links.
+ *
+ * @param mixed $rows Repeater value.
+ * @return array<int,array{label:string,url:string}>
+ */
+function tb_footer_rows( $rows ): array {
+	return array_values( array_filter( is_array( $rows ) ? $rows : [], static function ( $r ) {
+		return is_array( $r ) && '' !== trim( (string) ( $r['label'] ?? '' ) );
+	} ) );
+}
+
+/**
+ * Year of manufacture can't be in the future (the form only offers years up to
+ * the current one; this also stops a hand-made request). Runs before the core
+ * handlers of the listing form and the front admin.
+ */
+function tb_reject_future_year(): void {
+	$year = absint( wp_unslash( $_POST['year'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read only; the core handler verifies its nonce.
+	if ( $year > (int) wp_date( 'Y' ) ) {
+		$msg = [
+			'sk' => 'Rok výroby nemôže byť v budúcnosti.',
+			'uk' => 'Рік випуску не може бути в майбутньому.',
+			'en' => 'The year of manufacture can’t be in the future.',
+			'ru' => 'Год выпуска не может быть в будущем.',
+		];
+		wp_send_json_error( [ 'message' => $msg[ tb_lang() ] ?? $msg['sk'] ] );
+	}
+}
+add_action( 'wp_ajax_tb_submit_listing', 'tb_reject_future_year', 0 );
+add_action( 'wp_ajax_tb_fa_save_listing', 'tb_reject_future_year', 0 );
+
+/**
+ * Logo of a fleet (approved profile of the taxibaza-fleets plugin) for the
+ * listing page, when the listing is shown as the fleet's.
+ */
+function tb_fleet_logo_url( int $post_id, string $size = 'thumbnail' ): string {
+	$owner = function_exists( 'tbf_listing_owner' ) ? tbf_listing_owner( $post_id ) : null;
+	if ( ! $owner || empty( $owner['fleet'] ) ) {
+		return '';
+	}
+	$author  = (int) get_post_field( 'post_author', $post_id );
+	$profile = get_user_meta( $author, 'tbf_profile_live', true );
+	$logo_id = is_array( $profile ) ? (int) ( $profile['logo_id'] ?? 0 ) : 0;
+	return $logo_id ? (string) wp_get_attachment_image_url( $logo_id, $size ) : '';
+}
+
+/**
+ * The core's catalogue asks for listings of every language ('lang' => 'all',
+ * one copy per translation group via post__in) so a listing that exists in one
+ * language only still shows on the other language versions. WPML kept
+ * filtering such queries by the current language anyway, so a Ukrainian-only
+ * listing never appeared on /avto/ (and a listing without a Ukrainian copy was
+ * missing on /uk/avto/). Switch WPML's language filter off for exactly those
+ * queries.
+ *
+ * @param WP_Query $q Query.
+ */
+function tb_listing_queries_all_languages( WP_Query $q ): void {
+	$type = $q->get( 'post_type' );
+	if ( 'all' === $q->get( 'lang' ) && ( 'car_listing' === $type || ( is_array( $type ) && in_array( 'car_listing', $type, true ) ) ) ) {
+		// WPML still limited these queries to the current language through its
+		// posts_join / posts_where filters. The query already restricts itself to
+		// one copy per translation group (post__in), so SQL filters are not needed.
+		$q->set( 'suppress_filters', true );
+		// A listing keeps the terms of its own language, so a filter by a term
+		// (city, category …) must match that term in every language.
+		$tax = $q->get( 'tax_query' );
+		if ( is_array( $tax ) && $tax ) {
+			$q->set( 'tax_query', tb_tax_query_all_languages( $tax ) );
+		}
+	}
+}
+
+/**
+ * @param array<int|string,mixed> $tax Tax query.
+ * @return array<int|string,mixed>
+ */
+function tb_tax_query_all_languages( array $tax ): array {
+	$langs = array_keys( (array) apply_filters( 'wpml_active_languages', null, [ 'skip_missing' => 0 ] ) ) ?: [ 'sk', 'uk', 'en', 'ru' ];
+	foreach ( $tax as $k => $clause ) {
+		if ( ! is_array( $clause ) ) {
+			continue;
+		}
+		if ( ! isset( $clause['taxonomy'] ) ) {
+			$tax[ $k ] = tb_tax_query_all_languages( $clause ); // Nested group.
+			continue;
+		}
+		if ( ! in_array( $clause['taxonomy'], [ 'city', 'ride_category', 'platform', 'car_make' ], true ) ) {
+			continue;
+		}
+		$field = $clause['field'] ?? 'term_id';
+		$ids   = [];
+		foreach ( (array) ( $clause['terms'] ?? [] ) as $t ) {
+			$term = 'slug' === $field ? get_term_by( 'slug', (string) $t, $clause['taxonomy'] ) : get_term( (int) $t, $clause['taxonomy'] );
+			if ( ! $term instanceof WP_Term ) {
+				continue;
+			}
+			$ids[] = (int) $term->term_id;
+			foreach ( $langs as $l ) {
+				$tid = (int) apply_filters( 'wpml_object_id', (int) $term->term_id, $clause['taxonomy'], false, $l );
+				if ( $tid ) {
+					$ids[] = $tid;
+				}
+			}
+		}
+		if ( $ids ) {
+			$tax[ $k ]['field'] = 'term_id';
+			$tax[ $k ]['terms'] = array_values( array_unique( $ids ) );
+		}
+	}
+	return $tax;
+}
+add_action( 'pre_get_posts', 'tb_listing_queries_all_languages', 1 );

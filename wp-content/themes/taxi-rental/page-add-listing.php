@@ -285,7 +285,7 @@ get_header();
 							<div class="tb-fa-select-wrap">
 								<select class="tb-fa-fld__select" id="tb-al-year" name="year" required>
 									<option value=""><?php echo esc_html( tb_opt( 'tb_al_select_ph', __( 'Vyberte prosím', 'taxi-rental' ) ) ); ?></option>
-									<?php for ( $yr = 2030; $yr >= 1990; $yr-- ) : ?>
+									<?php for ( $yr = max( (int) wp_date( 'Y' ), (int) $v_year ); $yr >= 1990; $yr-- ) : ?>
 										<option value="<?php echo esc_attr( $yr ); ?>" <?php selected( $v_year, $yr ); ?>><?php echo esc_html( $yr ); ?></option>
 									<?php endfor; ?>
 								</select>

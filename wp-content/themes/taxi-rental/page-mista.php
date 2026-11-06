@@ -4,12 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$city_terms = get_terms( [
-	'taxonomy'   => 'city',
-	'hide_empty' => false,
-	'orderby'    => 'name',
-	'order'      => 'ASC',
-] );
+// Same cities in every language (see tb_city_cards()).
+$city_cards = tb_city_cards( 'name' );
 
 get_header();
 ?>
@@ -24,17 +20,14 @@ get_header();
       </p>
     </div>
 
-    <?php if ( $city_terms && ! is_wp_error( $city_terms ) ) : ?>
+    <?php if ( $city_cards ) : ?>
 
     <div class="tb-photo-city-grid">
-      <?php foreach ( $city_terms as $term ) :
-        $count       = (int) $term->count;
-        $img_id      = (int) get_term_meta( $term->term_id, 'tb_image_id', true );
-        $img_url     = $img_id ? wp_get_attachment_image_url( $img_id, 'medium_large' ) : '';
-        if ( ! $img_url ) {
-          $img_url = TAXI_THEME_URL . '/assets/img/cities/' . sanitize_file_name( $term->slug ) . '.jpg';
-        }
-        $term_link = get_term_link( $term );
+      <?php foreach ( $city_cards as $cc ) :
+        $term      = $cc['term'];
+        $count     = $cc['count'];
+        $img_url   = $cc['img'];
+        $term_link = '' !== $cc['link'] ? $cc['link'] : new WP_Error();
       ?>
       <a
         href="<?php echo is_wp_error( $term_link ) ? '#' : esc_url( $term_link ); ?>"

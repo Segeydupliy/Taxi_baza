@@ -5,13 +5,8 @@ $catalog_url  = get_post_type_archive_link( 'car_listing' );
 $register_url = add_query_arg( 'action', 'register', tb_url( '/login/' ) );
 
 // City terms for Міста column — top 8 by count.
-$footer_cities = get_terms( [
-	'taxonomy'   => 'city',
-	'hide_empty' => false,
-	'number'     => 8,
-	'orderby'    => 'count',
-	'order'      => 'DESC',
-] );
+// Same cities in every language (see tb_city_cards()).
+$footer_cities = array_column( tb_city_cards( 'count', 8 ), 'term' );
 
 // -------------------------------------------------------------------------
 // ACF nav column data (repeaters seeded on first admin visit).
@@ -24,7 +19,7 @@ $sup_heading  = tb_opt( 'tb_footer_support_heading',  __( 'Підтримка', 
 $lbl_all_cities = tb_opt( 'tb_footer_cities_all',     __( 'Всі міста', 'taxi-rental' ) );
 $lbl_lang       = tb_opt( 'tb_footer_lang_label',     __( 'Українська', 'taxi-rental' ) );
 
-$nav_links = (array) tb_opt( 'tb_footer_nav_links', [] );
+$nav_links = tb_footer_rows( tb_opt( 'tb_footer_nav_links', [] ) );
 if ( empty( $nav_links ) ) {
 	$nav_links = [
 		[ 'label' => __( 'Головна',      'taxi-rental' ), 'url' => '/'         ],
@@ -36,7 +31,7 @@ if ( empty( $nav_links ) ) {
 	];
 }
 
-$platform_links = (array) tb_opt( 'tb_footer_platform_links', [] );
+$platform_links = tb_footer_rows( tb_opt( 'tb_footer_platform_links', [] ) );
 if ( empty( $platform_links ) ) {
 	$platform_links = [
 		[ 'label' => __( 'Як це працює?', 'taxi-rental' ), 'url' => '/pro-nas/'                                                   ],
@@ -46,14 +41,14 @@ if ( empty( $platform_links ) ) {
 	];
 }
 
-$support_links = (array) tb_opt( 'tb_footer_support_links', [] );
+$support_links = tb_footer_rows( tb_opt( 'tb_footer_support_links', [] ) );
 if ( empty( $support_links ) ) {
 	$support_links = [
 		[ 'label' => __( 'Контакти',                  'taxi-rental' ), 'url' => '/kontakt/'              ],
 		[ 'label' => __( 'Питання та відповіді',      'taxi-rental' ), 'url' => '/pro-nas/#faq'           ],
 		[ 'label' => __( 'Telegram',                  'taxi-rental' ), 'url' => tb_telegram_url()         ],
-		[ 'label' => __( 'Політика конфіденційності', 'taxi-rental' ), 'url' => '/konfidenzialnist/'      ],
-		[ 'label' => __( 'Правила користування',      'taxi-rental' ), 'url' => '/umovy/'                 ],
+		[ 'label' => __( 'Політика конфіденційності', 'taxi-rental' ), 'url' => '/ochrana-osobnych-udajov/' ],
+		[ 'label' => __( 'Правила користування',      'taxi-rental' ), 'url' => '/podmienky-pouzivania/'    ],
 	];
 }
 
@@ -61,6 +56,14 @@ if ( empty( $support_links ) ) {
  * Resolve a repeater item URL: absolute URLs pass through; relative paths get home_url() prepended.
  */
 $resolve_url = static function ( string $url ): string {
+	// Legal pages by ID: the menu items saved in the options still carry the old
+	// slugs (/konfidenzialnist/, /umovy/, renamed 1.11.2026) or the new ones.
+	if ( preg_match( '#^/(konfidenzialnist|ochrana-osobnych-udajov)/?$#', $url ) ) {
+		return tb_legal_url( 'privacy' );
+	}
+	if ( preg_match( '#^/(umovy|podmienky-pouzivania)/?$#', $url ) ) {
+		return tb_legal_url( 'terms' );
+	}
 	return str_starts_with( $url, 'http' ) ? $url : home_url( $url );
 };
 ?>
@@ -160,10 +163,10 @@ $resolve_url = static function ( string $url ): string {
 				</span>
 			</p>
 			<div class="tb-footer__bottom-links">
-				<a href="<?php echo esc_url( home_url( tb_opt( 'tb_footer_privacy_url', __( '/konfidenzialnist/', 'taxi-rental' ) ) ) ); ?>" class="tb-footer__bottom-link">
+				<a href="<?php echo esc_url( tb_legal_url( 'privacy' ) ); ?>" class="tb-footer__bottom-link">
 					<?php echo esc_html( tb_opt( 'tb_footer_privacy_label', __( 'Zásady ochrany osobných údajov', 'taxi-rental' ) ) ); ?>
 				</a>
-				<a href="<?php echo esc_url( home_url( tb_opt( 'tb_footer_terms_url', __( '/umovy/', 'taxi-rental' ) ) ) ); ?>" class="tb-footer__bottom-link">
+				<a href="<?php echo esc_url( tb_legal_url( 'terms' ) ); ?>" class="tb-footer__bottom-link">
 					<?php echo esc_html( tb_opt( 'tb_footer_terms_label', __( 'Podmienky používania', 'taxi-rental' ) ) ); ?>
 				</a>
 				<span class="tb-footer__lang">

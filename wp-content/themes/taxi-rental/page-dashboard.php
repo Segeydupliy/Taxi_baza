@@ -196,15 +196,35 @@ $lbl_greeting        = tb_opt( 'tb_cab_greeting',        __( 'Вітаємо %s'
    from breaking again, so this whole sentence is built in PHP instead,
    switched on the two languages this project actually owns (sk/uk — see
    CLAUDE.md) — no WPML string registration involved, nothing to mistranslate. */
-$phrase_published = 'uk' === $current_lang
-	? sprintf( tb_plural( $stat_published, '%d опубліковане оголошення', '%d опубліковані оголошення', '%d опублікованих оголошень' ), $stat_published )
-	: sprintf( tb_plural( $stat_published, '%d zverejnený inzerát', '%d zverejnené inzeráty', '%d zverejnených inzerátov' ), $stat_published );
-$phrase_draft = 'uk' === $current_lang
-	? sprintf( tb_plural( $stat_draft, '%d чернетка', '%d чернетки', '%d чернеток' ), $stat_draft )
-	: sprintf( tb_plural( $stat_draft, '%d koncept', '%d koncepty', '%d konceptov' ), $stat_draft );
-$lbl_stats = 'uk' === $current_lang
-	? 'У вас %1$s, %2$d на модерації, %3$s.'
-	: 'Máte %1$s, %2$d v moderácii, %3$s.';
+// Built in PHP per language (see the note above); en/ru added 6.11.2026 —
+// they used to fall through to the Slovak sentence.
+$tb_stat_lang = in_array( $current_lang, [ 'uk', 'en', 'ru' ], true ) ? $current_lang : 'sk';
+$tb_en_plural = static fn( int $n, string $one, string $many ): string => 1 === abs( $n ) ? $one : $many;
+$tb_sk_plural = static function ( int $n, string $one, string $few, string $many ): string {
+	$n = abs( $n );
+	return 1 === $n ? $one : ( $n >= 2 && $n <= 4 ? $few : $many );
+};
+switch ( $tb_stat_lang ) {
+	case 'uk':
+		$phrase_published = sprintf( tb_plural( $stat_published, '%d опубліковане оголошення', '%d опубліковані оголошення', '%d опублікованих оголошень' ), $stat_published );
+		$phrase_draft     = sprintf( tb_plural( $stat_draft, '%d чернетка', '%d чернетки', '%d чернеток' ), $stat_draft );
+		$lbl_stats        = 'У вас %1$s, %2$d на модерації, %3$s.';
+		break;
+	case 'ru':
+		$phrase_published = sprintf( tb_plural( $stat_published, '%d опубликованное объявление', '%d опубликованных объявления', '%d опубликованных объявлений' ), $stat_published );
+		$phrase_draft     = sprintf( tb_plural( $stat_draft, '%d черновик', '%d черновика', '%d черновиков' ), $stat_draft );
+		$lbl_stats        = 'У вас %1$s, %2$d на модерации, %3$s.';
+		break;
+	case 'en':
+		$phrase_published = sprintf( $tb_en_plural( $stat_published, '%d published listing', '%d published listings' ), $stat_published );
+		$phrase_draft     = sprintf( $tb_en_plural( $stat_draft, '%d draft', '%d drafts' ), $stat_draft );
+		$lbl_stats        = 'You have %1$s, %2$d under review, %3$s.';
+		break;
+	default:
+		$phrase_published = sprintf( $tb_sk_plural( $stat_published, '%d zverejnený inzerát', '%d zverejnené inzeráty', '%d zverejnených inzerátov' ), $stat_published );
+		$phrase_draft     = sprintf( $tb_sk_plural( $stat_draft, '%d koncept', '%d koncepty', '%d konceptov' ), $stat_draft );
+		$lbl_stats        = 'Máte %1$s, %2$d v moderácii, %3$s.';
+}
 $lbl_add_listing     = tb_opt( 'tb_cab_add_listing_btn', __( 'Додати оголошення', 'taxi-rental' ) );
 $lbl_view_listings   = tb_opt( 'tb_cab_view_listings_btn', __( 'Zobraziť inzeráty', 'taxi-rental' ) );
 $lbl_nav_listings    = tb_opt( 'tb_cab_nav_listings',    __( 'Мої оголошення', 'taxi-rental' ) );

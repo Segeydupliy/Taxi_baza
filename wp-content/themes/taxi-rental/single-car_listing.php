@@ -328,7 +328,13 @@ get_header();
 $lb_author     = get_userdata( $author_id );
 $lb_name       = $lb_author ? $lb_author->display_name : '';
 $lb_role_label = tb_opt( 'tb_cat_role_owner', __( 'Власник авто', 'taxi-rental' ) );
-if ( $lb_author && in_array( 'fleet', (array) $lb_author->roles, true ) ) {
+$lb_fleet      = function_exists( 'tbf_listing_owner' ) ? tbf_listing_owner( $post_id ) : null;
+if ( null !== $lb_fleet ) {
+	if ( $lb_fleet['fleet'] ) {
+		$lb_role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
+	}
+	$lb_name = '' !== $lb_fleet['name'] ? $lb_fleet['name'] : $lb_name;
+} elseif ( $lb_author && in_array( 'fleet', (array) $lb_author->roles, true ) ) {
 	$lb_role_label = tb_opt( 'tb_cat_role_fleet', __( 'Автопарк', 'taxi-rental' ) );
 }
 $lb_initials = '';
@@ -456,7 +462,14 @@ $lb_wa_href       = $whatsapp ? 'https://wa.me/' . preg_replace( '/[^\d]/', '', 
 
     <div class="tb-lightbox__sb-owner">
       <div class="tb-lightbox__owner-row">
-        <div class="tb-lightbox__owner-avatar" aria-hidden="true"><?php echo esc_html( $lb_initials ?: '?' ); ?></div>
+        <?php $lb_logo = tb_fleet_logo_url( $post_id ); ?>
+        <div class="tb-lightbox__owner-avatar<?php echo $lb_logo ? ' tb-owner-box__avatar--logo' : ''; ?>" aria-hidden="true"><?php
+          if ( $lb_logo ) {
+            echo '<img src="' . esc_url( $lb_logo ) . '" alt="" width="40" height="40" loading="lazy">';
+          } else {
+            echo esc_html( $lb_initials ?: '?' );
+          }
+        ?></div>
         <div>
           <span class="tb-lightbox__owner-name"><?php echo esc_html( $lb_name ); ?></span>
           <span class="tb-lightbox__owner-role"><?php echo esc_html( $lb_role_label ); ?></span>
