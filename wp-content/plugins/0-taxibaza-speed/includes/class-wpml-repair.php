@@ -258,10 +258,11 @@ final class WPML_Repair {
 		}
 		if ( isset( $_GET['probe'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view for admins.
 			$name = sanitize_key( wp_unslash( $_GET['probe'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$src  = (string) $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT value FROM {$GLOBALS['wpdb']->prefix}icl_strings WHERE context = %s AND name = %s", WPML_Guard::OPTIONS_CTX, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$ctx  = isset( $_GET['c'] ) ? sanitize_key( wp_unslash( $_GET['c'] ) ) : WPML_Guard::OPTIONS_CTX; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$src  = isset( $_GET['v'] ) ? (string) wp_unslash( $_GET['v'] ) : (string) $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT value FROM {$GLOBALS['wpdb']->prefix}icl_strings WHERE context = %s AND name = %s", $ctx, $name ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$out  = [];
 			foreach ( [ 'sk', 'uk', 'en', 'ru' ] as $l ) {
-				$out[ $l ] = apply_filters( 'wpml_translate_single_string', $src, WPML_Guard::OPTIONS_CTX, $name, $l );
+				$out[ $l ] = apply_filters( 'wpml_translate_single_string', $src, $ctx, $name, $l );
 			}
 			echo '<div class="wrap"><pre id="tbs-probe">' . esc_html( (string) wp_json_encode( $out, JSON_UNESCAPED_UNICODE ) ) . '</pre></div>';
 			return;
@@ -278,6 +279,19 @@ final class WPML_Repair {
 			}
 			wp_cache_flush();
 			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Translations written: %d.', $n ) ) . '</p></div>';
+		}
+		if ( isset( $_POST['tbs_set_src'] ) && check_admin_referer( self::NONCE ) ) {
+			// [[string_id, lang, text], …] — source language/text of Complianz banner strings.
+			global $wpdb;
+			$items = json_decode( (string) wp_unslash( $_POST['tbs_set_src'] ), true ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$n     = 0;
+			foreach ( (array) $items as $it ) {
+				if ( is_array( $it ) && 3 === count( $it ) && in_array( $it[1], [ 'sk', 'en' ], true ) ) {
+					$n += (int) $wpdb->update( "{$wpdb->prefix}icl_strings", [ 'language' => $it[1], 'value' => wp_kses_post( (string) $it[2] ) ], [ 'id' => (int) $it[0], 'context' => 'complianz' ] ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				}
+			}
+			wp_cache_flush();
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Source strings updated: %d.', $n ) ) . '</p></div>';
 		}
 		if ( isset( $_POST['tbs_touch'] ) && check_admin_referer( self::NONCE ) ) {
 			$names = array_filter( array_map( 'sanitize_key', preg_split( '/[\s,]+/', (string) wp_unslash( $_POST['tbs_touch'] ) ) ) );
