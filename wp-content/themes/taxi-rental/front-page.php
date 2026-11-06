@@ -9,15 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// City terms for cities grid (top 10 by count).
-$home_city_terms = get_terms( [
-	'taxonomy'   => 'city',
-	'hide_empty' => false,
-	'number'     => 10,
-	'orderby'    => 'count',
-	'order'      => 'DESC',
-] );
-
+// Cities grid (top 10 by cars): same cities in every language.
+$home_city_cards = tb_city_cards( 'count', 10 );
 // Ride categories grouped under Bolt / Uber parent terms.
 $bolt_cat_parent = get_term_by( 'slug', 'bolt', 'ride_category' );
 $uber_cat_parent = get_term_by( 'slug', 'uber', 'ride_category' );
@@ -225,17 +218,13 @@ get_header();
           </a>
         </div>
 
-        <?php if ( ! empty( $home_city_terms ) && ! is_wp_error( $home_city_terms ) ) : ?>
+        <?php if ( ! empty( $home_city_cards ) ) : ?>
         <div class="tb-photo-city-grid">
-          <?php foreach ( $home_city_terms as $ct ) :
-            $ct_img_id  = (int) get_term_meta( $ct->term_id, 'tb_image_id', true );
-            $ct_img_url = $ct_img_id ? wp_get_attachment_image_url( $ct_img_id, 'medium_large' ) : '';
-            // Fallback to static Figma city photos.
-            if ( ! $ct_img_url ) {
-              $ct_img_url = TAXI_THEME_URL . '/assets/img/cities/' . sanitize_file_name( $ct->slug ) . '.jpg';
-            }
-            $ct_link    = get_term_link( $ct );
-            $ct_count   = (int) $ct->count;
+          <?php foreach ( $home_city_cards as $cc ) :
+            $ct         = $cc['term'];
+            $ct_img_url = $cc['img'];
+            $ct_link    = '' !== $cc['link'] ? $cc['link'] : new WP_Error();
+            $ct_count   = $cc['count'];
           ?>
           <a
             href="<?php echo is_wp_error( $ct_link ) ? '#' : esc_url( $ct_link ); ?>"

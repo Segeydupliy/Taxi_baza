@@ -803,3 +803,141 @@ function taxi_rental_reading_time( int $post_id ): string {
 }
 
 
+
+/*
+ * ---------------------------------------------------------------------------
+ * Cities in every language version (home page grid, /mista/, city page).
+ *
+ * The Slovak city list is the master: every language shows the same cities in
+ * the same order, with the translated name when WPML has one (otherwise the
+ * Slovak one), the photo of the Slovak city when the translation has none, and
+ * the number of cars counted the way the catalogue shows them (one car per
+ * WPML translation group, whatever language its city term is in).
+ * ---------------------------------------------------------------------------
+ */
+
+/** Default (source) language of the site. */
+function tb_default_lang(): string {
+	$l = apply_filters( 'wpml_default_language', null );
+	return is_string( $l ) && '' !== $l ? $l : 'sk';
+}
+
+/**
+ * Same term in another language (or the term itself).
+ */
+function tb_city_in_lang( WP_Term $term, string $lang ): WP_Term {
+	$id = (int) apply_filters( 'wpml_object_id', $term->term_id, 'city', false, $lang );
+	if ( $id && $id !== (int) $term->term_id ) {
+		$t = get_term( $id, 'city' );
+		if ( $t instanceof WP_Term ) {
+			return $t;
+		}
+	}
+	return $term;
+}
+
+/**
+ * City photo: the term's own, else the Slovak original's, else ''.
+ */
+function tb_city_image_url( WP_Term $term, string $size = 'medium_large' ): string {
+	foreach ( [ $term, tb_city_in_lang( $term, tb_default_lang() ) ] as $t ) {
+		$img_id = (int) get_term_meta( $t->term_id, 'tb_image_id', true );
+		$url    = $img_id ? (string) wp_get_attachment_image_url( $img_id, $size ) : '';
+		if ( $url ) {
+			return $url;
+		}
+	}
+	$sk   = tb_city_in_lang( $term, tb_default_lang() );
+	$file = '/assets/img/cities/' . sanitize_file_name( $sk->slug ) . '.jpg';
+	return file_exists( TAXI_THEME_DIR . $file ) ? TAXI_THEME_URL . $file : '';
+}
+
+/**
+ * Cars per city, keyed by the Slovak city term ID.
+ *
+ * @return array<int,int>
+ */
+function tb_city_car_counts(): array {
+	static $counts = null;
+	if ( null !== $counts ) {
+		return $counts;
+	}
+	$cached = get_transient( 'tb_city_car_counts' );
+	if ( is_array( $cached ) ) {
+		$counts = $cached;
+		return $counts;
+	}
+	$ids = get_posts( [
+		'post_type'        => 'car_listing',
+		'post_status'      => 'publish',
+		'posts_per_page'   => -1,
+		'fields'           => 'ids',
+		'lang'             => 'all',
+		'suppress_filters' => false,
+		'no_found_rows'    => true,
+	] );
+	$groups = [];
+	$def    = tb_default_lang();
+	foreach ( $ids as $id ) {
+		$trid  = (int) apply_filters( 'wpml_element_trid', null, $id, 'post_car_listing' );
+		$group = $trid ? 't' . $trid : 'p' . $id;
+		$terms = wp_get_object_terms( $id, 'city', [ 'fields' => 'ids' ] );
+		if ( is_wp_error( $terms ) ) {
+			continue;
+		}
+		foreach ( $terms as $tid ) {
+			$sk_id                      = (int) apply_filters( 'wpml_object_id', (int) $tid, 'city', true, $def );
+			$groups[ $sk_id ][ $group ] = true;
+		}
+	}
+	$counts = array_map( 'count', $groups );
+	set_transient( 'tb_city_car_counts', $counts, 10 * MINUTE_IN_SECONDS );
+	return $counts;
+}
+
+add_action( 'save_post_car_listing', static fn() => delete_transient( 'tb_city_car_counts' ) );
+add_action( 'set_object_terms', static fn() => delete_transient( 'tb_city_car_counts' ) );
+add_action( 'transition_post_status', static fn() => delete_transient( 'tb_city_car_counts' ) );
+
+/**
+ * Cards for the city grids.
+ *
+ * @param string $orderby 'count' (most cars first) or 'name'.
+ * @param int    $limit   0 = all.
+ * @return array<int,array{term:WP_Term,name:string,link:string,count:int,img:string}>
+ */
+function tb_city_cards( string $orderby = 'count', int $limit = 0 ): array {
+	$cur = (string) apply_filters( 'wpml_current_language', null );
+	$def = tb_default_lang();
+	if ( $cur && $cur !== $def ) {
+		do_action( 'wpml_switch_language', $def );
+	}
+	$sk_terms = get_terms( [ 'taxonomy' => 'city', 'hide_empty' => false ] );
+	if ( $cur && $cur !== $def ) {
+		do_action( 'wpml_switch_language', $cur );
+	}
+	if ( is_wp_error( $sk_terms ) || ! $sk_terms ) {
+		return [];
+	}
+	$counts = tb_city_car_counts();
+	$cards  = [];
+	foreach ( $sk_terms as $sk ) {
+		$t    = $cur ? tb_city_in_lang( $sk, $cur ) : $sk;
+		$link = get_term_link( $t );
+		$cards[] = [
+			'term'  => $t,
+			'name'  => $t->name,
+			'link'  => is_wp_error( $link ) ? '' : (string) $link,
+			'count' => (int) ( $counts[ (int) $sk->term_id ] ?? 0 ),
+			'img'   => tb_city_image_url( $t ),
+			'sk_id' => (int) $sk->term_id,
+		];
+	}
+	usort( $cards, static function ( $a, $b ) use ( $orderby ) {
+		if ( 'count' === $orderby ) {
+			return [ $b['count'], $a['sk_id'] ] <=> [ $a['count'], $b['sk_id'] ];
+		}
+		return strcoll( $a['name'], $b['name'] );
+	} );
+	return $limit > 0 ? array_slice( $cards, 0, $limit ) : $cards;
+}
