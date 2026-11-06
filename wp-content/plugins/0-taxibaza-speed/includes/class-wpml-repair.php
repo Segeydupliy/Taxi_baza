@@ -106,7 +106,8 @@ final class WPML_Repair {
 			$sk      = $fix['sk'] ?? self::visible( $r, 'sk' );
 			// Field never filled in the admin: the theme shows its built-in Slovak
 			// fallback, which is what the Slovak source string already holds.
-			$no_acf = ( null === $sk || '' === $sk ) && 'sk' === $r['src'] && '' !== (string) $r['v'];
+			$no_acf = ( null === $sk || '' === $sk ) && 'sk' === $r['src'] && '' !== (string) $r['v']
+				&& ! preg_match( '/\p{Cyrillic}/u', (string) $r['v'] ); // Leave old non-Slovak leftovers alone.
 			if ( $no_acf ) {
 				$sk = (string) $r['v'];
 			}
