@@ -20,3 +20,6 @@
 @media (max-width:1023px){.tbf-versions{grid-template-columns:1fr}.tbf-search input{min-width:0;width:100%}}
 .tbf-panel .tb-fa-user-avatar-link{text-decoration:none}
 .tbf-panel .tb-fa-user-avatar{background:#ececec;color:#000}
+/* Long labels (EN/RU, "approve changes") must not push buttons out of the card. */
+.tbf-panel .tb-fa-user-row__actions{flex-wrap:wrap}
+@media (max-width:767px){.tbf-panel .tb-fa-user-row__actions .tbf-fa-act{display:block;min-width:0}.tbf-panel .tb-fa-user-row__actions .tb-fa-btn{white-space:normal;height:auto;min-height:44px;line-height:1.2;padding-top:8px;padding-bottom:8px}}

@@ -260,6 +260,26 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'slovak by default', 'Uložiť' === \TaxiBaza\Fleets\t( 'save' ) );
 	add_filter( 'wpml_current_language', fn() => 'uk' );
 	check( 'ukrainian when WPML says uk', 'Зберегти' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'en' );
+	check( 'english when WPML says en', 'Save' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	check( 'russian when WPML says ru', 'Сохранить' === \TaxiBaza\Fleets\t( 'save' ) );
+	add_filter( 'wpml_current_language', fn() => 'de' );
+	check( 'unknown language falls back to slovak', 'Uložiť' === \TaxiBaza\Fleets\t( 'save' ) );
+	$tbl  = require dirname( __DIR__ ) . '/includes/strings.php';
+	$bad  = [];
+	foreach ( $tbl as $k => $row ) {
+		preg_match_all( '/%(?:\d\$)?[sd]/', $row[0], $m0 );
+		sort( $m0[0] );
+		for ( $i = 0; $i < 4; $i++ ) {
+			preg_match_all( '/%(?:\d\$)?[sd]/', $row[ $i ] ?? '', $mi );
+			sort( $mi[0] );
+			if ( '' === trim( $row[ $i ] ?? '' ) || $mi[0] !== $m0[0] ) { $bad[] = "$k#$i"; }
+		}
+	}
+	check( 'all strings have 4 languages with matching placeholders (' . count( $tbl ) . ')', [] === $bad );
+	if ( $bad ) { echo '    ', implode( ', ', $bad ), "\n"; }
+	add_filter( 'wpml_current_language', fn() => 'uk' );
 	add_filter( 'wpml_translate_single_string', fn( $v, $c = '', $k = '', $l = '' ) => 'save' === $k ? 'Зберегти зміни' : $v, 10, 4 );
 	check( 'WPML override wins', 'Зберегти зміни' === \TaxiBaza\Fleets\t( 'save' ) );
 

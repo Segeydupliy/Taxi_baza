@@ -1,7 +1,7 @@
 <?php
 /**
- * Strings: Slovak source + Ukrainian, overridable in WPML String Translation
- * (context "taxibaza-fleets"). Other languages fall back to Slovak until translated.
+ * Strings in the site's four languages (SK source, UK, EN, RU), overridable in
+ * WPML String Translation (context "taxibaza-fleets"). Unknown languages fall back to SK.
  *
  * @package TaxiBaza\Fleets
  */
@@ -17,14 +17,17 @@ final class I18n {
 	public const CONTEXT = 'taxibaza-fleets';
 	private const SEEDED = 'tbf_strings_registered_v1';
 
-	/** @var array<string,array{0:string,1:string}>|null */
+	/** Column of each language in strings.php. */
+	public const LANGS = [ 'sk' => 0, 'uk' => 1, 'en' => 2, 'ru' => 3 ];
+
+	/** @var array<string,array{0:string,1:string,2:string,3:string}>|null */
 	private static ?array $table = null;
 
 	public static function init(): void {
 		add_action( 'admin_init', [ self::class, 'register_with_wpml' ] );
 	}
 
-	/** @return array<string,array{0:string,1:string}> */
+	/** @return array<string,array{0:string,1:string,2:string,3:string}> */
 	private static function table(): array {
 		if ( null === self::$table ) {
 			self::$table = require __DIR__ . '/strings.php';
@@ -48,7 +51,8 @@ final class I18n {
 		if ( is_string( $tr ) && $tr !== $sk ) {
 			return $tr; // Edited in WPML.
 		}
-		return 'uk' === $lang ? $row[1] : $sk;
+		$col = self::LANGS[ strtolower( substr( $lang, 0, 2 ) ) ] ?? 0;
+		return '' !== ( $row[ $col ] ?? '' ) ? $row[ $col ] : $sk;
 	}
 
 	/** Register all strings once so admins can edit them in WPML → String Translation. */
