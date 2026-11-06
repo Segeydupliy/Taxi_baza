@@ -49,10 +49,23 @@ final class WPML_Repair {
 		'tb_cat_filter_platform'   => [ 'sk' => 'Platforma', 'uk' => 'Платформа', 'en' => 'Platform', 'ru' => 'Платформа' ],
 		'tb_cab_search_label'      => [ 'sk' => 'Hľadať inzeráty', 'uk' => 'Пошук оголошень', 'en' => 'Search listings', 'ru' => 'Искать объявления' ],
 		'tb_cab_profile_city'      => [ 'sk' => 'Mesto', 'uk' => 'Місто', 'en' => 'City', 'ru' => 'Город' ],
-		'tb_cat_fuel_diesel'       => [ 'en' => 'Diesel' ],
+		'tb_cat_fuel_diesel'       => [ 'sk' => 'Diesel', 'en' => 'Diesel' ],
 		'tb_cat_trans_automatic'   => [ 'en' => 'Automatic' ],
 		'tb_cat_filter_sort_label' => [ 'en' => 'Sort by' ],
 		'tb_fa_cat_delete_btn'     => [ 'en' => 'Delete category' ],
+		// Slovak texts visitors saw before 6.11.2026 (restored from the backup: WPML
+		// showed the Slovak gettext translation of the old Ukrainian source).
+		'tb_register_label' => [ 'sk' => 'Zaregistrovať sa' ],
+		'tb_cat_card_more' => [ 'sk' => 'Viac informácií' ],
+		'tb_cta_title' => [ 'sk' => "Pridaj sa k 1 200+\nvodičom a majiteľom" ],
+		'tb_cta_desc' => [ 'sk' => 'Nové inzeráty, tipy a priama komunikácia medzi majiteľmi a vodičmi' ],
+		'tb_blog_title' => [ 'sk' => 'Užitočné materiály pre vodičov a majiteľov áut' ],
+		'tb_cab_profile_error' => [ 'sk' => 'Skontrolujte meno a e-mail, polia sú povinné.' ],
+		'tb_cab_profile_email_taken' => [ 'sk' => 'Tento e-mail už používa iný účet.' ],
+		'tb_cab_profile_photo_title' => [ 'sk' => 'Profilová fotka' ],
+		'tb_cab_profile_upload_btn' => [ 'sk' => 'Nahrať nové' ],
+		'tb_cab_profile_about' => [ 'sk' => 'Stručný popis' ],
+		'tb_cat_city_count' => [ 'sk' => 'K dispozícii je %d áut' ],
 		'tb_legal_updated_prefix'  => [ 'sk' => 'Aktualizované: %s', 'uk' => 'Оновлено: %s', 'en' => 'Updated: %s', 'ru' => 'Обновлено: %s' ],
 	];
 
