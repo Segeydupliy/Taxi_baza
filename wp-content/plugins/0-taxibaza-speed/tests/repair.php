@@ -28,6 +28,10 @@ $GLOBALS['opt']['options_tb_test_register_label']='Registrovať sa'; $GLOBALS['o
 $wpdb->strings[]=['id'=>5,'name'=>'tb_cat_filter_mobile_btn','language'=>'sk','value'=>'Filtre','status'=>1];
 $wpdb->tr[]=['string_id'=>5,'language'=>'uk','value'=>'Фільтри','status'=>2];
 $GLOBALS['opt']['options_tb_cat_filter_mobile_btn']='Filtre';
+// 6) field never filled in ACF (theme fallback), ready translations stuck in progress
+$wpdb->strings[]=['id'=>6,'name'=>'tb_test_no_acf','language'=>'sk','value'=>'Filtre','status'=>1];
+$wpdb->tr[]=['string_id'=>6,'language'=>'sk','value'=>'Filtre','status'=>2];
+$wpdb->tr[]=['string_id'=>6,'language'=>'ru','value'=>'Фильтры','status'=>2];
 require __DIR__.'/../includes/class-wpml-guard.php'; require __DIR__.'/../includes/class-wpml-repair.php';
 $R='TaxiBaza\Speed\WPML_Repair'; $plan=$R::plan(); $by=[]; foreach($plan['rows'] as $r) $by[$r['id']]=$r;
 $n=0;$f=0; $ck=function($t,$c)use(&$n,&$f){$n++; echo ($c?"  ok  ":"FAIL  ").$t."\n"; if(!$c)$f++;};
@@ -38,7 +42,9 @@ $ck('content fix applied to SK and all languages', 'Mesto'===$by[2]['sk'] && 'Me
 $ck('ping-pong source text reset to Slovak, nothing else', 'Odhlásiť sa'===$by[3]['sk'] && $by[3]['set_value'] && !$by[3]['set_lang'] && []===$by[3]['tr'] && null===$by[3]['acf_sk']);
 $ck('stale UK translation replaced by what UK visitors saw', 'Зареєструватись'===$by[4]['tr']['uk']['to'] && 'Registrovať sa'===$by[4]['sk'] && null===$by[4]['acf_sk']);
 $ck('ready translation "in progress" is marked complete', ($by[5]['tr']['uk']['to']??null)==='Фільтри');
+$ck('no ACF value: RU translation completed, ACF untouched', ($by[6]['tr']['ru']['to']??null)==='Фильтры' && null===$by[6]['acf_sk'] && !isset($by[6]['tr']['sk']) && !$by[6]['set_value']);
 $R::apply($plan);
+$ck('apply: no ACF option created for the theme fallback', !array_key_exists('options_tb_test_no_acf',$GLOBALS['opt']));
 $ck('apply: ACF SK options written', 'Mesto'===$GLOBALS['opt']['options_tb_cat_filter_city'] && 'Upozornenia'===$GLOBALS['opt']['options_tb_cab_settings_notif_title']);
 $ck('apply: source language + value updated', in_array([2,['language'=>'sk','value'=>'Mesto']],$GLOBALS['upd'],true));
 $ck('apply: translations written as complete', in_array([2,'en','City',10],$GLOBALS['tr_written'],true));

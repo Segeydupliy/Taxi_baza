@@ -104,11 +104,17 @@ final class WPML_Repair {
 			$r['tr'] = (array) $r['tr'];
 			$fix     = self::FIXES[ $r['n'] ] ?? [];
 			$sk      = $fix['sk'] ?? self::visible( $r, 'sk' );
+			// Field never filled in the admin: the theme shows its built-in Slovak
+			// fallback, which is what the Slovak source string already holds.
+			$no_acf = ( null === $sk || '' === $sk ) && 'sk' === $r['src'] && '' !== (string) $r['v'];
+			if ( $no_acf ) {
+				$sk = (string) $r['v'];
+			}
 			if ( null === $sk || '' === $sk ) {
 				$stats['skipped']++;
 				continue;
 			}
-			$row = [ 'id' => $r['id'], 'name' => $r['n'], 'from' => $r['src'], 'old' => $r['v'], 'sk' => $sk, 'set_lang' => 'sk' !== $r['src'], 'set_value' => $r['v'] !== $sk, 'acf_sk' => ( $r['acf']['sk'] ?? null ) !== $sk ? $sk : null, 'tr' => [], 'fix' => (bool) $fix ];
+			$row = [ 'id' => $r['id'], 'name' => $r['n'], 'from' => $r['src'], 'old' => $r['v'], 'sk' => $sk, 'set_lang' => 'sk' !== $r['src'], 'set_value' => $r['v'] !== $sk, 'acf_sk' => ! $no_acf && ( $r['acf']['sk'] ?? null ) !== $sk ? $sk : null, 'tr' => [], 'fix' => (bool) $fix ];
 			// WPML serves an existing Slovak "translation" row even when the source is
 			// Slovak, so it must say the same as the source.
 			$cur_sk = $r['tr']['sk'] ?? null;
