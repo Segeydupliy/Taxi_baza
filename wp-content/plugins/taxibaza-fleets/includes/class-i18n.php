@@ -65,7 +65,7 @@ final class I18n {
 			return;
 		}
 		foreach ( self::table() as $key => $row ) {
-			do_action( 'wpml_register_single_string', self::CONTEXT, $key, $row[0] );
+			do_action( 'wpml_register_single_string', self::CONTEXT, $key, $row[0], false, 'sk' ); // Explicit source language, like the theme's tb_opt().
 		}
 		update_option( self::SEEDED, 1, false );
 	}
