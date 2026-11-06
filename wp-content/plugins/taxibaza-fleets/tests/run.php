@@ -51,7 +51,11 @@ namespace {
 		foreach ( $GLOBALS['__users'] as $id => $roles ) { if ( empty( $args['role'] ) || in_array( $args['role'], $roles, true ) ) { $out[] = (string) $id; } }
 		return $out;
 	}
-	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ] ] : false; }
+	function get_userdata( $id ) { return isset( $GLOBALS['__users'][ $id ] ) ? (object) [ 'ID' => $id, 'roles' => $GLOBALS['__users'][ $id ], 'user_email' => 'u' . $id . '@test.sk', 'display_name' => 'User ' . $id ] : false; }
+	if ( ! function_exists( 'esc_html' ) ) { function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
+	if ( ! function_exists( 'esc_attr' ) ) { function esc_attr( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
+	if ( ! function_exists( 'esc_url' ) ) { function esc_url( $s ) { return (string) $s; } }
+	function wp_mail( $to, $subj, $body, $h = [] ) { $GLOBALS['__mail'][] = compact( 'to', 'subj', 'body' ); return true; }
 	function is_admin() { return $GLOBALS['__env']['admin'] || $GLOBALS['__env']['ajax']; }
 	function wp_doing_ajax() { return $GLOBALS['__env']['ajax']; }
 	function is_page_template( $t ) { return $GLOBALS['__env']['tpl'] === $t; }
@@ -348,6 +352,71 @@ namespace TaxiBaza\Fleets\Tests {
 	for ( $i = 0; $i < 40; $i++ ) { $N::add( 30, 'approved' ); }
 	check( 'list capped at 30', 30 === count( $N::get( 30 ) ) );
 	check( 'car owner gets nothing', [] === $N::get( 2 ) );
+
+	echo "Email on approval\n";
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][40] = [ 'car_owner' ]; \test_set_role( 40, 'fleet' );
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet' ] ) );
+	check( 'no email on submit', [] === $GLOBALS['__mail'] );
+	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin moderates in SK
+	$AP::apply( 40, 'approve' );
+	$m = $GLOBALS['__mail'][0] ?? [];
+	check( 'approval email sent to the fleet', 1 === count( $GLOBALS['__mail'] ) && 'u40@test.sk' === ( $m['to'] ?? '' ) );
+	check( 'email in the language the fleet used (ru)', str_contains( $m['subj'] ?? '', 'прошёл модерацию' ) && str_contains( $m['body'] ?? '', 'Mail Fleet' ) && str_contains( $m['body'] ?? '', 'lang="ru"' ) );
+	check( 'email links to the profile tab', str_contains( $m['body'] ?? '', '/cabinet/?tab=profile' ) );
+	$GLOBALS['__mail'] = [];
+	add_filter( 'wpml_current_language', fn() => 'ru' );
+	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet 2' ] ) );
+	add_filter( 'wpml_current_language', fn() => 'sk' );
+	$AP::apply( 40, 'approve' );
+	check( 'edits approval email', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'Изменения профиля' ) );
+	$GLOBALS['__mail'] = [];
+	$AP::apply( 40, 'block' );
+	$AP::apply( 40, 'unblock' );
+	check( 'no email on block; unblock back to approved sends one', 1 === count( $GLOBALS['__mail'] ) );
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][41] = [ 'car_owner' ]; \test_set_role( 41, 'fleet' );
+	update_user_meta( 41, 'tb_notify_moderation', '0' );
+	$P::submit( 41, array_merge( $p, [ 'name' => 'Quiet Fleet' ] ) );
+	$AP::apply( 41, 'approve' );
+	check( 'respects "moderation emails" opt-out', [] === $GLOBALS['__mail'] );
+	$GLOBALS['__mail'] = [];
+	$GLOBALS['__users'][42] = [ 'car_owner' ]; \test_set_role( 42, 'fleet' );
+	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin-post.php: WPML sees the default language
+	$_POST = [ 'tbf_lang' => 'en' ];
+	$P::submit( 42, array_merge( $p, [ 'name' => 'Form Lang Fleet' ] ) );
+	$_POST = [];
+	$AP::apply( 42, 'approve' );
+	check( 'email language = language of the form page, not admin-post default', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'passed moderation' ) );
+	$_POST = [ 'tbf_lang' => 'xx' ];
+	check( 'unknown posted language ignored', 'sk' === \TaxiBaza\Fleets\Mailer::form_lang() );
+	$_POST = [];
+	$GLOBALS['__mail'] = [];
+	$AP::apply( 41, 'reject' );
+	check( 'no email on reject', [] === $GLOBALS['__mail'] );
+
+	echo "Dashboard: one moderation queue\n";
+	foreach ( [ 'is_ssl' => 'return true;', 'remove_query_arg' => 'return $a[1] ?? "";', 'wp_get_attachment_image_url' => 'return "";', 'sanitize_text_field' => 'return (string) $a[0];', 'esc_url_raw' => 'return (string) $a[0];', 'wp_json_encode' => 'return json_encode($a[0]);', 'admin_url' => 'return "https://www.taxibaza.sk/wp-admin/" . ($a[0] ?? "");', 'wp_nonce_field' => 'return "<input type=hidden name=_wpnonce value=x>";' ] as $fn => $body ) {
+		if ( ! function_exists( $fn ) ) { eval( "function $fn( ...\$a ) { $body }" ); }
+	}
+	$_SERVER['HTTP_HOST'] = 'www.taxibaza.sk'; $_SERVER['REQUEST_URI'] = '/panel/';
+	$DQ = '\TaxiBaza\Fleets\Dashboard_Queue';
+	$GLOBALS['__users'][50] = [ 'car_owner' ]; \test_set_role( 50, 'fleet' );
+	$P::submit( 50, array_merge( $p, [ 'name' => 'Queue Fleet' ] ) );
+	check( 'pending fleet is in the queue', in_array( 50, $DQ::queue(), true ) );
+	$withCards = '<h2>Q</h2><div class="tb-fa-cards" role="list"><article class="tb-fa-mod-card">CAR</article></div>';
+	$out = $DQ::inject( $withCards );
+	if ( getenv( 'TBF_DUMP' ) ) { file_put_contents( getenv( 'TBF_DUMP' ), $out ); }
+	check( 'fleet cards added before listing cards', strpos( $out, 'Queue Fleet' ) < strpos( $out, 'CAR' ) && 1 === substr_count( $out, 'tb-fa-cards' ) );
+	check( 'card has approve + reject + view', str_contains( $out, 'value="approve"' ) && str_contains( $out, 'value="reject"' ) && str_contains( $out, 'fleet=50' ) && ! str_contains( $out, 'value="block"' ) );
+	$withEmpty = '<h2>Q</h2><div class="tb-fa-empty"><svg></svg><p>No listings.</p></div><footer>F</footer>';
+	$out = $DQ::inject( $withEmpty );
+	check( 'empty state replaced by fleet cards', str_contains( $out, 'Queue Fleet' ) && ! str_contains( $out, 'tb-fa-empty' ) && str_contains( $out, '<footer>F</footer>' ) );
+	check( 'unknown markup left untouched', '<main>x</main>' === $DQ::inject( '<main>x</main>' ) );
+	$AP::apply( 50, 'approve' );
+	foreach ( $DQ::queue() as $q ) { $AP::apply( $q, 'approve' ); }
+	check( 'nothing pending -> page untouched', $withEmpty === $DQ::inject( $withEmpty ) );
 
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );

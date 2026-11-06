@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class I18n {
 
 	public const CONTEXT = 'taxibaza-fleets';
-	private const SEEDED = 'tbf_strings_registered_v1';
+	private const SEEDED = 'tbf_strings_registered_v2';
 
 	/** Column of each language in strings.php. */
 	public const LANGS = [ 'sk' => 0, 'uk' => 1, 'en' => 2, 'ru' => 3 ];
@@ -41,11 +41,15 @@ final class I18n {
 	}
 
 	public static function t( string $key ): string {
+		return self::t_in( $key, self::lang() );
+	}
+
+	/** Text in a given language (e.g. for an email to a user who reads another language). */
+	public static function t_in( string $key, string $lang ): string {
 		$row = self::table()[ $key ] ?? null;
 		if ( null === $row ) {
 			return $key;
 		}
-		$lang = self::lang();
 		$sk   = $row[0];
 		$tr   = apply_filters( 'wpml_translate_single_string', $sk, self::CONTEXT, $key, $lang );
 		if ( is_string( $tr ) && $tr !== $sk ) {

@@ -138,6 +138,7 @@ get_header();
 <?php if ( $tbf_is_edit ) : ?>
 	<form class="tbf-grid" id="tbf-profile" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" novalidate>
 		<input type="hidden" name="action" value="tbf_save_profile">
+		<input type="hidden" name="tbf_lang" value="<?php echo esc_attr( \TaxiBaza\Fleets\I18n::lang() ); ?>">
 		<?php wp_nonce_field( Profile::NONCE ); ?>
 		<input type="hidden" name="logo_id" value="<?php echo $e_attr( (int) $tbf_form['logo_id'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 		<input type="hidden" name="logo_delete" id="tbf-logo-delete" value="">

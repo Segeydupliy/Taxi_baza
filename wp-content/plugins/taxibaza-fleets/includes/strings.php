@@ -264,4 +264,12 @@ return [
 	'n_rejected_d'           => [ 'Kontaktujte podporu TaxiBaza.sk.', 'Зверніться в підтримку TaxiBaza.sk.' , 'Please contact TaxiBaza.sk support.', 'Обратитесь в поддержку TaxiBaza.sk.' ],
 	'n_blocked_t'            => [ 'Profil zablokovaný', 'Профіль заблоковано' , 'Profile blocked', 'Профиль заблокирован' ],
 	'n_blocked_d'            => [ 'Vaše inzeráty sú skryté z katalógu.', 'Ваші оголошення приховані з каталогу.' , 'Your listings are hidden from the catalogue.', 'Ваши объявления скрыты из каталога.' ],
+	'mail_hello'             => [ 'Dobrý deň, %s!', 'Добрий день, %s!', 'Hello, %s!', 'Здравствуйте, %s!' ],
+	'mail_approved_subject'  => [ 'Váš profil flotily prešiel moderáciou — TaxiBaza.sk', 'Профіль вашої флотилії пройшов модерацію — TaxiBaza.sk', 'Your fleet profile has passed moderation — TaxiBaza.sk', 'Профиль вашего таксопарка прошёл модерацию — TaxiBaza.sk' ],
+	'mail_approved_body'     => [ "Gratulujeme, váš profil flotily úspešne prešiel moderáciou.\nVodiči ho teraz vidia na TaxiBaza.sk a vaše inzeráty sa zobrazujú v katalógu.", "Вітаємо, профіль вашої флотилії успішно пройшов модерацію.\nТепер його бачать водії на TaxiBaza.sk, а ваші оголошення показуються в каталозі.", "Congratulations, your fleet profile has successfully passed moderation.\nDrivers can now see it on TaxiBaza.sk, and your listings are shown in the catalogue.", "Поздравляем, профиль вашего таксопарка успешно прошёл модерацию.\nТеперь его видят водители на TaxiBaza.sk, а ваши объявления показываются в каталоге." ],
+	'mail_edits_subject'     => [ 'Zmeny profilu flotily boli schválené — TaxiBaza.sk', 'Зміни профілю флотилії схвалено — TaxiBaza.sk', 'Your fleet profile changes have been approved — TaxiBaza.sk', 'Изменения профиля таксопарка одобрены — TaxiBaza.sk' ],
+	'mail_edits_body'        => [ 'Zmeny vo vašom profile flotily prešli moderáciou. Vodiči už vidia aktualizovaný profil.', 'Зміни у профілі вашої флотилії пройшли модерацію. Водії вже бачать оновлений профіль.', 'The changes to your fleet profile have passed moderation. Drivers can now see the updated profile.', 'Изменения в профиле вашего таксопарка прошли модерацию. Водители уже видят обновлённый профиль.' ],
+	'mail_button'            => [ 'Otvoriť profil', 'Відкрити профіль', 'Open profile', 'Открыть профиль' ],
+	'mail_sign'              => [ 'Tím TaxiBaza.sk', 'Команда TaxiBaza.sk', 'The TaxiBaza.sk team', 'Команда TaxiBaza.sk' ],
+	'fa_queue_type'          => [ 'Flotila', 'Флотилія', 'Fleet', 'Таксопарк' ],
 ];
