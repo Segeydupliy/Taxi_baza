@@ -40,45 +40,78 @@ final class WPML_Repair {
 	}
 
 	/**
-	 * Build the plan.
+	 * Explicit content fixes: texts that are visibly in the wrong language now
+	 * (English/Ukrainian on the Slovak site, Slovak on the English one). Checked
+	 * on 6.11.2026 against what every language version shows.
+	 */
+	public const FIXES = [
+		'tb_cat_filter_city'       => [ 'sk' => 'Mesto', 'uk' => 'Місто', 'en' => 'City', 'ru' => 'Город' ],
+		'tb_cat_filter_platform'   => [ 'sk' => 'Platforma', 'uk' => 'Платформа', 'en' => 'Platform', 'ru' => 'Платформа' ],
+		'tb_cab_search_label'      => [ 'sk' => 'Hľadať inzeráty', 'uk' => 'Пошук оголошень', 'en' => 'Search listings', 'ru' => 'Искать объявления' ],
+		'tb_cab_profile_city'      => [ 'sk' => 'Mesto', 'uk' => 'Місто', 'en' => 'City', 'ru' => 'Город' ],
+		'tb_cat_fuel_diesel'       => [ 'en' => 'Diesel' ],
+		'tb_cat_trans_automatic'   => [ 'en' => 'Automatic' ],
+		'tb_cat_filter_sort_label' => [ 'en' => 'Sort by' ],
+		'tb_fa_cat_delete_btn'     => [ 'en' => 'Delete category' ],
+		'tb_legal_updated_prefix'  => [ 'sk' => 'Aktualizované: %s', 'uk' => 'Оновлено: %s', 'en' => 'Updated: %s', 'ru' => 'Обновлено: %s' ],
+	];
+
+	/** A translation WPML actually serves (complete). */
+	private static function used( ?array $t ): bool {
+		return is_array( $t ) && '' !== (string) $t[0] && 10 === (int) $t[1];
+	}
+
+	/**
+	 * What a visitor sees for a string on language $l (the theme passes the ACF
+	 * value of that language; WPML returns its translation if the language is not
+	 * the string's source and a complete translation exists).
+	 *
+	 * @param array<string,mixed> $r Matrix row.
+	 */
+	public static function visible( array $r, string $l ): ?string {
+		$pass = $r['acf'][ $l ] ?? null;
+		if ( $r['src'] === $l ) {
+			return $pass;
+		}
+		$t = $r['tr'][ $l ] ?? null;
+		return self::used( $t ) ? (string) $t[0] : $pass;
+	}
+
+	/**
+	 * Build the plan: Slovak becomes the source everywhere, every language keeps
+	 * showing what it shows now, except the explicit FIXES.
 	 *
 	 * @return array{rows:array<int,array<string,mixed>>,stats:array<string,int>}
 	 */
 	public static function plan(): array {
-		global $wpdb;
-		$strings = $wpdb->get_results( $wpdb->prepare( "SELECT id, name, language, value FROM {$wpdb->prefix}icl_strings WHERE context = %s ORDER BY id", WPML_Guard::OPTIONS_CTX ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$rows    = [];
-		$stats   = [ 'total' => count( $strings ), 'wrong_lang' => 0, 'value_fix' => 0, 'tr_fix' => 0, 'no_sk' => 0, 'sk_tr_differs' => 0 ];
-		foreach ( $strings as $s ) {
-			$sk = get_option( 'options_' . $s['name'], null );
-			if ( ! is_string( $sk ) || '' === $sk ) {
-				$stats['no_sk']++;
+		$rows  = [];
+		$stats = [ 'total' => 0, 'wrong_lang' => 0, 'value_fix' => 0, 'tr_fix' => 0, 'acf_sk_fix' => 0, 'content_fix' => 0, 'skipped' => 0 ];
+		foreach ( self::matrix() as $r ) {
+			$stats['total']++;
+			$r['tr'] = (array) $r['tr'];
+			$fix     = self::FIXES[ $r['n'] ] ?? [];
+			$sk      = $fix['sk'] ?? self::visible( $r, 'sk' );
+			if ( null === $sk || '' === $sk ) {
+				$stats['skipped']++;
 				continue;
 			}
-			$tr = [];
-			foreach ( (array) $wpdb->get_results( $wpdb->prepare( "SELECT language, value, status FROM {$wpdb->prefix}icl_string_translations WHERE string_id = %d", $s['id'] ), ARRAY_A ) as $t ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-				$tr[ $t['language'] ] = $t;
-			}
-			$row = [ 'id' => (int) $s['id'], 'name' => $s['name'], 'from' => $s['language'], 'old' => $s['value'], 'sk' => $sk, 'set_lang' => 'sk' !== $s['language'], 'set_value' => $s['value'] !== $sk, 'tr' => [] ];
-			if ( isset( $tr['sk']['value'] ) && '' !== (string) $tr['sk']['value'] && $tr['sk']['value'] !== $sk ) {
-				$row['sk_tr'] = $tr['sk']['value'];
-				$stats['sk_tr_differs']++;
-			}
-			if ( $row['set_lang'] && in_array( $s['language'], self::LANGS, true ) ) {
-				$acf = get_option( 'options_' . $s['language'] . '_' . $s['name'], null );
-				$cur = $tr[ $s['language'] ]['value'] ?? null;
-				if ( is_string( $acf ) && '' !== $acf && $cur !== $acf ) {
-					$row['tr'][ $s['language'] ] = [ 'from' => $cur, 'to' => $acf ];
-					$stats['tr_fix']++;
+			$row = [ 'id' => $r['id'], 'name' => $r['n'], 'from' => $r['src'], 'old' => $r['v'], 'sk' => $sk, 'set_lang' => 'sk' !== $r['src'], 'set_value' => $r['v'] !== $sk, 'acf_sk' => ( $r['acf']['sk'] ?? null ) !== $sk ? $sk : null, 'tr' => [], 'fix' => (bool) $fix ];
+			foreach ( self::LANGS as $l ) {
+				$cur  = $r['tr'][ $l ] ?? null;
+				$want = $fix[ $l ] ?? null;
+				if ( null === $want && $r['src'] === $l ) {
+					$want = self::visible( $r, $l ); // Keep what the old source language showed.
+				}
+				if ( null !== $want && '' !== $want && ! ( self::used( $cur ) && $cur[0] === $want ) ) {
+					$row['tr'][ $l ] = [ 'from' => $cur[0] ?? null, 'to' => $want ];
 				}
 			}
-			if ( $row['set_lang'] ) {
-				$stats['wrong_lang']++;
-			}
-			if ( $row['set_value'] ) {
-				$stats['value_fix']++;
-			}
-			if ( $row['set_lang'] || $row['set_value'] || $row['tr'] ) {
+			$stats['wrong_lang']  += $row['set_lang'] ? 1 : 0;
+			$stats['value_fix']   += $row['set_value'] ? 1 : 0;
+			$stats['tr_fix']      += count( $row['tr'] );
+			$stats['acf_sk_fix']  += null !== $row['acf_sk'] ? 1 : 0;
+			$stats['content_fix'] += $fix ? 1 : 0;
+			if ( $row['set_lang'] || $row['set_value'] || $row['tr'] || null !== $row['acf_sk'] ) {
 				$rows[] = $row;
 			}
 		}
@@ -90,10 +123,8 @@ final class WPML_Repair {
 		global $wpdb;
 		$n = 0;
 		foreach ( $plan['rows'] as $r ) {
-			foreach ( $r['tr'] as $lang => $t ) {
-				if ( function_exists( 'icl_add_string_translation' ) ) {
-					icl_add_string_translation( $r['id'], $lang, $t['to'], self::STATUS );
-				}
+			if ( null !== $r['acf_sk'] ) {
+				update_option( 'options_' . $r['name'], $r['acf_sk'], false );
 			}
 			$data = [];
 			if ( $r['set_lang'] ) {
@@ -105,11 +136,14 @@ final class WPML_Repair {
 			if ( $data ) {
 				$wpdb->update( "{$wpdb->prefix}icl_strings", $data, [ 'id' => $r['id'] ] ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			}
+			foreach ( $r['tr'] as $lang => $t ) {
+				if ( function_exists( 'icl_add_string_translation' ) ) {
+					icl_add_string_translation( (int) $r['id'], $lang, $t['to'], self::STATUS );
+				}
+			}
 			$n++;
 		}
-		// Let WPML rebuild its caches.
 		wp_cache_flush();
-		do_action( 'wpml_st_string_updated' );
 		WPML_Guard::reset();
 		return $n;
 	}
@@ -155,16 +189,16 @@ final class WPML_Repair {
 			$plan = self::plan();
 		}
 		$s = $plan['stats'];
-		echo '<p id="tbs-stats" data-stats="' . esc_attr( (string) wp_json_encode( $s ) ) . '">' . esc_html( sprintf( 'Strings: %1$d · wrong source language: %2$d · source text to set to the Slovak value: %3$d · translations to fill for the old source language: %4$d · Slovak "translations" differing from the options value: %5$d · without a Slovak options value (skipped): %6$d', $s['total'], $s['wrong_lang'], $s['value_fix'], $s['tr_fix'], $s['sk_tr_differs'], $s['no_sk'] ) ) . '</p>';
+		echo '<p id="tbs-stats" data-stats="' . esc_attr( (string) wp_json_encode( $s ) ) . '">' . esc_html( sprintf( 'Strings: %1$d · source language to Slovak: %2$d · source text set to the Slovak text: %3$d · translations written: %4$d · Slovak options value corrected: %5$d · content fixes: %6$d · skipped (no Slovak text): %7$d', $s['total'], $s['wrong_lang'], $s['value_fix'], $s['tr_fix'], $s['acf_sk_fix'], $s['content_fix'], $s['skipped'] ) ) . '</p>';
 		if ( $plan['rows'] ) {
 			echo '<form method="post">';
 			wp_nonce_field( self::NONCE );
 			echo '<p><button class="button button-primary" name="tbs_apply" value="1" onclick="return confirm(\'Apply? Make sure a database backup exists.\')">Apply repair</button></p></form>';
-			echo '<table class="widefat striped" id="tbs-plan"><thead><tr><th>ID</th><th>Name</th><th>Source lang</th><th>Current source text</th><th>Slovak value (new source)</th><th>Translation fix</th><th>Existing SK "translation" (kept, not used)</th></tr></thead><tbody>';
+			echo '<table class="widefat striped" id="tbs-plan"><thead><tr><th>ID</th><th>Name</th><th>Source lang</th><th>Current source text</th><th>New Slovak source</th><th>Translations written</th><th>Slovak options value</th></tr></thead><tbody>';
 			foreach ( $plan['rows'] as $r ) {
 				$fix = '';
 				foreach ( $r['tr'] as $l => $t ) {
-					$fix .= esc_html( $l . ': ' . (string) $t['from'] . ' → ' . $t['to'] );
+					$fix .= esc_html( $l . ': ' . (string) $t['from'] . ' → ' . $t['to'] ) . '<br>';
 				}
 				printf(
 					'<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
@@ -174,7 +208,7 @@ final class WPML_Repair {
 					esc_html( mb_substr( (string) $r['old'], 0, 120 ) ),
 					esc_html( mb_substr( $r['sk'], 0, 120 ) ),
 					$fix, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above
-					esc_html( mb_substr( (string) ( $r['sk_tr'] ?? '' ), 0, 120 ) )
+					esc_html( null !== $r['acf_sk'] ? '→ ' . mb_substr( (string) $r['acf_sk'], 0, 120 ) : '' )
 				);
 			}
 			echo '</tbody></table>';
