@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       TaxiBaza Speed
- * Description:       Production fixes for speed and safety: stops logging PHP notices and deprecations on every request (WP_DEBUG_LOG is on in wp-config.php) and blocks public access to *.log files in wp-content. Deactivating restores the previous behaviour.
- * Version:           1.0.0
+ * Description:       Production fixes for speed and safety: Google Fonts served locally, 301 redirects from the old legal-page addresses, stops WPML from rewriting the theme's options strings on every page view (Slovak value is always the source), stops logging PHP notices and deprecations on every request (WP_DEBUG_LOG is on in wp-config.php) and blocks public access to *.log files in wp-content. Deactivating restores the previous behaviour.
+ * Version:           1.1.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Focus Emotion
@@ -10,7 +10,7 @@
  *
  * The folder name starts with "0-" so WordPress loads it before other plugins.
  * Real errors (fatal, warning) are still written to the log; only the noise is cut.
- * Translation logic of the site (theme, core, WPML) is not touched.
+ * How translations are looked up (theme, core, WPML) is not changed.
  *
  * @package TaxiBaza\Speed
  */
@@ -22,6 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const MARKER = 'TaxiBaza Speed: no public logs';
+
+require_once __DIR__ . '/includes/class-wpml-guard.php';
+require_once __DIR__ . '/includes/class-wpml-repair.php';
+require_once __DIR__ . '/includes/class-fonts.php';
+require_once __DIR__ . '/includes/class-redirects.php';
+WPML_Guard::init();
+Fonts::init();
+Redirects::init();
+if ( is_admin() ) {
+	WPML_Repair::init();
+}
 
 /**
  * 1. Log only real problems. With WP_DEBUG on, PHP 8.5 + WPML/ACF/Yoast produce
