@@ -7,7 +7,7 @@
  * wp-content/themes/<theme>/assets/img/ from the chosen archive back into the
  * active theme. Existing files are left as they are.
  *
- * Tools → TaxiBaza WPML → "Theme images".
+ * Tools → TaxiBaza images; also runs by itself after the theme is replaced from a zip.
  *
  * @package TaxiBaza\Speed
  */
@@ -24,6 +24,29 @@ final class Restore_Images {
 
 	public static function init(): void {
 		add_action( 'admin_menu', [ self::class, 'menu' ] );
+		add_action( 'upgrader_process_complete', [ self::class, 'after_upgrade' ], 20, 2 );
+	}
+
+	/**
+	 * After the theme is replaced from a zip, put the images back right away.
+	 *
+	 * @param mixed               $upgrader Upgrader.
+	 * @param array<string,mixed> $extra    Details.
+	 */
+	public static function after_upgrade( $upgrader, $extra ): void {
+		if ( 'theme' !== ( $extra['type'] ?? '' ) ) {
+			return;
+		}
+		$dir = get_template_directory() . '/assets/img';
+		if ( is_dir( $dir ) && glob( $dir . '/*' ) ) {
+			return;
+		}
+		foreach ( self::archives() as $a ) {
+			$r = self::restore( $a );
+			if ( $r['restored'] > 0 ) {
+				return;
+			}
+		}
 	}
 
 	public static function menu(): void {
