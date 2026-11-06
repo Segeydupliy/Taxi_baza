@@ -85,9 +85,11 @@ $register_label = (string) tb_opt( 'tb_register_label', __( 'Зареєстру�
 								</ul>
 							</li>
 
-						<?php else : ?>
-							<li class="tb-nav__item">
-								<a href="<?php echo esc_url( $href ); ?>"><?php echo esc_html( $label ); ?></a>
+						<?php else :
+							$is_current = ! empty( $item['current'] );
+							?>
+							<li class="tb-nav__item<?php echo $is_current ? ' tb-nav__item--current' : ''; ?>">
+								<a href="<?php echo esc_url( $href ); ?>"<?php echo $is_current ? ' aria-current="page"' : ''; ?>><?php echo esc_html( $label ); ?></a>
 							</li>
 						<?php endif; ?>
 

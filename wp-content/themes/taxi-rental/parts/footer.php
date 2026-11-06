@@ -31,6 +31,15 @@ if ( empty( $nav_links ) ) {
 	];
 }
 
+/**
+ * Footer "Navigácia" rows (label, url, optional 'internal' => true for an absolute
+ * URL of this site that must not open in a new tab, optional 'current' => true).
+ * Plugins add items here (taxibaza-fleets adds "Flotily" after the catalogue).
+ *
+ * @param array<int,array<string,mixed>> $nav_links Rows.
+ */
+$nav_links = (array) apply_filters( 'tb_footer_nav_links', $nav_links );
+
 $platform_links = tb_footer_rows( tb_opt( 'tb_footer_platform_links', [] ) );
 if ( empty( $platform_links ) ) {
 	$platform_links = [
@@ -84,10 +93,11 @@ $resolve_url = static function ( string $url ): string {
 				<ul class="tb-footer__col-list" role="list">
 					<?php foreach ( $nav_links as $link ) :
 						$href       = $resolve_url( (string) ( $link['url'] ?? '' ) );
-						$is_ext     = str_starts_with( (string) ( $link['url'] ?? '' ), 'http' );
+						$is_ext     = empty( $link['internal'] ) && str_starts_with( (string) ( $link['url'] ?? '' ), 'http' );
+						$is_current = ! empty( $link['current'] );
 					?>
 					<li>
-						<a href="<?php echo esc_url( $href ); ?>"<?php echo $is_ext ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
+						<a href="<?php echo esc_url( $href ); ?>"<?php echo $is_ext ? ' target="_blank" rel="noopener noreferrer"' : ''; ?><?php echo $is_current ? ' aria-current="page"' : ''; ?>>
 							<?php echo esc_html( $link['label'] ?? '' ); ?>
 						</a>
 					</li>

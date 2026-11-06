@@ -150,9 +150,11 @@ $register_label = (string) tb_opt( 'tb_register_label', __( 'Зареєстру�
 						</ul>
 					</li>
 
-				<?php else : ?>
-					<li class="tb-mobile-nav__item">
-						<a class="tb-mobile-nav__link" href="<?php echo esc_url( $href ); ?>">
+				<?php else :
+					$is_current = ! empty( $item['current'] );
+					?>
+					<li class="tb-mobile-nav__item<?php echo $is_current ? ' tb-mobile-nav__item--current' : ''; ?>">
+						<a class="tb-mobile-nav__link" href="<?php echo esc_url( $href ); ?>"<?php echo $is_current ? ' aria-current="page"' : ''; ?>>
 							<?php echo esc_html( $label ); ?>
 						</a>
 					</li>

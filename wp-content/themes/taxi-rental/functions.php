@@ -747,10 +747,27 @@ function tb_logo_markup(): string {
  */
 function tb_header_menu(): array {
 	$menu = tb_opt( 'tb_header_menu', [] );
-	if ( ! empty( $menu ) && is_array( $menu ) ) {
-		return $menu;
+	if ( empty( $menu ) || ! is_array( $menu ) ) {
+		$menu = tb_header_menu_default();
 	}
 
+	/**
+	 * Header + mobile navigation rows (label, url, submenu_type, submenu,
+	 * optional 'current' => true). Plugins add items here (e.g. taxibaza-fleets
+	 * adds "Flotily" after the car catalogue) without touching the ACF options.
+	 *
+	 * @param array<int,array<string,mixed>> $menu Menu rows.
+	 */
+	$menu = apply_filters( 'tb_header_menu', $menu );
+	return is_array( $menu ) ? array_values( $menu ) : [];
+}
+
+/**
+ * Built-in header menu, used while the ACF repeater is empty.
+ *
+ * @return array<int,array<string,mixed>>
+ */
+function tb_header_menu_default(): array {
 	return [
 		[ 'label' => __( 'Каталог авто', 'taxi-rental' ), 'url' => (string) get_post_type_archive_link( 'car_listing' ), 'submenu_type' => 'none', 'submenu' => [] ],
 		[ 'label' => __( 'Міста', 'taxi-rental' ),         'url' => '', 'submenu_type' => 'cities', 'submenu' => [] ],
