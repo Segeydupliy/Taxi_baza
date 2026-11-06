@@ -7,7 +7,7 @@ function icl_add_string_translation($id,$l,$v,$s){ $GLOBALS['tr_written'][]=[$id
 class FakeDB { public $prefix='wp_'; public $strings=[]; public $tr=[];
  function prepare($q,...$a){ return $q; }
  function get_results($q,$o=null){ return str_contains($q,'icl_string_translations') ? $this->tr : $this->strings; }
- function update($t,$d,$w){ $GLOBALS['upd'][]=[$w['id'],$d]; } }
+ function update($t,$d,$w){ if(isset($w['id'])) $GLOBALS['upd'][]=[$w['id'],$d]; else $GLOBALS['tr_status'][]=[$w['string_id'],$w['language'],$d['status']]; } }
 $wpdb=new FakeDB;
 // 1) uk-source, SK WPML translation curated -> keep it, write ACF SK
 $wpdb->strings[]=['id'=>1,'name'=>'tb_cab_settings_notif_title','language'=>'uk','value'=>'Сповіщення','status'=>1];

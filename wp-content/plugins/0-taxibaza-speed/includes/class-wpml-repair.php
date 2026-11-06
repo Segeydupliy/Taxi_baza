@@ -165,6 +165,8 @@ final class WPML_Repair {
 				if ( function_exists( 'icl_add_string_translation' ) ) {
 					icl_add_string_translation( (int) $r['id'], $lang, $t['to'], self::STATUS );
 				}
+				// WPML skips the call when the text is unchanged; make sure the row is complete.
+				$wpdb->update( "{$wpdb->prefix}icl_string_translations", [ 'value' => $t['to'], 'status' => self::STATUS ], [ 'string_id' => (int) $r['id'], 'language' => $lang ] ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			}
 			$n++;
 		}
