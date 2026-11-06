@@ -947,3 +947,29 @@ function tb_city_cards( string $orderby = 'count', int $limit = 0 ): array {
 	} );
 	return $limit > 0 ? array_slice( $cards, 0, $limit ) : $cards;
 }
+
+/**
+ * page-mista.php and page-pro-nas.php are picked by the page slug, and the
+ * translations have other slugs (/en/cities/, /ru/goroda/, /en/about-us/ …),
+ * so those versions fell back to the empty default template. Use the template
+ * of the Slovak original's slug for every translation.
+ *
+ * @param string[] $templates Candidate templates.
+ * @return string[]
+ */
+function tb_page_template_by_source_slug( array $templates ): array {
+	$id = (int) get_queried_object_id();
+	if ( ! $id ) {
+		return $templates;
+	}
+	$src = (int) apply_filters( 'wpml_object_id', $id, 'page', true, tb_default_lang() );
+	if ( ! $src || $src === $id ) {
+		return $templates;
+	}
+	$slug = (string) get_post_field( 'post_name', $src );
+	if ( in_array( $slug, [ 'mista', 'pro-nas' ], true ) && ! in_array( 'page-' . $slug . '.php', $templates, true ) ) {
+		array_unshift( $templates, 'page-' . $slug . '.php' );
+	}
+	return $templates;
+}
+add_filter( 'page_template_hierarchy', 'tb_page_template_by_source_slug' );
