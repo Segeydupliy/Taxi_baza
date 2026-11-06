@@ -22,9 +22,9 @@ $wpdb->strings[]=['id'=>3,'name'=>'tb_logout_label','language'=>'sk','value'=>'L
 $wpdb->tr[]=['string_id'=>3,'language'=>'en','value'=>'Log out','status'=>10];
 $GLOBALS['opt']['options_tb_logout_label']='Odhlásiť sa';
 // 4) uk-source, UK translation stale vs ACF UK -> UK translation := ACF UK (what UK visitors saw)
-$wpdb->strings[]=['id'=>4,'name'=>'tb_register_label','language'=>'uk','value'=>'Зареєструватись','status'=>1];
+$wpdb->strings[]=['id'=>4,'name'=>'tb_test_register_label','language'=>'uk','value'=>'Зареєструватись','status'=>1];
 $wpdb->tr[]=['string_id'=>4,'language'=>'uk','value'=>'Зареєструватися','status'=>10];
-$GLOBALS['opt']['options_tb_register_label']='Registrovať sa'; $GLOBALS['opt']['options_uk_tb_register_label']='Зареєструватись';
+$GLOBALS['opt']['options_tb_test_register_label']='Registrovať sa'; $GLOBALS['opt']['options_uk_tb_test_register_label']='Зареєструватись';
 require __DIR__.'/../includes/class-wpml-guard.php'; require __DIR__.'/../includes/class-wpml-repair.php';
 $R='TaxiBaza\Speed\WPML_Repair'; $plan=$R::plan(); $by=[]; foreach($plan['rows'] as $r) $by[$r['id']]=$r;
 $n=0;$f=0; $ck=function($t,$c)use(&$n,&$f){$n++; echo ($c?"  ok  ":"FAIL  ").$t."\n"; if(!$c)$f++;};
