@@ -24,10 +24,18 @@
 	}
 
 	if ( galleryAddBtn && window.wp && wp.media ) {
+		// One upload session per form: the media window lists only the photos of
+		// this listing and the ones uploaded now (see functions.php).
+		var tbSession = Array.prototype.map.call( ( window.crypto || window.msCrypto ).getRandomValues( new Uint8Array( 16 ) ), function ( b ) { return ( '0' + b.toString( 16 ) ).slice( -2 ); } ).join( '' );
+		var tbListing = ( new URLSearchParams( window.location.search ) ).get( 'post_id' ) || '';
+		if ( wp.Uploader && wp.Uploader.defaults ) {
+			wp.Uploader.defaults.multipart_params = wp.Uploader.defaults.multipart_params || {};
+			wp.Uploader.defaults.multipart_params.tb_session = tbSession;
+		}
 		galleryFrame = wp.media( {
 			title:    mediaText,
 			multiple: 'add',
-			library:  { type: 'image' },
+			library:  { type: 'image', tb_session: tbSession, tb_listing: tbListing },
 		} );
 
 		galleryFrame.on( 'select', function () {

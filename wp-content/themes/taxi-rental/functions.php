@@ -1121,3 +1121,84 @@ function tb_tax_query_all_languages( array $tax ): array {
 	return $tax;
 }
 add_action( 'pre_get_posts', 'tb_listing_queries_all_languages', 1 );
+
+/*
+ * ---------------------------------------------------------------------------
+ * Photos of one listing stay with that listing.
+ *
+ * The add/edit listing form uses the WordPress media window, which showed every
+ * photo the account had ever uploaded — so the photos of the previous car came
+ * up when adding the next one, and deleting one there removed it from the other
+ * listing too. Now the window shows only the photos of the listing being edited
+ * plus the ones uploaded in this form, and site users can't delete files from
+ * it (the × on a photo only takes it off the listing).
+ * ---------------------------------------------------------------------------
+ */
+
+/** Upload session token sent by add-listing.js with every upload and library query. */
+function tb_media_session(): string {
+	$q   = isset( $_REQUEST['query'] ) && is_array( $_REQUEST['query'] ) ? $_REQUEST['query'] : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read only, sanitised below.
+	$raw = $_REQUEST['tb_session'] ?? ( $q['tb_session'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$tok = preg_replace( '/[^a-z0-9]/', '', strtolower( (string) $raw ) );
+	return strlen( $tok ) >= 16 && strlen( $tok ) <= 64 ? $tok : '';
+}
+
+add_action(
+	'add_attachment',
+	static function ( $attachment_id ): void {
+		$tok = tb_media_session();
+		if ( '' !== $tok ) {
+			update_post_meta( (int) $attachment_id, '_tb_upload_session', $tok );
+		}
+	}
+);
+
+add_filter(
+	'ajax_query_attachments_args',
+	static function ( array $args ): array {
+		$tok = tb_media_session();
+		if ( '' === $tok ) {
+			return $args; // Not the listing form (wp-admin, front admin, avatar …).
+		}
+		$ids = get_posts( [
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 200,
+			'fields'         => 'ids',
+			'author'         => get_current_user_id(),
+			'meta_key'       => '_tb_upload_session', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'     => $tok, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+		] );
+		$q       = isset( $_REQUEST['query'] ) && is_array( $_REQUEST['query'] ) ? $_REQUEST['query'] : []; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$listing = absint( $q['tb_listing'] ?? 0 );
+		if ( $listing && 'car_listing' === get_post_type( $listing ) && current_user_can( 'edit_post', $listing ) ) {
+			foreach ( (array) get_post_meta( $listing, 'gallery', true ) as $gid ) {
+				$ids[] = (int) $gid;
+			}
+			$thumb = (int) get_post_thumbnail_id( $listing );
+			if ( $thumb ) {
+				$ids[] = $thumb;
+			}
+		}
+		$args['post__in'] = array_values( array_unique( array_filter( array_map( 'intval', $ids ) ) ) ) ?: [ 0 ];
+		return $args;
+	},
+	20
+);
+
+// Site users (owners, fleets, drivers) never delete media files: a photo may
+// belong to another listing. Admins and editors keep the usual rights.
+add_filter(
+	'map_meta_cap',
+	static function ( array $caps, string $cap, int $user_id, array $args ): array {
+		if ( 'delete_post' !== $cap || empty( $args[0] ) || 'attachment' !== get_post_type( (int) $args[0] ) ) {
+			return $caps;
+		}
+		if ( user_can( $user_id, 'edit_others_posts' ) ) {
+			return $caps;
+		}
+		return [ 'do_not_allow' ];
+	},
+	10,
+	4
+);
