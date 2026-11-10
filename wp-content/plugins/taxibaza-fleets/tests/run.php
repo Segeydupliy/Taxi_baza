@@ -706,6 +706,44 @@ namespace TaxiBaza\Fleets\Tests {
 	$C::on_google_login( '', 0, 0, 97 );
 	check( 'ordinary password login is not affected', '' === get_user_meta( 97, 'tbf_terms_pending' ) );
 
+	echo "Phone confirmation (Twilio Verify)\n";
+	$P = '\TaxiBaza\Fleets\Phone_Verify';
+	if ( ! defined( 'HOUR_IN_SECONDS' ) ) { define( 'HOUR_IN_SECONDS', 3600 ); }
+	if ( ! function_exists( 'check_ajax_referer' ) ) { eval( 'function check_ajax_referer( $a, $k = false, $die = true ) { return "ok" === ( $_POST[ $k ] ?? "" ); }' ); }
+	check( 'normalize: Slovak local number -> +421', '+421905111222' === $P::normalize( '0905 111 222' ) );
+	check( 'normalize: international formats', '+380969777704' === $P::normalize( '+380 96 977 7704' ) && '+4369912345678' === $P::normalize( '00436991234567 8' ) );
+	check( 'normalize: garbage -> empty', '' === $P::normalize( 'abc' ) && '' === $P::normalize( '+12' ) );
+	$GLOBALS['__users'][120] = [ 'car_owner' ];
+	$P::on_user_register( 120 );
+	check( 'feature off: nobody is asked', '' === get_user_meta( 120, 'tbf_phone_pending' ) );
+	update_option( 'tbf_sms_settings', [ 'on' => true, 'sid' => 'ACx', 'token' => 'tok', 'service' => 'VAx' ] );
+	$P::on_user_register( 120 );
+	check( 'feature on: new account must confirm', $P::is_pending( 120 ) );
+	$calls = [];
+	$P::$http = function ( $url, $body ) use ( &$calls ) {
+		$calls[] = [ $url, $body ];
+		if ( str_ends_with( $url, '/Verifications' ) ) { return [ 'code' => 201, 'body' => [ 'status' => 'pending' ] ]; }
+		return [ 'code' => 200, 'body' => [ 'status' => '123456' === $body['Code'] ? 'approved' : 'pending' ] ];
+	};
+	$GLOBALS['__env']['uid'] = 120;
+	$prun = function ( string $fn, array $post ) use ( $P ) { $_POST = $post + [ 'nonce' => 'ok' ]; $GLOBALS['__ajax_out'] = null; try { $P::$fn(); } catch ( \WP_Ajax_Exit $e ) {} $_POST = []; return $GLOBALS['__ajax_out']; };
+	$out = $prun( 'ajax_send', [ 'phone' => 'x1' ] );
+	check( 'bad number -> 422, no SMS', 'error' === $out[0] && 422 === $out[2] && [] === $calls );
+	update_user_meta( 121, 'tbf_phone_verified', '+421905111222' ); $GLOBALS['__users'][121] = [ 'car_owner' ];
+	$out = $prun( 'ajax_send', [ 'phone' => '0905111222' ] );
+	check( 'number confirmed by another account -> refused', 'error' === $out[0] && [] === $calls );
+	$out = $prun( 'ajax_send', [ 'phone' => '0905333444' ] );
+	check( 'send: Twilio called with E.164 number and SMS channel', 'success' === $out[0] && '+421905333444' === $calls[0][1]['To'] && 'sms' === $calls[0][1]['Channel'] && str_contains( $calls[0][0], '/Services/VAx/Verifications' ) );
+	$out = $prun( 'ajax_check', [ 'code' => '000000' ] );
+	check( 'wrong code -> error, still pending', 'error' === $out[0] && $P::is_pending( 120 ) );
+	$out = $prun( 'ajax_check', [ 'code' => '123456' ] );
+	check( 'right code -> confirmed, phone saved, gate lifted', 'success' === $out[0] && '+421905333444' === get_user_meta( 120, 'tbf_phone_verified' ) && '+421905333444' === get_user_meta( 120, 'phone' ) && ! $P::is_pending( 120 ) );
+	update_user_meta( 120, 'tbf_phone_pending', 1 );
+	update_user_meta( 120, 'tbf_phone_sent', array_fill( 0, 5, time() ) );
+	$out = $prun( 'ajax_send', [ 'phone' => '0905333555' ] );
+	check( 'more than 5 SMS an hour -> 429', 'error' === $out[0] && 429 === $out[2] );
+	$P::$http = null; update_option( 'tbf_sms_settings', [] );
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }
