@@ -329,18 +329,6 @@ final class Directory {
 				'unit'  => $fixed ? t( 'fl_per_week' ) : t( 'fl_of_revenue' ),
 			];
 		}
-		if ( in_array( 'fleet', $models, true ) ) {
-			if ( ! empty( $p['rent_comm_on'] ) && '' !== (string) ( $p['rent_comm'] ?? '' ) ) {
-				return [ 'label' => t( 'fl_commission' ), 'value' => self::money( $p['rent_comm'] ) . ' %', 'unit' => t( 'fl_of_revenue' ) ];
-			}
-			if ( '' !== (string) ( $p['rent_price'] ?? '' ) ) {
-				return [
-					'label' => t( 'fl_rent_label' ),
-					'value' => self::money( $p['rent_price'] ) . ' €',
-					'unit'  => 'day' === ( $p['rent_period'] ?? '' ) ? t( 'fl_per_day' ) : t( 'fl_per_week' ),
-				];
-			}
-		}
 		return null;
 	}
 

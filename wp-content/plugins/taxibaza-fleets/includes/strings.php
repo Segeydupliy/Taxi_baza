@@ -404,4 +404,8 @@ return [
 	'n_tab_requests'         => [ 'Žiadosti', 'Запити', 'Requests', 'Запросы' ],
 	'n_tab_system'           => [ 'Systémové', 'Системні', 'System', 'Системные' ],
 	'n_close'                => [ 'Zavrieť', 'Закрити', 'Close', 'Закрыть' ],
+	'lang_de'                => [ 'Nemčina', 'Німецька', 'German', 'Немецкий' ],
+	'req_other'              => [ 'Ďalšie požiadavky', 'Інші вимоги', 'Other requirements', 'Другие требования' ],
+	'req_other_ph'           => [ 'Napr. doklady, ktoré vodič potrebuje, znalosť mesta, bezúhonnosť…', 'Напр. які документи потрібні водію, знання міста, несудимість…', 'E.g. documents the driver needs, knowledge of the city, clean record…', 'Напр. какие документы нужны водителю, знание города, несудимость…' ],
+	'fl_rent_note'           => [ 'Cenu prenájmu nájdete pri každom aute flotily.', 'Ціну оренди вказано в оголошенні кожного авто флотилії.', 'The rental price is given in each fleet car listing.', 'Цена аренды указана в объявлении каждого авто таксопарка.' ],
 ];

@@ -94,7 +94,7 @@ $logo_url = ! empty( $tbf_form['logo_id'] ) ? wp_get_attachment_image_url( (int)
 					<div class="tbf-field"><label class="tbf-label" for="f-tg"><?php echo esc_html( t( 'f_telegram' ) ); ?></label><input class="tbf-input" id="f-tg" name="telegram" placeholder="<?php echo esc_attr( t( 'f_telegram_ph' ) ); ?>" value="<?php echo $e_attr( $tbf_form['telegram'] ); // phpcs:ignore ?>"></div>
 					<div class="tbf-field"><label class="tbf-label" for="f-wa"><?php echo esc_html( t( 'f_whatsapp' ) ); ?></label><input class="tbf-input" id="f-wa" name="whatsapp" value="<?php echo $e_attr( $tbf_form['whatsapp'] ); // phpcs:ignore ?>"></div>
 					<div class="tbf-field"><label class="tbf-label" for="f-desc"><?php echo esc_html( t( 'f_desc' ) ); ?></label><textarea class="tbf-textarea" id="f-desc" name="description" maxlength="2000"><?php echo esc_textarea( $tbf_form['description'] ); ?></textarea></div>
-					<div class="<?php echo esc_attr( $fcls( 'langs' ) ); ?>" data-group="langs"><span class="tbf-label"><?php echo esc_html( t( 'f_langs' ) ) . $req; // phpcs:ignore ?></span><div class="tbf-checks"><?php echo $checks( 'langs', [ 'sk' => t( 'lang_sk' ), 'uk' => t( 'lang_uk' ), 'cs' => t( 'lang_cs' ), 'en' => t( 'lang_en' ), 'ru' => t( 'lang_ru' ) ] ); // phpcs:ignore ?></div><?php echo $err( 'langs' ); // phpcs:ignore ?></div>
+					<div class="<?php echo esc_attr( $fcls( 'langs' ) ); ?>" data-group="langs"><span class="tbf-label"><?php echo esc_html( t( 'f_langs' ) ) . $req; // phpcs:ignore ?></span><div class="tbf-checks"><?php echo $checks( 'langs', [ 'sk' => t( 'lang_sk' ), 'uk' => t( 'lang_uk' ), 'cs' => t( 'lang_cs' ), 'en' => t( 'lang_en' ), 'de' => t( 'lang_de' ), 'ru' => t( 'lang_ru' ) ] ); // phpcs:ignore ?></div><?php echo $err( 'langs' ); // phpcs:ignore ?></div>
 				</div>
 			</section>
 
@@ -120,29 +120,6 @@ $logo_url = ! empty( $tbf_form['logo_id'] ) ? wp_get_attachment_image_url( (int)
 				</div>
 			</section>
 
-			<section class="tbf-card" data-show-if="m-fleet">
-				<h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_rent' ) ); ?></h2>
-				<p class="tbf-card__sub"><?php echo esc_html( t( 'sec_rent_sub' ) ); ?></p>
-				<div class="tbf-card__body">
-					<div class="tbf-row">
-						<div class="<?php echo esc_attr( $fcls( 'rent_price' ) ); ?>"><label class="tbf-label" for="r-price"><?php echo esc_html( t( 'rent_price' ) ) . $req; // phpcs:ignore ?></label><input class="tbf-input" id="r-price" name="rent_price" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['rent_price'] ); // phpcs:ignore ?>" data-req="1"><?php echo $err( 'rent_price' ); // phpcs:ignore ?></div>
-						<div class="tbf-field"><label class="tbf-label" for="r-period"><?php echo esc_html( t( 'rent_period' ) ); ?></label><select class="tbf-select" id="r-period" name="rent_period"><?php echo $opts( 'rent_period', [ 'week' => t( 'opt_per_week' ), 'day' => t( 'opt_per_day' ) ] ); // phpcs:ignore ?></select></div>
-					</div>
-					<?php echo $switch( 'rent_comm_on', 'r-comm-on', t( 'rent_comm_on' ) ); // phpcs:ignore ?>
-					<div class="tbf-row" data-show-if="r-comm-on"><div class="<?php echo esc_attr( $fcls( 'rent_comm' ) ); ?>"><label class="tbf-label" for="r-comm"><?php echo esc_html( t( 'rent_comm' ) ) . $req; // phpcs:ignore ?></label><input class="tbf-input" id="r-comm" name="rent_comm" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['rent_comm'] ); // phpcs:ignore ?>" data-req="1"><?php echo $err( 'rent_comm' ); // phpcs:ignore ?></div></div>
-					<?php echo $switch( 'rent_dep_on', 'r-dep-on', t( 'rent_dep_on' ) ); // phpcs:ignore ?>
-					<div class="tbf-row" data-show-if="r-dep-on">
-						<div class="<?php echo esc_attr( $fcls( 'rent_dep' ) ); ?>"><label class="tbf-label" for="r-dep"><?php echo esc_html( t( 'rent_dep' ) ) . $req; // phpcs:ignore ?></label><input class="tbf-input" id="r-dep" name="rent_dep" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['rent_dep'] ); // phpcs:ignore ?>" data-req="1"><?php echo $err( 'rent_dep' ); // phpcs:ignore ?></div>
-						<div class="tbf-field"><label class="tbf-label" for="r-dep-ret"><?php echo esc_html( t( 'rent_dep_return' ) ); ?></label><select class="tbf-select" id="r-dep-ret" name="rent_dep_return"><?php echo $opts( 'rent_dep_return', [ 'handover' => t( 'opt_ret_handover' ), '7' => t( 'opt_ret_7' ), '14' => t( 'opt_ret_14' ) ] ); // phpcs:ignore ?></select></div>
-					</div>
-					<div class="tbf-row">
-						<div class="<?php echo esc_attr( $fcls( 'rent_min' ) ); ?>"><label class="tbf-label" for="r-min"><?php echo esc_html( t( 'rent_min' ) ) . $req; // phpcs:ignore ?></label><div class="tbf-inline tbf-inline--min"><input class="tbf-input" id="r-min" name="rent_min" inputmode="numeric" value="<?php echo $e_attr( $tbf_form['rent_min'] ); // phpcs:ignore ?>" data-req="1"><select class="tbf-select" name="rent_min_unit" aria-label="<?php echo esc_attr( t( 'unit' ) ); ?>"><?php echo $opts( 'rent_min_unit', [ 'days' => t( 'opt_days' ), 'weeks' => t( 'opt_weeks' ), 'months' => t( 'opt_months' ) ] ); // phpcs:ignore ?></select></div><?php echo $err( 'rent_min' ); // phpcs:ignore ?></div>
-						<div class="tbf-field"><label class="tbf-label" for="r-ext"><?php echo esc_html( t( 'rent_ext' ) ); ?></label><select class="tbf-select" id="r-ext" name="rent_ext"><?php echo $opts( 'rent_ext', [ 'weekly' => t( 'opt_weekly' ), 'daily' => t( 'opt_daily' ), 'monthly' => t( 'opt_monthly' ) ] ); // phpcs:ignore ?></select></div>
-					</div>
-					<div class="tbf-card__body" style="margin:0;gap:16px"><?php echo $checks( 'inc', [ 'insurance' => t( 'inc_insurance' ), 'service' => t( 'inc_service' ), 'tires' => t( 'inc_tires' ), 'wash' => t( 'inc_wash' ) ], 'switch' ); // phpcs:ignore ?></div>
-				</div>
-			</section>
-
 			<section class="tbf-card">
 				<h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_pay' ) ); ?></h2>
 				<p class="tbf-card__sub"><?php echo esc_html( t( 'sec_pay_sub' ) ); ?></p>
@@ -163,7 +140,7 @@ $logo_url = ! empty( $tbf_form['logo_id'] ) ? wp_get_attachment_image_url( (int)
 						<?php echo $switch( 'perk_fuel', 'k-fuel', t( 'perk_fuel' ), t( 'perk_fuel_hint' ), true ); // phpcs:ignore ?>
 						<div class="tbf-perk__fields" data-show-if="k-fuel">
 							<div class="tbf-row">
-								<div class="<?php echo esc_attr( $fcls( 'fuel_discount' ) ); ?>"><label class="tbf-label" for="k-fuel-v"><?php echo esc_html( t( 'discount' ) ) . $req; // phpcs:ignore ?></label><input class="tbf-input" id="k-fuel-v" name="fuel_discount" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['fuel_discount'] ); // phpcs:ignore ?>" data-req="1"><?php echo $err( 'fuel_discount' ); // phpcs:ignore ?></div>
+								<div class="<?php echo esc_attr( $fcls( 'fuel_discount' ) ); ?>"><label class="tbf-label" for="k-fuel-v"><?php echo esc_html( t( 'discount' ) ); ?></label><input class="tbf-input" id="k-fuel-v" name="fuel_discount" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['fuel_discount'] ); // phpcs:ignore ?>"><?php echo $err( 'fuel_discount' ); // phpcs:ignore ?></div>
 								<div class="tbf-field"><label class="tbf-label" for="k-fuel-u"><?php echo esc_html( t( 'unit' ) ); ?></label><select class="tbf-select" id="k-fuel-u" name="fuel_unit"><?php echo $opts( 'fuel_unit', [ 'cents' => t( 'opt_cents' ), 'percent' => t( 'opt_percent' ) ] ); // phpcs:ignore ?></select></div>
 							</div>
 							<div class="tbf-field"><label class="tbf-label" for="k-fuel-n"><?php echo esc_html( t( 'fuel_network' ) ); ?></label><input class="tbf-input" id="k-fuel-n" name="fuel_network" placeholder="<?php echo esc_attr( t( 'fuel_network_ph' ) ); ?>" value="<?php echo $e_attr( $tbf_form['fuel_network'] ); // phpcs:ignore ?>"></div>
@@ -174,19 +151,11 @@ $logo_url = ! empty( $tbf_form['logo_id'] ) ? wp_get_attachment_image_url( (int)
 						<?php echo $switch( 'perk_service', 'k-svc', t( 'perk_service' ), t( 'perk_service_hint' ), true ); // phpcs:ignore ?>
 						<div class="tbf-perk__fields" data-show-if="k-svc">
 							<div class="tbf-row">
-								<div class="<?php echo esc_attr( $fcls( 'svc_discount' ) ); ?>"><label class="tbf-label" for="k-svc-v"><?php echo esc_html( t( 'discount_pct' ) ) . $req; // phpcs:ignore ?></label><input class="tbf-input" id="k-svc-v" name="svc_discount" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['svc_discount'] ); // phpcs:ignore ?>" data-req="1"><?php echo $err( 'svc_discount' ); // phpcs:ignore ?></div>
+								<div class="<?php echo esc_attr( $fcls( 'svc_discount' ) ); ?>"><label class="tbf-label" for="k-svc-v"><?php echo esc_html( t( 'discount_pct' ) ); ?></label><input class="tbf-input" id="k-svc-v" name="svc_discount" inputmode="decimal" value="<?php echo $e_attr( $tbf_form['svc_discount'] ); // phpcs:ignore ?>"><?php echo $err( 'svc_discount' ); // phpcs:ignore ?></div>
 								<div class="tbf-field"><label class="tbf-label" for="k-svc-w"><?php echo esc_html( t( 'svc_where' ) ); ?></label><select class="tbf-select" id="k-svc-w" name="svc_where"><?php echo $opts( 'svc_where', [ 'partner' => t( 'opt_partner_sto' ), 'own' => t( 'opt_own_sto' ) ] ); // phpcs:ignore ?></select></div>
 							</div>
-							<div class="<?php echo esc_attr( $fcls( 'svc_what' ) ); ?>" data-group="svcwhat"><span class="tbf-label"><?php echo esc_html( t( 'svc_what' ) ) . $req; // phpcs:ignore ?></span><div class="tbf-checks"><?php echo $checks( 'svc_what', [ 'service' => t( 'svc_service' ), 'tires' => t( 'svc_tires' ), 'parts' => t( 'svc_parts' ), 'wash' => t( 'svc_wash' ) ] ); // phpcs:ignore ?></div><?php echo $err( 'svc_what' ); // phpcs:ignore ?></div>
+							<div class="<?php echo esc_attr( $fcls( 'svc_what' ) ); ?>"><span class="tbf-label"><?php echo esc_html( t( 'svc_what' ) ); ?></span><div class="tbf-checks"><?php echo $checks( 'svc_what', [ 'service' => t( 'svc_service' ), 'tires' => t( 'svc_tires' ), 'parts' => t( 'svc_parts' ), 'wash' => t( 'svc_wash' ) ] ); // phpcs:ignore ?></div><?php echo $err( 'svc_what' ); // phpcs:ignore ?></div>
 							<div class="tbf-field"><span class="tbf-label"><?php echo esc_html( t( 'for_whom' ) ); ?></span><div class="tbf-checks"><?php echo $checks( 'svc_for', $for_map ); // phpcs:ignore ?></div></div>
-						</div>
-					</div>
-					<div class="tbf-perk">
-						<?php echo $switch( 'perk_concession', 'k-con', t( 'perk_con' ), t( 'perk_con_hint' ), true ); // phpcs:ignore ?>
-						<div class="tbf-perk__fields" data-show-if="k-con">
-							<div class="tbf-field"><label class="tbf-label" for="k-con-w"><?php echo esc_html( t( 'con_what' ) ); ?></label><select class="tbf-select" id="k-con-w" name="con_what"><?php echo $opts( 'con_what', [ 'help' => t( 'opt_con_help' ), 'do' => t( 'opt_con_do' ) ] ); // phpcs:ignore ?></select></div>
-							<div class="tbf-field"><label class="tbf-label" for="k-con-c"><?php echo esc_html( t( 'con_cost' ) ); ?></label><select class="tbf-select" id="k-con-c" name="con_cost"><?php echo $opts( 'con_cost', [ 'free' => t( 'opt_free' ), 'compensate' => t( 'opt_compensate' ), 'paid' => t( 'opt_paid' ) ] ); // phpcs:ignore ?></select></div>
-							<div class="tbf-field"><span class="tbf-label"><?php echo esc_html( t( 'for_whom' ) ); ?></span><div class="tbf-checks"><?php echo $checks( 'con_for', $for_map ); // phpcs:ignore ?></div></div>
 						</div>
 					</div>
 				</div>
@@ -206,7 +175,7 @@ $logo_url = ! empty( $tbf_form['logo_id'] ) ? wp_get_attachment_image_url( (int)
 							echo $opts( 'req_exp', $exp_map ); // phpcs:ignore
 						?></select></div>
 					</div>
-					<div class="<?php echo esc_attr( $fcls( 'docs' ) ); ?>" data-group="docs"><span class="tbf-label"><?php echo esc_html( t( 'docs' ) ) . $req; // phpcs:ignore ?></span><div class="tbf-checks" style="flex-direction:column;gap:12px"><?php echo $checks( 'docs', [ 'id' => t( 'doc_id' ), 'license' => t( 'doc_license' ), 'record' => t( 'doc_record' ) ] ); // phpcs:ignore ?></div><?php echo $err( 'docs' ); // phpcs:ignore ?></div>
+					<div class="tbf-field"><label class="tbf-label" for="q-other"><?php echo esc_html( t( 'req_other' ) ); ?></label><textarea class="tbf-input tbf-textarea" id="q-other" name="req_other" rows="4" maxlength="1000" placeholder="<?php echo esc_attr( t( 'req_other_ph' ) ); ?>"><?php echo esc_textarea( (string) ( $tbf_form['req_other'] ?? '' ) ); ?></textarea></div>
 				</div>
 			</section>
 		</div>

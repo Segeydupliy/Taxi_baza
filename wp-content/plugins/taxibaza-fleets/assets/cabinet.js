@@ -68,15 +68,17 @@
 		if (name.value.trim().length < 2) { bad(name.closest('.tbf-field'), I.required); }
 		var ph = q('#f-phone');
 		if (ph.value.trim() && !/^\+?\d[\d ]{7,18}$/.test(ph.value.trim())) { bad(ph.closest('.tbf-field'), I.phone); }
-		['platforms', 'langs', 'models', 'paymethod', 'docs', 'svcwhat'].forEach(function (g) {
+		['platforms', 'langs', 'models', 'paymethod'].forEach(function (g) {
 			var el = q('[data-group="' + g + '"]', form);
 			if (el && !hiddenByDeps(el) && !qa('input:checked', el).length) { bad(el, I.pickOne); }
 		});
 		var ranges = { 'o-fee': [0, q('#o-pay').value === 'fixed' ? 100000 : 100], 'r-price': [1, 100000], 'r-comm': [0, 100], 'r-dep': [0, 100000], 'r-min': [1, 1000], 'k-fuel-v': [0, 100], 'k-svc-v': [0, 100] };
+		var optional = { 'k-fuel-v': 1, 'k-svc-v': 1 };
 		Object.keys(ranges).forEach(function (id) {
 			var i = document.getElementById(id);
 			if (!i || hiddenByDeps(i)) { return; }
 			var n = num(i.value);
+			if (!i.value.trim() && optional[id]) { return; } // Discounts may stay empty.
 			if (isNaN(n) || n < ranges[id][0] || n > ranges[id][1]) { bad(i.closest('.tbf-field'), i.value.trim() ? I.number : I.required); }
 		});
 		if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); }

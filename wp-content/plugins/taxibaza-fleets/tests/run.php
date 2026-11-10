@@ -241,7 +241,10 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'telegram @ stripped', 'gold_fleet' === $p['telegram'] );
 	check( 'valid profile has no errors', [] === \TaxiBaza\Fleets\Profile::validate( $p ) );
 	$bad = \TaxiBaza\Fleets\Profile::validate( array_merge( $p, [ 'name' => 'G', 'own_fee' => '150', 'models' => [ 'own' ], 'docs' => [] ] ) );
-	check( 'errors: name, fee>100, docs', isset( $bad['name'], $bad['own_fee'], $bad['docs'] ) );
+	check( 'errors: name, fee>100; documents no longer required', isset( $bad['name'], $bad['own_fee'] ) && ! isset( $bad['docs'] ) );
+	$ok2 = \TaxiBaza\Fleets\Profile::validate( array_merge( $p, [ 'models' => [ 'fleet' ], 'rent_price' => '', 'rent_min' => '', 'perk_fuel' => true, 'fuel_discount' => '', 'perk_service' => true, 'svc_discount' => '', 'svc_what' => [] ] ) );
+	check( 'fleet cars without rent fields, perks without discounts: valid', [] === $ok2 );
+	check( 'German is a communication language', in_array( 'de', \TaxiBaza\Fleets\Profile::CHOICES['langs'], true ) );
 	$bad = \TaxiBaza\Fleets\Profile::validate( array_merge( $p, [ 'models' => [ 'own' ], 'rent_price' => '' ] ) );
 	check( 'rent fields not required without fleet model', ! isset( $bad['rent_price'] ) );
 
@@ -568,8 +571,7 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'own-car commission in % of earnings', '8 %' === $h['value'] && 'з виручки' === $h['unit'] );
 	$h = $D::headline( [ 'models' => [ 'own' ], 'own_pay_type' => 'fixed', 'own_fee' => '20' ] );
 	check( 'fixed commission per week', '20 €' === $h['value'] && '/ тиждень' === $h['unit'] );
-	$h = $D::headline( [ 'models' => [ 'fleet' ], 'rent_comm_on' => false, 'rent_price' => '210', 'rent_period' => 'week' ] );
-	check( 'fleet-only without commission shows the rent', '210 €' === $h['value'] && 'Оренда авто' === $h['label'] );
+	check( 'fleet cars only: no headline (each car has its own price)', null === $D::headline( [ 'models' => [ 'fleet' ], 'rent_price' => '210', 'rent_period' => 'week' ] ) );
 	check( 'nothing set -> no headline (no placeholder numbers)', null === $D::headline( [ 'models' => [ 'own' ], 'own_fee' => '' ] ) );
 	$f = array_column( $D::features( [ 'models' => [ 'own' ], 'pay_freq' => 'weekly', 'perk_fuel' => true ] ), 'text' );
 	check( 'feature chips from the profile', [ 'Тижневі виплати', 'Власне авто', 'Паливна картка' ] === $f );
@@ -599,14 +601,16 @@ namespace TaxiBaza\Fleets\Tests {
 	$terms = $V::terms( $live );
 	check( 'both models -> two columns', [ 'own', 'fleet' ] === array_keys( $terms ) );
 	check( 'own column metric 8 % (gross)', '8 %' === $terms['own']['value'] && str_contains( $terms['own']['value_text'], 'загальної' ) );
-	check( 'fleet column metric from 210 €', 'від 210 €' === $terms['fleet']['value'] );
+	check( 'fleet column: no rent figure, a note about prices in listings', '' === $terms['fleet']['value'] && str_contains( $terms['fleet']['note'], 'оголошенні' ) );
 	$titles = array_column( $terms['fleet']['perks'], 'title' );
-	check( 'fleet perks: commission, deposit, included, min term', in_array( 'Комісія з виручки', $titles, true ) && in_array( 'Депозит', $titles, true ) && in_array( 'Включено в оренду', $titles, true ) && in_array( 'Мінімальний термін', $titles, true ) );
+	check( 'fleet perks: old rent fields are not shown', ! in_array( 'Депозит', $titles, true ) && ! in_array( 'Мінімальний термін', $titles, true ) );
 	check( 'payouts text', 'Щотижня, понеділок, на банківський рахунок.' === $terms['own']['perks'][0]['text'] );
 	$t2 = $V::terms( array_merge( $live, [ 'models' => [ 'fleet' ], 'rent_dep_on' => false, 'inc' => [], 'rent_comm_on' => false ] ) );
 	check( 'fleet-only: one column, empty blocks left out', [ 'fleet' ] === array_keys( $t2 ) && ! in_array( 'Депозит', array_column( $t2['fleet']['perks'], 'title' ), true ) );
 	$req = $V::requirements( $live );
-	check( 'requirements: age with plural, experience, docs, languages', '21 рік' === $req[0]['text'] && 'Від 2 років' === $req[1]['text'] && 2 === substr_count( $req[2]['text'], ',' ) && 'Словацька, українська' === $req[3]['text'] );
+	check( 'requirements: age with plural, experience, languages (documents list removed)', '21 рік' === $req[0]['text'] && 'Від 2 років' === $req[1]['text'] && 'Словацька, українська' === $req[2]['text'] );
+	$req2 = $V::requirements( array_merge( $live, [ 'req_other' => 'Знання міста' ] ) );
+	check( 'requirements: free-text "other requirements" shown', in_array( 'Знання міста', array_column( $req2, 'text' ), true ) );
 
 	echo "Work request: validation\n";
 	$W = '\TaxiBaza\Fleets\Work_Request';

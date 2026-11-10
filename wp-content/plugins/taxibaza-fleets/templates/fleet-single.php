@@ -127,6 +127,8 @@ get_header();
 							<p class="tbf-kicker"><?php echo esc_html( $tbf_col['kicker'] ); ?></p>
 							<?php if ( '' !== $tbf_col['value'] ) : ?>
 								<p class="tbf-metric"><strong><?php echo esc_html( $tbf_col['value'] ); ?></strong> <span><?php echo esc_html( $tbf_col['value_text'] ); ?></span></p>
+							<?php elseif ( ! empty( $tbf_col['note'] ) ) : ?>
+								<p class="tbf-panel__sub"><?php echo esc_html( $tbf_col['note'] ); ?></p>
 							<?php endif; ?>
 							<?php if ( $tbf_col['perks'] ) : ?>
 								<ul class="tbf-perks" role="list">

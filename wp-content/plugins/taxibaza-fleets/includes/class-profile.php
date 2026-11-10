@@ -24,7 +24,7 @@ final class Profile {
 	/** Allowed values for choice fields. */
 	public const CHOICES = [
 		'platforms'       => [ 'uber', 'bolt', 'hopin' ],
-		'langs'           => [ 'sk', 'uk', 'cs', 'en', 'ru' ],
+		'langs'           => [ 'sk', 'uk', 'cs', 'en', 'de', 'ru' ],
 		'models'          => [ 'own', 'fleet' ],
 		'own_pay_type'    => [ 'percent', 'fixed', 'after' ],
 		'own_fee_base'    => [ 'gross', 'net' ],
@@ -98,6 +98,7 @@ final class Profile {
 			'req_age'         => '21',
 			'req_exp'         => '0',
 			'docs'            => [],
+			'req_other'       => '',
 		];
 	}
 
@@ -210,6 +211,7 @@ final class Profile {
 			'req_age'         => $one( 'req_age' ),
 			'req_exp'         => $one( 'req_exp' ),
 			'docs'            => $many( 'docs' ),
+			'req_other'       => $text( 'req_other', 1000 ),
 		];
 	}
 
@@ -232,7 +234,7 @@ final class Profile {
 		if ( '' !== $p['phone'] && ! preg_match( '/^\+?\d[\d ]{7,18}$/', $p['phone'] ) ) {
 			$e['phone'] = 'err_phone';
 		}
-		foreach ( [ 'platforms', 'langs', 'models', 'pay_method', 'docs' ] as $k ) {
+		foreach ( [ 'platforms', 'langs', 'models', 'pay_method' ] as $k ) {
 			if ( ! $p[ $k ] ) {
 				$e[ $k ] = 'err_pick_one';
 			}
@@ -240,24 +242,18 @@ final class Profile {
 		if ( in_array( 'own', $p['models'], true ) ) {
 			'fixed' === $p['own_pay_type'] ? $range( 'own_fee', 0, 100000 ) : $range( 'own_fee', 0, 100 );
 		}
-		if ( in_array( 'fleet', $p['models'], true ) ) {
-			$range( 'rent_price', 1, 100000 );
-			$range( 'rent_min', 1, 1000 );
-			if ( $p['rent_comm_on'] ) {
-				$range( 'rent_comm', 0, 100 );
+		// Fleet cars: prices differ per car and are given in each listing, so the
+		// profile has no rent fields any more. Discounts are optional details.
+		$opt = static function ( string $k, float $max ) use ( $p, &$e ) {
+			if ( '' !== (string) $p[ $k ] && ( (float) $p[ $k ] < 0 || (float) $p[ $k ] > $max ) ) {
+				$e[ $k ] = 'err_number';
 			}
-			if ( $p['rent_dep_on'] ) {
-				$range( 'rent_dep', 0, 100000 );
-			}
-		}
+		};
 		if ( $p['perk_fuel'] ) {
-			$range( 'fuel_discount', 0, 100 );
+			$opt( 'fuel_discount', 100 );
 		}
 		if ( $p['perk_service'] ) {
-			$range( 'svc_discount', 0, 100 );
-			if ( ! $p['svc_what'] ) {
-				$e['svc_what'] = 'err_pick_one';
-			}
+			$opt( 'svc_discount', 100 );
 		}
 		return $e;
 	}
