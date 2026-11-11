@@ -42,6 +42,7 @@ final class Phone_Verify {
 	public const CANDIDATE   = 'tbf_phone_candidate';
 	public const FIELD       = 'tbf_phone';
 	public const ERR_QUERY   = 'tbf_phone_err';
+	public const LAST_ERROR  = 'tbf_sms_last_error';
 	private const PAGE       = 'tbf-sms';
 
 	/** For tests: replaces the HTTP call to Twilio. @var callable|null */
@@ -64,6 +65,7 @@ final class Phone_Verify {
 		if ( is_admin() ) {
 			add_action( 'admin_menu', [ self::class, 'menu' ] );
 			add_action( 'admin_post_tbf_sms_save', [ self::class, 'save_settings' ] );
+			add_action( 'admin_post_tbf_sms_test', [ self::class, 'test_connection' ] );
 		}
 	}
 
@@ -113,8 +115,87 @@ final class Phone_Verify {
 				<p><?php echo esc_html( self::enabled() ? t( 'sms_admin_state_on' ) : t( 'sms_admin_state_off' ) ); ?></p>
 				<?php submit_button(); ?>
 			</form>
+			<hr>
+			<h2><?php echo esc_html( t( 'sms_admin_diag' ) ); ?></h2>
+			<p><?php echo esc_html( sprintf( t( 'sms_admin_token_len' ), strlen( $s['token'] ) ) ); ?></p>
+			<?php
+			$test = get_transient( 'tbf_sms_test' );
+			if ( is_array( $test ) && isset( $_GET['tested'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				?>
+				<div class="notice <?php echo $test['ok'] ? 'notice-success' : 'notice-error'; ?> inline"><p><?php echo esc_html( $test['text'] ); ?></p></div>
+			<?php endif; ?>
+			<?php
+			$last = get_option( self::LAST_ERROR );
+			if ( is_array( $last ) && ! empty( $last['at'] ) ) :
+				?>
+				<p><strong><?php echo esc_html( t( 'sms_admin_last_err' ) ); ?></strong> <?php echo esc_html( wp_date( 'd.m.Y H:i', (int) $last['at'] ) . ' — ' . self::describe( $last ) ); ?></p>
+			<?php endif; ?>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="tbf_sms_test">
+				<?php wp_nonce_field( 'tbf_sms_test' ); ?>
+				<?php submit_button( t( 'sms_admin_test' ), 'secondary', 'submit', false ); ?>
+			</form>
 		</div>
 		<?php
+	}
+
+	/** Human-readable Twilio failure (no secrets). @param array<string,mixed> $e */
+	public static function describe( array $e ): string {
+		$parts = [];
+		if ( ! empty( $e['wp_error'] ) ) {
+			$parts[] = 'network: ' . $e['wp_error'];
+		}
+		if ( ! empty( $e['http'] ) ) {
+			$parts[] = 'HTTP ' . (int) $e['http'];
+		}
+		if ( ! empty( $e['code'] ) ) {
+			$parts[] = 'Twilio ' . (int) $e['code'];
+		}
+		if ( ! empty( $e['message'] ) ) {
+			$parts[] = (string) $e['message'];
+		}
+		if ( 20003 === (int) ( $e['code'] ?? 0 ) || 401 === (int) ( $e['http'] ?? 0 ) ) {
+			$parts[] = '→ ' . t( 'sms_admin_hint_auth' );
+		} elseif ( 20404 === (int) ( $e['code'] ?? 0 ) && ! empty( $e['service'] ) ) {
+			$parts[] = '→ ' . t( 'sms_admin_hint_service' );
+		}
+		return implode( ' · ', $parts );
+	}
+
+	/** Settings → "Check connection": reads the Verify service with the saved keys. */
+	public static function test_connection(): void {
+		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'tbf_sms_test' ) ) {
+			wp_die( esc_html__( 'Not allowed.', 'default' ) );
+		}
+		$s = self::settings();
+		if ( '' === $s['sid'] || '' === $s['token'] || '' === $s['service'] ) {
+			$out = [ 'ok' => false, 'text' => t( 'sms_admin_state_off' ) ];
+		} else {
+			$res = wp_remote_get(
+				'https://verify.twilio.com/v2/Services/' . rawurlencode( $s['service'] ),
+				[
+					'timeout' => 15,
+					'headers' => [ 'Authorization' => 'Basic ' . base64_encode( $s['sid'] . ':' . $s['token'] ) ], // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- HTTP Basic auth.
+				]
+			);
+			if ( is_wp_error( $res ) ) {
+				$err = [ 'wp_error' => $res->get_error_message() ];
+			} else {
+				$code = (int) wp_remote_retrieve_response_code( $res );
+				$json = json_decode( (string) wp_remote_retrieve_body( $res ), true );
+				$json = is_array( $json ) ? $json : [];
+				if ( 200 === $code ) {
+					$out = [ 'ok' => true, 'text' => sprintf( t( 'sms_admin_test_ok' ), (string) ( $json['friendly_name'] ?? '' ) ) ];
+				}
+				$err = [ 'http' => $code, 'code' => (int) ( $json['code'] ?? 0 ), 'message' => (string) ( $json['message'] ?? '' ), 'service' => 1 ];
+			}
+			if ( empty( $out ) ) {
+				$out = [ 'ok' => false, 'text' => self::describe( $err ) ];
+			}
+		}
+		set_transient( 'tbf_sms_test', $out, 10 * MINUTE_IN_SECONDS );
+		wp_safe_redirect( admin_url( 'options-general.php?page=' . self::PAGE . '&tested=1' ) );
+		exit;
 	}
 
 	public static function save_settings(): void {
@@ -360,10 +441,16 @@ final class Phone_Verify {
 			]
 		);
 		if ( is_wp_error( $res ) ) {
+			update_option( self::LAST_ERROR, [ 'at' => time(), 'wp_error' => $res->get_error_message() ], false );
 			return [ 'code' => 0, 'body' => [] ];
 		}
 		$json = json_decode( (string) wp_remote_retrieve_body( $res ), true );
-		return [ 'code' => (int) wp_remote_retrieve_response_code( $res ), 'body' => is_array( $json ) ? $json : [] ];
+		$json = is_array( $json ) ? $json : [];
+		$code = (int) wp_remote_retrieve_response_code( $res );
+		if ( $code < 200 || $code >= 300 ) {
+			update_option( self::LAST_ERROR, [ 'at' => time(), 'http' => $code, 'code' => (int) ( $json['code'] ?? 0 ), 'message' => substr( (string) ( $json['message'] ?? '' ), 0, 300 ), 'service' => 1 ], false );
+		}
+		return [ 'code' => $code, 'body' => $json ];
 	}
 
 	private static function locale(): string {
