@@ -69,6 +69,12 @@ final class Cabinet {
 		}
 		$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/taxibaza-fleets.php' );
 		wp_enqueue_style( 'tbf-cabinet', $base . 'cabinet.css', [], VERSION );
+		self::enqueue_form_script();
+	}
+
+	/** Script of the profile form (validation, show/hide, logo preview). */
+	public static function enqueue_form_script(): void {
+		$base = plugins_url( 'assets/', dirname( __DIR__ ) . '/taxibaza-fleets.php' );
 		wp_enqueue_script( 'tbf-cabinet', $base . 'cabinet.js', [], VERSION, true );
 		wp_localize_script(
 			'tbf-cabinet',

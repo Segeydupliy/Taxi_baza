@@ -98,25 +98,6 @@ $money  = static fn( $v ) => rtrim( rtrim( number_format( (float) $v, 2, ',', ' 
 			</dl></section>
 			<?php endif; ?>
 
-			<?php if ( in_array( 'fleet', $models, true ) ) : ?>
-			<section class="tbf-card"><h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_rent' ) ); ?></h2><dl class="tbf-dl">
-				<?php
-				$unit_key = [ 'days' => 'opt_days', 'weeks' => 'opt_weeks', 'months' => 'opt_months' ][ $p['rent_min_unit'] ];
-				$ext_key  = [ 'weekly' => 'opt_weekly', 'daily' => 'opt_daily', 'monthly' => 'opt_monthly' ][ $p['rent_ext'] ];
-				$ret_key  = [ 'handover' => 'opt_ret_handover', '7' => 'opt_ret_7', '14' => 'opt_ret_14' ][ $p['rent_dep_return'] ];
-				echo $rows( // phpcs:ignore
-					[
-						[ t( 'rent_price_view' ), '' === $p['rent_price'] ? '' : sprintf( '%s %s € / %s', t( 'from' ), $money( $p['rent_price'] ), t( 'day' === $p['rent_period'] ? 'per_day_short' : 'per_week_short' ) ) ],
-						[ t( 'rent_comm_on' ), $p['rent_comm_on'] && '' !== $p['rent_comm'] ? $money( $p['rent_comm'] ) . ' %' : '' ],
-						[ t( 'rent_dep_view' ), $p['rent_dep_on'] && '' !== $p['rent_dep'] ? $money( $p['rent_dep'] ) . ' €, ' . mb_strtolower( t( $ret_key ) ) : '' ],
-						[ t( 'rent_min' ), '' === $p['rent_min'] ? '' : sprintf( '%s %s, %s %s', $money( $p['rent_min'] ), t( $unit_key ), t( 'then' ), mb_strtolower( t( $ext_key ) ) ) ],
-						[ t( 'inc_view' ), $v_list( (array) $p['inc'], 'inc_v_' ) ],
-					]
-				);
-				?>
-			</dl></section>
-			<?php endif; ?>
-
 			<section class="tbf-card"><h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_pay' ) ); ?></h2><dl class="tbf-dl">
 				<?php
 				$freq_key = [ 'weekly' => 'opt_weekly', 'daily' => 'opt_daily', 'biweekly' => 'opt_biweekly', 'monthly' => 'opt_monthly' ][ $p['pay_freq'] ];
@@ -125,19 +106,16 @@ $money  = static fn( $v ) => rtrim( rtrim( number_format( (float) $v, 2, ',', ' 
 				?>
 			</dl></section>
 
-			<?php if ( $p['perk_fuel'] || $p['perk_service'] || $p['perk_concession'] ) : ?>
+			<?php if ( $p['perk_fuel'] || $p['perk_service'] ) : ?>
 			<section class="tbf-card"><h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_perks' ) ); ?></h2><dl class="tbf-dl">
 				<?php
 				$perks = [];
 				if ( $p['perk_fuel'] ) {
-					$amount  = 'cents' === $p['fuel_unit'] ? $money( $p['fuel_discount'] ) . ' ' . t( 'cents_per_l' ) : $money( $p['fuel_discount'] ) . ' %';
-					$perks[] = [ t( 'perk_fuel' ), t( 'discount' ) . ' ' . $amount . ' ' . t( 'at' ) . ' ' . ( '' !== $p['fuel_network'] ? $p['fuel_network'] : t( 'fuel_partner' ) ) . $v_for( (array) $p['fuel_for'] ) ];
+					$amount  = '' === (string) $p['fuel_discount'] ? '' : ( 'cents' === $p['fuel_unit'] ? $money( $p['fuel_discount'] ) . ' ' . t( 'cents_per_l' ) : $money( $p['fuel_discount'] ) . ' %' ) . ' ';
+					$perks[] = [ t( 'perk_fuel' ), t( 'discount' ) . ' ' . $amount . t( 'at' ) . ' ' . ( '' !== $p['fuel_network'] ? $p['fuel_network'] : t( 'fuel_partner' ) ) . $v_for( (array) $p['fuel_for'] ) ];
 				}
 				if ( $p['perk_service'] ) {
-					$perks[] = [ t( 'perk_service' ), '−' . $money( $p['svc_discount'] ) . ' % ' . mb_strtolower( $v_list( (array) $p['svc_what'], 'svc_' ) ) . ' — ' . mb_strtolower( t( 'partner' === $p['svc_where'] ? 'opt_partner_sto' : 'opt_own_sto' ) ) . $v_for( (array) $p['svc_for'] ) ];
-				}
-				if ( $p['perk_concession'] ) {
-					$perks[] = [ t( 'perk_con' ), t( 'help' === $p['con_what'] ? 'opt_con_help' : 'opt_con_do' ) . ', ' . mb_strtolower( t( 'opt_' . $p['con_cost'] ) ) . $v_for( (array) $p['con_for'] ) ];
+					$perks[] = [ t( 'perk_service' ), ( '' === (string) $p['svc_discount'] ? '' : '−' . $money( $p['svc_discount'] ) . ' % ' ) . mb_strtolower( $v_list( (array) $p['svc_what'], 'svc_' ) ) . ' — ' . mb_strtolower( t( 'partner' === $p['svc_where'] ? 'opt_partner_sto' : 'opt_own_sto' ) ) . $v_for( (array) $p['svc_for'] ) ];
 				}
 				echo $rows( $perks ); // phpcs:ignore
 				?>
@@ -147,7 +125,7 @@ $money  = static fn( $v ) => rtrim( rtrim( number_format( (float) $v, 2, ',', ' 
 			<section class="tbf-card"><h2 class="tbf-card__title"><?php echo esc_html( t( 'sec_req' ) ); ?></h2><dl class="tbf-dl">
 				<?php
 				$exp = '0' === $p['req_exp'] ? t( 'exp_0' ) : sprintf( t( 'exp_from' ), (int) $p['req_exp'] );
-				echo $rows( [ [ t( 'req_age' ), $p['req_age'] ], [ t( 'req_exp' ), $exp ], [ t( 'docs' ), $v_list( (array) $p['docs'], 'doc_' ) ] ] ); // phpcs:ignore
+				echo $rows( [ [ t( 'req_age' ), $p['req_age'] ], [ t( 'req_exp' ), $exp ], [ t( 'req_other' ), (string) ( $p['req_other'] ?? '' ) ] ] ); // phpcs:ignore
 				?>
 			</dl></section>
 		</div>

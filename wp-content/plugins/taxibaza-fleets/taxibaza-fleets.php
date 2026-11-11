@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       TaxiBaza Fleets
- * Description:       Fleet (flotila) profiles, profile moderation and visibility of fleet listings for TaxiBaza.sk. Works on top of taxi-rental-core without changing its data.
- * Version:           0.2.0
+ * Description:       Fleet (flotila) profiles, profile moderation, visibility of fleet listings and the public fleet pages (/flotily/) for TaxiBaza.sk. Works on top of taxi-rental-core without changing its data.
+ * Version:           0.11.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Focus Emotion
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '0.2.0';
+const VERSION = '0.11.0';
 const FILE    = __FILE__;
 
 require_once __DIR__ . '/includes/class-i18n.php';
@@ -30,6 +30,18 @@ require_once __DIR__ . '/includes/class-cabinet.php';
 require_once __DIR__ . '/includes/class-admin-panel.php';
 require_once __DIR__ . '/includes/class-registration.php';
 require_once __DIR__ . '/includes/class-notifications.php';
+require_once __DIR__ . '/includes/class-mailer.php';
+require_once __DIR__ . '/includes/class-dashboard-queue.php';
+require_once __DIR__ . '/includes/class-consent.php';
+require_once __DIR__ . '/includes/class-phone-verify.php';
+require_once __DIR__ . '/includes/class-listing-fleet.php';
+require_once __DIR__ . '/includes/class-icons.php';
+require_once __DIR__ . '/includes/class-directory.php';
+require_once __DIR__ . '/includes/class-fleet-view.php';
+require_once __DIR__ . '/includes/class-fleet-pages.php';
+require_once __DIR__ . '/includes/class-work-request.php';
+require_once __DIR__ . '/includes/class-menu.php';
+require_once __DIR__ . '/includes/functions.php';
 
 add_action(
 	'plugins_loaded',
@@ -44,8 +56,18 @@ add_action(
 		Admin_Panel::init();
 		Registration::init();
 		Notifications::init();
+		Mailer::init();
+		Dashboard_Queue::init();
+		Consent::init();
+		Phone_Verify::init();
+		Listing_Fleet::init();
+		Directory::init();
+		Fleet_Pages::init();
+		Work_Request::init();
+		Menu::init();
 	},
 	20
 );
 
 register_activation_hook( __FILE__, [ Status::class, 'on_activate' ] );
+register_activation_hook( __FILE__, [ Fleet_Pages::class, 'on_activate' ] );
