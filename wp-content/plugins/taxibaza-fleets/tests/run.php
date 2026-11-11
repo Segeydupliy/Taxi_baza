@@ -742,6 +742,44 @@ namespace TaxiBaza\Fleets\Tests {
 	update_user_meta( 120, 'tbf_phone_sent', array_fill( 0, 5, time() ) );
 	$out = $prun( 'ajax_send', [ 'phone' => '0905333555' ] );
 	check( 'more than 5 SMS an hour -> 429', 'error' === $out[0] && 429 === $out[2] );
+
+	echo "Phone at registration (form)\n";
+	if ( ! function_exists( 'wp_set_auth_cookie' ) ) { eval( 'function wp_set_auth_cookie( $u, $r = false, $s = "" ) { $GLOBALS["__auth"] = $u; } function wp_set_current_user( $u ) { $GLOBALS["__env"]["uid"] = $u; }' ); }
+	if ( ! function_exists( 'is_ssl' ) ) { eval( 'function is_ssl() { return true; }' ); }
+	if ( ! function_exists( 'is_user_logged_in' ) ) { eval( 'function is_user_logged_in() { return (bool) $GLOBALS["__env"]["uid"]; }' ); }
+	if ( ! defined( 'MINUTE_IN_SECONDS' ) ) { define( 'MINUTE_IN_SECONDS', 60 ); }
+	$_POST = [ 'tb_action' => 'register', 'tbf_phone' => '' ]; $GLOBALS['__redirect'] = null;
+	try { $P::check_register_post(); } catch ( \WP_Redirect_Exit $e ) {}
+	check( 'form without phone -> back to the form, nothing created', str_contains( (string) $GLOBALS['__redirect'], 'tbf_phone_err=number' ) && str_contains( (string) $GLOBALS['__redirect'], 'action=register' ) );
+	$_POST = [ 'tb_action' => 'register', 'tbf_phone' => '0905 111 222' ]; $GLOBALS['__redirect'] = null;
+	try { $P::check_register_post(); } catch ( \WP_Redirect_Exit $e ) {}
+	check( 'phone already confirmed by another account -> taken', str_contains( (string) $GLOBALS['__redirect'], 'tbf_phone_err=taken' ) );
+	$_POST = [ 'tb_action' => 'register', 'tbf_phone' => '0905 777 888' ]; $GLOBALS['__redirect'] = null;
+	$P::check_register_post();
+	check( 'good phone -> the core goes on creating the account', null === $GLOBALS['__redirect'] );
+	$GLOBALS['__users'][130] = [ 'car_owner' ];
+	$P::on_user_register( 130 );
+	check( 'new form account: pending + number remembered', $P::is_pending( 130 ) && '+421905777888' === get_user_meta( 130, 'tbf_phone_candidate' ) );
+	check( 'e-mail confirmation to the new account is not sent', true === $P::skip_email_confirmation( null, [ 'to' => 'U130@test.sk' ] ) );
+	check( 'mail to the admin still goes out', null === $P::skip_email_confirmation( null, [ 'to' => 'admin@taxibaza.sk' ] ) );
+	update_user_meta( 130, 'tb_email_confirmed', '0' );
+	$to = $P::after_register( 'https://www.taxibaza.sk/login/?action=confirm_email&email=u130' );
+	check( 'after the form: signed in, sent to the SMS screen, account active by phone', str_contains( $to, 'tbf_phone=1' ) && 130 === ( $GLOBALS['__auth'] ?? 0 ) && '1' === get_user_meta( 130, 'tb_email_confirmed' ) );
+	check( 'other redirects are left alone', 'https://x.sk/cabinet/' === $P::after_register( 'https://x.sk/cabinet/' ) );
+	$_POST = [];
+	$GLOBALS['__env']['uid'] = 130; $calls = [];
+	$P::$http = function ( $url, $body ) use ( &$calls ) { $calls[] = [ $url, $body ]; return [ 'code' => 201, 'body' => [ 'status' => 'pending' ] ]; };
+	$out = $prun( 'ajax_send', [ 'phone' => '' ] );
+	check( 'first SMS goes to the number from the form', 'success' === $out[0] && '+421905777888' === $calls[0][1]['To'] && '+421 905 777 888' === $out[1]['pretty'] );
+	check( 'just sent -> screen does not send again on reload', $P::sent_recently( 130 ) );
+	$GLOBALS['__env']['ajax'] = true; $_REQUEST = [ 'action' => 'tb_submit_listing' ]; $GLOBALS['__ajax_out'] = null;
+	try { $P::close_ajax(); } catch ( \WP_Ajax_Exit $e ) {}
+	check( 'pending account: other AJAX closed', 'error' === ( $GLOBALS['__ajax_out'][0] ?? '' ) && 403 === $GLOBALS['__ajax_out'][2] );
+	$_REQUEST = [ 'action' => 'tbf_phone_check' ]; $GLOBALS['__ajax_out'] = null;
+	$P::close_ajax();
+	check( 'SMS screen AJAX stays open', null === $GLOBALS['__ajax_out'] );
+	$_REQUEST = []; $GLOBALS['__env']['ajax'] = false;
+	check( 'pretty(): groups the number', '+380 969 777 704' === $P::pretty( '+380969777704' ) );
 	$P::$http = null; update_option( 'tbf_sms_settings', [] );
 
 	echo "\n$n checks, $fails failed\n";

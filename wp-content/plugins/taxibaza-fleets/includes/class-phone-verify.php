@@ -1,16 +1,22 @@
 <?php
 /**
- * Phone number confirmation by SMS (Twilio Verify) after registration.
+ * Phone number confirmation by SMS (Twilio Verify) at registration (Figma
+ * "Register" → "Confirm Phone" 343:2846 / 343:2971 → "Confirm Phone Success" 343:3104).
  *
  * - Settings → TaxiBaza SMS: Account SID, Auth Token, Verify Service SID and an
  *   on/off switch. The token is stored in an option and never printed back.
+ * - While the feature is on, the registration form gets a required "Phone"
+ *   field. After the form is sent the account is signed in and taken straight
+ *   to the code screen; the SMS goes out on its own. The confirmed phone
+ *   activates the account, so the e-mail confirmation link is not needed
+ *   (and not sent) for these accounts.
  * - Every account registered while the feature is on (form or Google, any role
  *   except admins) gets `tbf_phone_pending`. Until the number is confirmed the
- *   account is sent to /?tbf_phone=1 (legal pages and logging out stay open),
- *   after the terms consent screen if that one is pending too.
- * - Screen: phone number → "Send code" (Twilio sends the SMS in the page
- *   language) → 6-digit code → confirmed. The number is saved to the profile
- *   (`phone`) and `tbf_phone_verified` / `tbf_phone_verified_at`.
+ *   account is sent to /?tbf_phone=1 (legal pages and logging out stay open,
+ *   AJAX is closed), after the terms consent screen if that one is pending too.
+ *   Google accounts type the number on that screen.
+ * - The number is saved to the profile (`phone`) and `tbf_phone_verified` /
+ *   `tbf_phone_verified_at`.
  * - One number = one account; at most 5 SMS per account per hour.
  * - Accounts that existed before the feature was switched on are not asked.
  *
@@ -33,13 +39,24 @@ final class Phone_Verify {
 	public const QUERY       = 'tbf_phone';
 	public const NONCE       = 'tbf_phone';
 	public const SEND_LIMIT  = 5;
+	public const CANDIDATE   = 'tbf_phone_candidate';
+	public const FIELD       = 'tbf_phone';
+	public const ERR_QUERY   = 'tbf_phone_err';
 	private const PAGE       = 'tbf-sms';
 
 	/** For tests: replaces the HTTP call to Twilio. @var callable|null */
 	public static $http = null;
 
+	/** Account created by the registration form in this request. */
+	private static int $form_user = 0;
+
 	public static function init(): void {
+		add_action( 'init', [ self::class, 'check_register_post' ], 6 ); // After the consent check (5), before the core form handler (10).
 		add_action( 'user_register', [ self::class, 'on_user_register' ], 6 );
+		add_filter( 'pre_wp_mail', [ self::class, 'skip_email_confirmation' ], 10, 2 );
+		add_filter( 'wp_redirect', [ self::class, 'after_register' ], 99 );
+		add_action( 'wp_footer', [ self::class, 'print_register_field' ], 52 );
+		add_action( 'admin_init', [ self::class, 'close_ajax' ], 1 );
 		add_action( 'template_redirect', [ self::class, 'gate' ], 2 ); // After the consent gate (1).
 		add_filter( 'template_include', [ self::class, 'screen' ], 101 );
 		add_action( 'wp_ajax_tbf_phone_send', [ self::class, 'ajax_send' ] );
@@ -119,12 +136,142 @@ final class Phone_Verify {
 
 	/* ---------------- who has to confirm ---------------- */
 
-	/** @param int $user_id New user. */
-	public static function on_user_register( $user_id ): void {
-		if ( ! self::enabled() || user_can( (int) $user_id, 'manage_options' ) ) {
+	private static function url( string $path, array $args = [] ): string {
+		$base = function_exists( 'tb_url' ) ? tb_url( $path ) : home_url( $path );
+		return $args ? add_query_arg( $args, $base ) : $base;
+	}
+
+	private static function is_register_post(): bool {
+		return isset( $_POST['tb_action'] ) && 'register' === sanitize_key( wp_unslash( $_POST['tb_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- the core verifies its nonce; we only read the phone.
+	}
+
+	private static function posted_phone(): string {
+		return self::normalize( (string) wp_unslash( $_POST[ self::FIELD ] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- normalised to digits.
+	}
+
+	/** Registration form without a usable phone: back to the form, nothing created. */
+	public static function check_register_post(): void {
+		if ( ! self::enabled() || ! self::is_register_post() ) {
 			return;
 		}
-		update_user_meta( (int) $user_id, self::PENDING, 1 );
+		$phone = self::posted_phone();
+		$err   = '' === $phone ? 'number' : ( self::taken( $phone, 0 ) ? 'taken' : '' );
+		if ( '' === $err ) {
+			return;
+		}
+		wp_safe_redirect( self::url( '/login/', [ 'action' => 'register', self::ERR_QUERY => $err ] ) );
+		exit;
+	}
+
+	/** @param int $user_id New user. */
+	public static function on_user_register( $user_id ): void {
+		$user_id = (int) $user_id;
+		if ( ! self::enabled() || user_can( $user_id, 'manage_options' ) ) {
+			return;
+		}
+		update_user_meta( $user_id, self::PENDING, 1 );
+		if ( self::is_register_post() ) {
+			$phone = self::posted_phone();
+			if ( '' !== $phone ) {
+				update_user_meta( $user_id, self::CANDIDATE, $phone );
+			}
+			self::$form_user = $user_id;
+		}
+	}
+
+	/**
+	 * The confirmed phone activates a form account, so its e-mail link is not sent.
+	 *
+	 * @param null|bool            $short Short-circuit value.
+	 * @param array<string, mixed> $atts  wp_mail() arguments.
+	 * @return null|bool
+	 */
+	public static function skip_email_confirmation( $short, $atts ) {
+		if ( ! self::$form_user ) {
+			return $short;
+		}
+		$user = get_userdata( self::$form_user );
+		$to   = array_map( 'strtolower', array_map( 'trim', (array) ( is_array( $atts['to'] ?? null ) ? $atts['to'] : explode( ',', (string) ( $atts['to'] ?? '' ) ) ) ) );
+		return $user && in_array( strtolower( (string) $user->user_email ), $to, true ) ? true : $short;
+	}
+
+	/**
+	 * The core sends a new form account to "check your e-mail". Instead: sign it
+	 * in and open the SMS code screen.
+	 *
+	 * @param string $location Redirect target.
+	 */
+	public static function after_register( $location ) {
+		$uid = self::$form_user;
+		if ( ! $uid || ! str_contains( (string) $location, 'confirm_email' ) ) {
+			return $location;
+		}
+		self::$form_user = 0;
+		update_user_meta( $uid, 'tb_email_confirmed', '1' );
+		delete_user_meta( $uid, 'tb_email_confirm_token' );
+		wp_set_current_user( $uid );
+		wp_set_auth_cookie( $uid, false, is_ssl() );
+		return self::url( '/', [ self::QUERY => 1 ] );
+	}
+
+	/** Until the phone is confirmed the account can't use AJAX (except the SMS screen). */
+	public static function close_ajax(): void {
+		if ( ! wp_doing_ajax() || ! is_user_logged_in() || ! self::is_pending( get_current_user_id() ) ) {
+			return;
+		}
+		$action = sanitize_key( wp_unslash( $_REQUEST['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( in_array( $action, [ 'tbf_phone_send', 'tbf_phone_check', 'heartbeat' ], true ) ) {
+			return;
+		}
+		wp_send_json_error( [ 'message' => t( 'sms_title' ) ], 403 );
+	}
+
+	/** Required "Phone" field in the theme's registration form. */
+	public static function print_register_field(): void {
+		if ( ! self::enabled() || is_user_logged_in() || ! is_page_template( 'page-login.php' ) ) {
+			return;
+		}
+		$err  = sanitize_key( wp_unslash( $_GET[ self::ERR_QUERY ] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$data = [
+			'name'     => self::FIELD,
+			'label'    => t( 'sms_reg_label' ),
+			'required' => t( 'sms_reg_required' ),
+			'ph'       => '+421 9XX XXX XXX',
+			'empty'    => t( 'sms_reg_empty' ),
+			'bad'      => t( 'sms_err_number' ),
+			'show'     => 'taken' === $err ? t( 'sms_err_taken' ) : ( 'number' === $err ? t( 'sms_err_number' ) : '' ),
+		];
+		?>
+<script id="tbf-reg-phone">
+(function () {
+	var d = <?php echo wp_json_encode( $data ); ?>;
+	var hidden = document.querySelector('form input[name="tb_action"][value="register"]');
+	if (!hidden) { return; }
+	var form = hidden.form;
+	if (form.querySelector('[name="' + d.name + '"]')) { return; }
+	var email = form.querySelector('[name="tb_email"]');
+	var after = email ? email.closest('.tb-auth-form__field') : null;
+	var f = document.createElement('div'); f.className = 'tb-auth-form__field tbf-reg-phone';
+	var l = document.createElement('label'); l.className = 'tb-auth-form__label'; l.htmlFor = 'tbf_phone_reg'; l.textContent = d.label + ' ';
+	var star = document.createElement('span'); star.className = 'tb-auth-form__star'; star.setAttribute('aria-label', d.required); star.textContent = '*'; l.appendChild(star);
+	var i = document.createElement('input'); i.type = 'tel'; i.id = 'tbf_phone_reg'; i.name = d.name; i.className = 'tb-auth-form__input'; i.placeholder = d.ph;
+	i.autocomplete = 'tel'; i.inputMode = 'tel'; i.required = true; i.setAttribute('data-err-required', d.empty);
+	var e = document.createElement('span'); e.className = 'tb-field-error'; e.setAttribute('role', 'alert');
+	f.appendChild(l); f.appendChild(i); f.appendChild(e);
+	if (after && after.parentNode) { after.parentNode.insertBefore(f, after.nextSibling); } else { form.insertBefore(f, form.querySelector('button[type="submit"]')); }
+	function ok(v) { var n = v.replace(/[^\d]/g, ''); return n.length >= 9 && n.length <= 15 && /^[+\d\s()\-.\/]+$/.test(v.trim()); }
+	function fail(msg) { e.textContent = msg; i.classList.add('is-invalid'); i.setAttribute('aria-invalid', 'true'); }
+	function clear() { e.textContent = ''; i.classList.remove('is-invalid'); i.removeAttribute('aria-invalid'); }
+	i.addEventListener('input', clear);
+	i.addEventListener('invalid', function (ev) { ev.preventDefault(); fail(d.empty); });
+	form.addEventListener('submit', function (ev) {
+		var v = i.value;
+		if (!v.trim() || !ok(v)) { ev.preventDefault(); ev.stopImmediatePropagation(); fail(v.trim() ? d.bad : d.empty); i.focus(); }
+	}, true);
+	if (d.show) { fail(d.show); f.scrollIntoView({ block: 'center' }); }
+}());
+</script>
+		<?php
 	}
 
 	public static function is_pending( int $uid ): bool {
@@ -254,7 +401,8 @@ final class Phone_Verify {
 
 	public static function ajax_send(): void {
 		$uid   = self::guard();
-		$phone = self::normalize( (string) wp_unslash( $_POST['phone'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- normalised to digits; nonce in guard().
+		$raw   = (string) wp_unslash( $_POST['phone'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- normalised to digits below; nonce in guard().
+		$phone = '' === trim( $raw ) ? (string) get_user_meta( $uid, self::CANDIDATE, true ) : self::normalize( $raw ); // "Send again" re-uses the number.
 		if ( '' === $phone ) {
 			wp_send_json_error( [ 'message' => t( 'sms_err_number' ) ], 422 );
 		}
@@ -271,14 +419,33 @@ final class Phone_Verify {
 		}
 		$sent[] = time();
 		update_user_meta( $uid, self::META_SENT, array_values( $sent ) );
-		update_user_meta( $uid, 'tbf_phone_candidate', $phone );
-		wp_send_json_success( [ 'phone' => $phone, 'message' => sprintf( t( 'sms_sent' ), $phone ) ] );
+		update_user_meta( $uid, self::CANDIDATE, $phone );
+		wp_send_json_success( [ 'phone' => $phone, 'pretty' => self::pretty( $phone ), 'message' => sprintf( t( 'sms_sent' ), $phone ) ] );
+	}
+
+	/** +421900123456 → "+421 900 123 456". */
+	public static function pretty( string $e164 ): string {
+		$d = ltrim( $e164, '+' );
+		if ( strlen( $d ) < 6 ) {
+			return $e164;
+		}
+		return '+' . substr( $d, 0, 3 ) . ' ' . trim( chunk_split( substr( $d, 3 ), 3, ' ' ) );
+	}
+
+	/** Was a code sent to this account within the last minute? */
+	public static function sent_recently( int $uid ): bool {
+		foreach ( (array) get_user_meta( $uid, self::META_SENT, true ) as $ts ) {
+			if ( (int) $ts > time() - MINUTE_IN_SECONDS ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static function ajax_check(): void {
 		$uid   = self::guard();
-		$phone = (string) get_user_meta( $uid, 'tbf_phone_candidate', true );
-		$code  = preg_replace( '/\D/', '', (string) wp_unslash( $_POST['code'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing
+		$phone = (string) get_user_meta( $uid, self::CANDIDATE, true );
+		$code  =preg_replace( '/\D/', '', (string) wp_unslash( $_POST['code'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing
 		if ( '' === $phone ) {
 			wp_send_json_error( [ 'message' => t( 'sms_err_expired' ) ], 422 );
 		}
@@ -289,7 +456,7 @@ final class Phone_Verify {
 		if ( $r['code'] >= 200 && $r['code'] < 300 && 'approved' === ( $r['body']['status'] ?? '' ) ) {
 			self::confirm( $uid, $phone );
 			$cab = function_exists( 'tb_url' ) ? tb_url( '/cabinet/' ) : home_url( '/cabinet/' );
-			wp_send_json_success( [ 'done' => true, 'redirect' => $cab ] );
+			wp_send_json_success( [ 'done' => true, 'redirect' => $cab, 'pretty' => self::pretty( $phone ) ] );
 		}
 		wp_send_json_error( [ 'message' => t( $r['code'] >= 200 && $r['code'] < 300 ? 'sms_err_code' : self::error_key( $r ) ) ], 422 );
 	}
@@ -299,7 +466,7 @@ final class Phone_Verify {
 		update_user_meta( $uid, self::META_AT, gmdate( 'Y-m-d H:i:s' ) );
 		update_user_meta( $uid, 'phone', $phone );
 		delete_user_meta( $uid, self::PENDING );
-		delete_user_meta( $uid, 'tbf_phone_candidate' );
+		delete_user_meta( $uid, self::CANDIDATE );
 		delete_user_meta( $uid, self::META_SENT );
 	}
 }
