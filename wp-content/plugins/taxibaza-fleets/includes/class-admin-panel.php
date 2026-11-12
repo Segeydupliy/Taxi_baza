@@ -88,7 +88,7 @@ final class Admin_Panel {
 		$count = self::pending_count();
 		$label = t( 'fa_nav' ) . ( $count ? ' (' . $count . ')' : '' );
 		printf(
-			"<script>(function(){var u=%s,l=%s;document.querySelectorAll('.tb-fa-nav__inner').forEach(function(n){if(n.querySelector('[data-tbf-nav]'))return;var a=document.createElement('a');a.href=u;a.className='tb-fa-nav__tab';a.setAttribute('data-tbf-nav','1');a.textContent=l;var users=n.querySelector('a[href*=\"tab=users\"]');users&&users.nextSibling?n.insertBefore(a,users.nextSibling):n.appendChild(a);});})();</script>\n",
+			"<script>(function(){var u=%s,l=%s;function add(sel,cls){document.querySelectorAll(sel).forEach(function(n){if(n.querySelector('[data-tbf-nav]'))return;var a=document.createElement('a');a.href=u;a.className=cls;a.setAttribute('data-tbf-nav','1');a.textContent=l;var users=n.querySelector('a[href*=\"tab=users\"]');users&&users.nextSibling?n.insertBefore(a,users.nextSibling):n.insertBefore(a,n.querySelector('hr'));});}add('.tb-fa-nav__inner','tb-fa-nav__tab');add('.tb-fa-mobile-nav__drawer','tb-fa-mobile-nav__link');})();</script>\n",
 			wp_json_encode( self::panel_url() ),
 			wp_json_encode( $label )
 		);

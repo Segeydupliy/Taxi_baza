@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       TaxiBaza Fleets
  * Description:       Fleet (flotila) profiles, profile moderation, visibility of fleet listings and the public fleet pages (/flotily/) for TaxiBaza.sk. Works on top of taxi-rental-core without changing its data.
- * Version:           0.11.2
+ * Version:           0.12.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Results Factory
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '0.11.2';
+const VERSION = '0.12.0';
 const FILE    = __FILE__;
 
 require_once __DIR__ . '/includes/class-i18n.php';

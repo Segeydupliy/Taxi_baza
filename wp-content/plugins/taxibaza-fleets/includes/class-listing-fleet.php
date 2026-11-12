@@ -27,6 +27,18 @@ final class Listing_Fleet {
 	public static function init(): void {
 		add_action( 'save_post_car_listing', [ self::class, 'on_save' ], 20, 2 );
 		add_action( 'wp_footer', [ self::class, 'print_field_script' ], 52 );
+		add_action( 'wp_footer', [ self::class, 'media_upload_first' ], 52 );
+	}
+
+	/**
+	 * Add/edit listing: the "Vybrať fotku" window opens on "Nahrať súbory"
+	 * (the library tab already shows only this listing's photos).
+	 */
+	public static function media_upload_first(): void {
+		if ( ! is_user_logged_in() || ! is_page_template( 'page-add-listing.php' ) ) {
+			return;
+		}
+		echo "<script id=\"tbf-media-upload-first\">(function(){function set(){if(!(window.wp&&wp.media&&wp.media.controller&&wp.media.controller.Library)){return false;}var d=wp.media.controller.Library.prototype.defaults;d.content='upload';d.contentUserSetting=false;return true;}if(!set()){document.addEventListener('DOMContentLoaded',set);window.addEventListener('load',set);}})();</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static script.
 	}
 
 	public static function is_fleet_listing( int $post_id ): bool {
