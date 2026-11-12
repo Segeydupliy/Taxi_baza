@@ -44,6 +44,7 @@ final class Restore_Images {
 		foreach ( self::archives() as $a ) {
 			$r = self::restore( $a );
 			if ( $r['restored'] > 0 ) {
+				Optimize_Images::run( 40 ); // The archive holds the heavy originals.
 				return;
 			}
 		}
@@ -138,6 +139,7 @@ final class Restore_Images {
 		} else {
 			echo '<p>No Duplicator archive found.</p>';
 		}
+		Optimize_Images::render_section();
 		echo '</div>';
 	}
 }
