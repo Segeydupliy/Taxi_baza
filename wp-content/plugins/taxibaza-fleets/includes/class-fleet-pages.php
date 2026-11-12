@@ -45,6 +45,7 @@ final class Fleet_Pages {
 		add_filter( 'wpseo_opengraph_url', [ self::class, 'seo_url' ], 20 );
 		add_filter( 'body_class', [ self::class, 'body_class' ] );
 		add_filter( 'icl_ls_languages', [ self::class, 'language_links' ] );
+		add_filter( 'wpml_hreflangs', [ self::class, 'hreflangs' ] );
 		add_action( 'wp_head', [ self::class, 'meta_description' ], 2 );
 	}
 
@@ -285,5 +286,23 @@ final class Fleet_Pages {
 		}
 		unset( $l );
 		return $languages;
+	}
+
+	/**
+	 * <link rel="alternate" hreflang> of our pages: one address per language.
+	 *
+	 * @param array<string,string> $hreflangs hreflang => URL.
+	 * @return array<string,string>
+	 */
+	public static function hreflangs( $hreflangs ) {
+		if ( ! is_array( $hreflangs ) || ! self::is_fleet_page() ) {
+			return $hreflangs;
+		}
+		$default = (string) apply_filters( 'wpml_default_language', 'sk' );
+		foreach ( $hreflangs as $code => $url ) {
+			$lang                 = 'x-default' === $code ? $default : strtolower( substr( (string) $code, 0, 2 ) );
+			$hreflangs[ $code ] = self::url( $lang );
+		}
+		return $hreflangs;
 	}
 }

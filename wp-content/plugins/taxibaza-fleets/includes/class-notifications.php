@@ -26,6 +26,7 @@ final class Notifications {
 		add_action( 'tbf_status_changed', [ self::class, 'on_status' ], 20, 3 );
 		add_action( 'tbf_edits_rejected', [ self::class, 'on_edits_rejected' ] );
 		add_action( 'wp_ajax_tbf_notifications_read', [ self::class, 'ajax_read' ] );
+		add_action( 'wp_ajax_tbf_notifications_list', [ self::class, 'ajax_list' ] );
 		add_action( 'wp_footer', [ self::class, 'render_bell' ], 60 );
 		// Rental request from a listing page ("Kontaktovať vlastníka", core action).
 		add_action( 'wp_ajax_taxi_rental_owner_message', [ self::class, 'watch_request' ], 1 );
@@ -127,6 +128,9 @@ final class Notifications {
 		$args  = (array) ( $n['args'] ?? [] );
 		$name  = (string) ( $args['name'] ?? '' );
 		$fleet = (int) ( $args['fleet'] ?? 0 );
+		if ( in_array( $n['type'] ?? '', [ 'fleet_new', 'fleet_edits' ], true ) && ( ! $fleet || ! get_userdata( $fleet ) ) ) {
+			return [ 't' => '', 'd' => '', 'url' => '' ]; // The fleet account was deleted.
+		}
 		switch ( $n['type'] ?? '' ) {
 			case 'fleet_new':
 				return [ 't' => t( 'n_fleet_new_t' ), 'd' => sprintf( t( 'n_fleet_new_d' ), $name ), 'url' => Admin_Panel::panel_url( [ 'fleet' => $fleet ] ) ];
@@ -211,11 +215,12 @@ final class Notifications {
 		return in_array( $type, [ 'rental_request', 'work_request' ], true ) ? 'req' : 'sys';
 	}
 
-	public static function render_bell(): void {
-		$uid = get_current_user_id();
-		if ( ! $uid ) {
-			return;
-		}
+	/**
+	 * Bell items for a user, newest first (what the dropdown shows).
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function items_for( int $uid ): array {
 		$today     = strtotime( 'today', current_time( 'timestamp' ) );
 		$yesterday = $today - DAY_IN_SECONDS;
 		$items     = [];
@@ -243,10 +248,30 @@ final class Notifications {
 				'cat'  => self::category( (string) ( $n['type'] ?? '' ) ),
 			];
 		}
+		return $items;
+	}
+
+	/** Fresh items for the open page (the bell polls this every ~45 s). */
+	public static function ajax_list(): void {
+		$uid   = get_current_user_id();
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! $uid || ! wp_verify_nonce( $nonce, self::NONCE ) ) {
+			wp_send_json_error( null, 403 );
+		}
+		wp_send_json_success( [ 'items' => self::items_for( $uid ) ] );
+	}
+
+	public static function render_bell(): void {
+		$uid = get_current_user_id();
+		if ( ! $uid ) {
+			return;
+		}
+		$items = self::items_for( $uid );
 		$data = [
 			'ajax'  => admin_url( 'admin-ajax.php' ),
 			'nonce' => wp_create_nonce( self::NONCE ),
 			'items' => $items,
+			'poll'  => 45,
 			'i18n'  => [
 				'title'    => t( 'n_title' ),
 				'readAll'  => t( 'n_read_all' ),

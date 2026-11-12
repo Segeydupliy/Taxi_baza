@@ -67,7 +67,7 @@ $initials = static function ( string $name ): string {
 	return $out ?: '?';
 };
 $listings_of = static function ( int $id ): int {
-	return function_exists( 'tb_listing_count' ) ? (int) tb_listing_count( [ 'publish', 'pending', 'draft', 'rejected', 'archived' ], $id ) : (int) count_user_posts( $id, 'car_listing' );
+	return tbf_count_listings( $id, [ 'publish', 'pending', 'draft', 'rejected', 'archived' ] ); // Every language, translations counted once.
 };
 
 get_header();

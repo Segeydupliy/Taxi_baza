@@ -39,7 +39,7 @@ if ( is_array( $tbf_flash ) && 'form' === $tbf_err ) {
 // What drivers see / what the view shows: live, or the submitted draft while nothing is live yet.
 $tbf_show = $tbf_live ?: ( Profile::get_draft( $tbf_uid ) ?: Profile::get_for_form( $tbf_uid ) );
 
-$tbf_published = (int) count_user_posts( $tbf_uid, 'car_listing', true );
+$tbf_published = tbf_count_listings( $tbf_uid, [ 'publish' ] );
 $tbf_greeting  = function_exists( 'tb_opt' ) ? tb_opt( 'tb_cab_greeting', 'Вітаємо %s' ) : 'Вітаємо %s';
 $tbf_lbl       = static fn( string $k, string $fb ) => function_exists( 'tb_opt' ) ? tb_opt( $k, $fb ) : $fb;
 $tbf_locked    = ! Status::can_add_listings( $tbf_uid );
@@ -69,7 +69,7 @@ get_header();
 	<div class="tb-cabinet__hero">
 		<div class="tb-cabinet__hero-text">
 			<h1 class="tb-cabinet__greeting"><?php printf( esc_html( $tbf_greeting ), esc_html( '' !== (string) $tbf_show['name'] ? $tbf_show['name'] : $tbf_user->display_name ) ); ?></h1>
-			<p class="tb-cabinet__stats"><?php echo esc_html( Status::DRAFT === $tbf_status ? t( 'complete_lead' ) : sprintf( t( 'stats_published' ), $tbf_published ) ); ?></p>
+			<p class="tb-cabinet__stats"><?php echo esc_html( Status::DRAFT === $tbf_status ? t( 'complete_lead' ) : \TaxiBaza\Fleets\I18n::plural( $tbf_published, 'stats_published' ) ); ?></p>
 		</div>
 		<a href="<?php echo esc_url( function_exists( 'tb_url' ) ? tb_url( '/cabinet/add-listing/' ) : home_url( '/cabinet/add-listing/' ) ); ?>" class="tb-btn tb-btn--primary tb-cabinet__add-btn"<?php echo $tbf_locked ? ' aria-disabled="true" tabindex="-1"' : ''; ?>>
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor"/></svg>

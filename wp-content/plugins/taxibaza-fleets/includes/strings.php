@@ -22,7 +22,9 @@ return [
 	'read_more'              => [ 'Čítať ďalej', 'Читати повністю' , 'Read more', 'Читать полностью' ],
 	'collapse'               => [ 'Zbaliť', 'Згорнути' , 'Collapse', 'Свернуть' ],
 	'required_note'          => [ 'Povinné polia', 'Обовʼязкові поля до заповнення' , 'Required fields', 'Обязательные поля' ],
-	'stats_published'        => [ 'Máte %d zverejnených inzerátov.', 'У вас %d опублікованих оголошень.' , 'You have %d published listings.', 'У вас %d опубликованных объявлений.' ],
+	'stats_published_one'    => [ 'Máte %d zverejnený inzerát.', 'У вас %d опубліковане оголошення.', 'You have %d published listing.', 'У вас %d опубликованное объявление.' ],
+	'stats_published_few'    => [ 'Máte %d zverejnené inzeráty.', 'У вас %d опубліковані оголошення.', 'You have %d published listings.', 'У вас %d опубликованных объявления.' ],
+	'stats_published_many'   => [ 'Máte %d zverejnených inzerátov.', 'У вас %d опублікованих оголошень.', 'You have %d published listings.', 'У вас %d опубликованных объявлений.' ],
 	'complete_title'         => [ 'Dokončite registráciu', 'Завершіть реєстрацію' , 'Complete your registration', 'Завершите регистрацию' ],
 	'complete_lead'          => [ 'Vyplňte raz — vodiči to uvidia v profile flotily. Zmeniť môžete kedykoľvek.', 'Заповніть один раз — водії побачать це в профілі флотилії. Змінити можна будь-коли.' , 'Fill it in once — drivers will see it in your fleet profile. You can change it at any time.', 'Заполните один раз — водители увидят это в профиле таксопарка. Изменить можно в любой момент.' ],
 

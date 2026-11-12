@@ -22,6 +22,45 @@ final class Mailer {
 	public static function init(): void {
 		add_action( 'tbf_profile_submitted', [ self::class, 'remember_lang' ], 5 );
 		add_action( 'tbf_status_changed', [ self::class, 'on_status' ], 30, 3 );
+		add_action( 'tbf_profile_submitted', [ self::class, 'notify_support' ], 40, 2 );
+	}
+
+	/** Support mailbox: the contact e-mail from the site options, else support@taxibaza.sk. */
+	public static function support_email(): string {
+		$mail = function_exists( 'tb_opt' ) ? (string) tb_opt( 'tb_contact_email', 'support@taxibaza.sk' ) : 'support@taxibaza.sk';
+		return is_email( $mail ) ? $mail : (string) get_option( 'admin_email' );
+	}
+
+	/**
+	 * Letter to support about a new fleet or a changed fleet profile (both wait
+	 * for moderation). In Slovak, the site's main language.
+	 *
+	 * @param int    $fleet Fleet user.
+	 * @param string $kind  'new' | 'edits'.
+	 */
+	public static function notify_support( $fleet, $kind = 'new' ): bool {
+		$fleet = (int) $fleet;
+		$user  = get_userdata( $fleet );
+		if ( ! $user ) {
+			return false;
+		}
+		$p    = Profile::get_draft( $fleet ) ?: Profile::get_live( $fleet );
+		$name = ! empty( $p['name'] ) ? (string) $p['name'] : (string) $user->display_name;
+		$key  = 'edits' === $kind ? 'n_fleet_edits' : 'n_fleet_new';
+		$url  = Admin_Panel::panel_url( [ 'fleet' => $fleet ] );
+		$subj = I18n::t_in( $key . '_t', 'sk' ) . ': ' . $name;
+		$rows = [
+			[ 'Flotila', $name ],
+			[ 'E-mail', (string) $user->user_email ],
+			[ 'ID', (string) $fleet ],
+			[ 'Jazyk formulára', strtoupper( (string) get_user_meta( $fleet, self::META_LANG, true ) ) ],
+		];
+		$html = '<p>' . esc_html( sprintf( I18n::t_in( $key . '_d', 'sk' ), $name ) ) . '</p><table cellpadding="6" style="border-collapse:collapse">';
+		foreach ( $rows as $r ) {
+			$html .= '<tr><td style="color:#555">' . esc_html( $r[0] ) . '</td><td><strong>' . esc_html( $r[1] ) . '</strong></td></tr>';
+		}
+		$html .= '</table><p><a href="' . esc_url( $url ) . '">Otvoriť v paneli moderácie</a></p>';
+		return (bool) wp_mail( self::support_email(), $subj, $html, [ 'Content-Type: text/html; charset=UTF-8' ] );
 	}
 
 	/**

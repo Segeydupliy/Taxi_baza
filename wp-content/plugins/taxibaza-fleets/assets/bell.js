@@ -16,10 +16,12 @@
 
 	function unread() { return items.filter(function (n) { return !n.read; }).length; }
 	function badge() {
+		var n = unread();
 		bells.forEach(function (b) {
 			var el = b.querySelector('.tbf-bell-badge');
-			if (!unread()) { if (el) { el.remove(); } return; }
+			if (!n) { if (el) { el.remove(); } return; }
 			if (!el) { el = document.createElement('span'); el.className = 'tbf-bell-badge'; el.setAttribute('aria-hidden', 'true'); b.appendChild(el); }
+			el.textContent = n > 99 ? '99+' : String(n);
 		});
 	}
 	function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
@@ -83,4 +85,24 @@
 	document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
 	window.addEventListener('resize', function () { if (current) { place(current); } });
 	badge();
+
+	// New notifications without reloading the page: poll while the tab is visible.
+	var polling = false;
+	function refresh() {
+		if (polling || document.hidden) { return; }
+		polling = true;
+		var body = new FormData(); body.append('action', 'tbf_notifications_list'); body.append('nonce', D.nonce);
+		fetch(D.ajax, { method: 'POST', credentials: 'same-origin', body: body })
+			.then(function (r) { return r.json(); })
+			.then(function (j) {
+				if (j && j.success && j.data && Array.isArray(j.data.items)) {
+					items = j.data.items; badge();
+					if (!pop.hidden) { render(); }
+				}
+			})
+			.catch(function () {})
+			.then(function () { polling = false; });
+	}
+	setInterval(refresh, Math.max(30, D.poll || 45) * 1000);
+	document.addEventListener('visibilitychange', function () { if (!document.hidden) { refresh(); } });
 }());

@@ -170,13 +170,25 @@ final class Directory {
 	 * URLs (language-aware: /flotily/, /uk/flotily/, /en/flotily/, /ru/flotily/)
 	 * ------------------------------------------------------------------ */
 
+	/**
+	 * /flotily/ in a language. Built from the raw site address plus WPML's
+	 * language folder: wpml_permalink() can't convert a URL that is not a post
+	 * and returned the current language for every language (switcher, hreflang).
+	 */
 	public static function base_url( ?string $lang = null ): string {
-		$url = home_url( '/' . self::BASE . '/' );
-		if ( has_filter( 'wpml_permalink' ) ) {
-			$tr  = null === $lang ? apply_filters( 'wpml_permalink', $url ) : apply_filters( 'wpml_permalink', $url, $lang, true );
-			$url = is_string( $tr ) && '' !== $tr ? $tr : $url;
+		return self::lang_root( $lang ) . self::BASE . '/';
+	}
+
+	/** Site root for a language: https://www.taxibaza.sk/ or …/uk/. */
+	public static function lang_root( ?string $lang = null ): string {
+		$root = untrailingslashit( (string) get_option( 'home' ) );
+		if ( ! has_filter( 'wpml_current_language' ) ) {
+			return $root . '/';
 		}
-		return $url;
+		$lang    = $lang ?? (string) apply_filters( 'wpml_current_language', null );
+		$default = (string) apply_filters( 'wpml_default_language', null );
+		$root    = (string) preg_replace( '#/[a-z]{2}$#', '', $root ); // In case the stored address carries a language folder.
+		return $root . '/' . ( '' !== $lang && '' !== $default && $lang !== $default ? $lang . '/' : '' );
 	}
 
 	/**

@@ -15,7 +15,7 @@ namespace {
 	$GLOBALS['__hooks']   = [];
 	$GLOBALS['__meta']    = [];
 	$GLOBALS['__users']   = []; // id => roles[]
-	$GLOBALS['__options'] = [];
+	$GLOBALS['__options'] = [ 'home' => 'https://example.test' ];
 	$GLOBALS['__env']     = [ 'admin' => false, 'ajax' => false, 'tpl' => '', 'did_wp' => 1, 'uid' => 0, 'caps' => [], 'singular' => null ];
 	$GLOBALS['__ajax_out'] = null;
 
@@ -64,6 +64,8 @@ namespace {
 	if ( ! function_exists( 'esc_attr' ) ) { function esc_attr( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); } }
 	if ( ! function_exists( 'esc_url' ) ) { function esc_url( $s ) { return (string) $s; } }
 	function wp_mail( $to, $subj, $body, $h = [] ) { $GLOBALS['__mail'][] = compact( 'to', 'subj', 'body' ); return true; }
+	function untrailingslashit( $s ) { return rtrim( (string) $s, '/\\' ); }
+	function is_email( $e ) { return false !== filter_var( $e, FILTER_VALIDATE_EMAIL ) ? $e : false; }
 	function is_admin() { return $GLOBALS['__env']['admin'] || $GLOBALS['__env']['ajax']; }
 	function wp_doing_ajax() { return $GLOBALS['__env']['ajax']; }
 	function is_page_template( $t ) { return $GLOBALS['__env']['tpl'] === $t; }
@@ -370,7 +372,8 @@ namespace TaxiBaza\Fleets\Tests {
 	$GLOBALS['__users'][40] = [ 'car_owner' ]; \test_set_role( 40, 'fleet' );
 	add_filter( 'wpml_current_language', fn() => 'ru' );
 	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet' ] ) );
-	check( 'no email on submit', [] === $GLOBALS['__mail'] );
+	check( 'on submit: only the letter to support', 1 === count( $GLOBALS['__mail'] ) && 'support@taxibaza.sk' === $GLOBALS['__mail'][0]['to'] && str_contains( $GLOBALS['__mail'][0]['subj'], 'Mail Fleet' ) );
+	$GLOBALS['__mail'] = [];
 	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin moderates in SK
 	$AP::apply( 40, 'approve' );
 	$m = $GLOBALS['__mail'][0] ?? [];
@@ -379,7 +382,7 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'email links to the profile tab', str_contains( $m['body'] ?? '', '/cabinet/?tab=profile' ) );
 	$GLOBALS['__mail'] = [];
 	add_filter( 'wpml_current_language', fn() => 'ru' );
-	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet 2' ] ) );
+	$P::submit( 40, array_merge( $p, [ 'name' => 'Mail Fleet 2' ] ) ); $GLOBALS['__mail'] = [];
 	add_filter( 'wpml_current_language', fn() => 'sk' );
 	$AP::apply( 40, 'approve' );
 	check( 'edits approval email', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'Изменения профиля' ) );
@@ -390,14 +393,14 @@ namespace TaxiBaza\Fleets\Tests {
 	$GLOBALS['__mail'] = [];
 	$GLOBALS['__users'][41] = [ 'car_owner' ]; \test_set_role( 41, 'fleet' );
 	update_user_meta( 41, 'tb_notify_moderation', '0' );
-	$P::submit( 41, array_merge( $p, [ 'name' => 'Quiet Fleet' ] ) );
+	$P::submit( 41, array_merge( $p, [ 'name' => 'Quiet Fleet' ] ) ); $GLOBALS['__mail'] = [];
 	$AP::apply( 41, 'approve' );
 	check( 'respects "moderation emails" opt-out', [] === $GLOBALS['__mail'] );
 	$GLOBALS['__mail'] = [];
 	$GLOBALS['__users'][42] = [ 'car_owner' ]; \test_set_role( 42, 'fleet' );
 	add_filter( 'wpml_current_language', fn() => 'sk' ); // admin-post.php: WPML sees the default language
 	$_POST = [ 'tbf_lang' => 'en' ];
-	$P::submit( 42, array_merge( $p, [ 'name' => 'Form Lang Fleet' ] ) );
+	$P::submit( 42, array_merge( $p, [ 'name' => 'Form Lang Fleet' ] ) ); $GLOBALS['__mail'] = [];
 	$_POST = [];
 	$AP::apply( 42, 'approve' );
 	check( 'email language = language of the form page, not admin-post default', str_contains( $GLOBALS['__mail'][0]['subj'] ?? '', 'passed moderation' ) );
@@ -554,7 +557,9 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'fleet URL', 'https://example.test/flotily/silver-line/' === $D::fleet_url( 100 ) );
 	check( 'catalog URL keeps only real filters', 'https://example.test/flotily/?f_city=bratislava' === $D::catalog_url( [ 'f_city' => 'bratislava', 'f_platform' => '', 'sort' => 'new', 'pg' => 1 ] ) );
 	add_filter( 'wpml_permalink', fn( $u, $l = null ) => str_replace( 'https://example.test/', 'https://example.test/' . ( $l ?: 'uk' ) . '/', $u ), 10, 2 );
-	check( 'language-aware base URL (WPML)', 'https://example.test/en/flotily/' === $D::base_url( 'en' ) );
+	add_filter( 'wpml_default_language', fn() => 'sk' );
+	check( 'language-aware base URL (WPML)', 'https://example.test/en/flotily/' === $D::base_url( 'en' ) && 'https://example.test/flotily/' === $D::base_url( 'sk' ) );
+	check( 'fleet URL in another language', 'https://example.test/uk/flotily/silver-line/' === $D::fleet_url( 100, 'uk' ) );
 	remove_all_wpml_permalink();
 
 	echo "Fleet pages: listings of a fleet\n";
@@ -666,7 +671,7 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'WP canonical redirect is off on fleet URLs', false === $FP::no_canonical_redirect( 'https://example.test/' ) );
 	$GLOBALS['__qv'] = [ 'tbf_fleet' => '100' ];
 	try { $FP::route(); $r = ''; } catch ( \WP_Redirect_Exit $e ) { $r = $GLOBALS['__redirect']; }
-	check( 'user-ID URL redirects to the slug URL', 'https://example.test/flotily/silver-line/' === $r );
+	check( 'user-ID URL redirects to the slug URL (same language)', 'https://example.test/uk/flotily/silver-line/' === $r );
 	$GLOBALS['__qv'] = [ 'tbf_fleet' => 'silver-line' ]; $GLOBALS['__is404'] = false;
 	$FP::route();
 	check( 'known slug -> fleet page', 100 === $FP::current_fleet() && $FP::is_fleet_page() && false === $GLOBALS['__is404'] );
@@ -687,7 +692,7 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'already in the menu -> not duplicated, marked current', 2 === count( $r ) && true === $r[1]['current'] );
 	check( 'empty menu', [ 'Flotily' ] === array_column( $M::insert( [], $item, '/avto/' ), 'label' ) );
 	$h = $M::header( [ [ 'label' => 'Catalog', 'url' => 'https://example.test/avto/' ] ] );
-	check( 'header filter adds "Флотилії", current on a fleet page', 'Флотилії' === $h[1]['label'] && 'https://example.test/flotily/' === $h[1]['url'] && true === $h[1]['current'] );
+	check( 'header filter adds "Флотилії", current on a fleet page', 'Флотилії' === $h[1]['label'] && 'https://example.test/uk/flotily/' === $h[1]['url'] && true === $h[1]['current'] );
 	$f = $M::footer( [ [ 'label' => 'Domov', 'url' => '/' ], [ 'label' => 'Katalóg', 'url' => '/avto/' ] ] );
 	check( 'footer filter adds an internal link after the catalogue', 'Флотилії' === $f[2]['label'] && true === $f[2]['internal'] );
 

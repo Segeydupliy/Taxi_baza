@@ -1,6 +1,6 @@
 /* TaxiBaza Fleets — header bell dropdown (Figma "Сповіщення") */
 .tb-header__bell{position:relative}
-.tbf-bell-badge{position:absolute;top:1px;right:3px;width:8px;height:8px;border-radius:50%;background:#02f797;box-shadow:0 0 0 2px #fff}
+.tbf-bell-badge{position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:#02f797;color:#000;font:700 11px/18px Inter,system-ui,sans-serif;text-align:center;box-shadow:0 0 0 2px #fff;pointer-events:none}
 .tbf-bell-pop{position:fixed;z-index:1000;width:min(516px,calc(100vw - 32px));max-height:min(620px,calc(100vh - 120px));overflow:auto;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.10);font-family:Inter,system-ui,sans-serif;color:#000;padding:24px 24px 8px;box-sizing:border-box}
 .tbf-bell-pop[hidden]{display:none}
 .tbf-bell-pop__head{display:flex;justify-content:space-between;align-items:center;gap:16px}
