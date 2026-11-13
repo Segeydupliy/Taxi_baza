@@ -108,7 +108,7 @@ final class Tools {
 			<?php endif; ?>
 
 			<h2>3. Pokazené prepojenia prekladov (WPML): <?php echo (int) count( $broken ); ?></h2>
-			<p>Záznamy WPML, ktorých preklad už neexistuje alebo je v koši. Kvôli nim sa inzerát nezobrazoval v jazyku, kde „prekladom“ bol vymazaný príspevok.</p>
+			<p>Záznamy WPML bez príspevku (prázdne miesta po vymazaných prekladoch). Kvôli nim sa inzerát nezobrazoval v jazyku, kde „prekladom“ bol prázdny záznam. Inzeráty v koši sa tu neuvádzajú.</p>
 			<?php if ( $broken ) : ?>
 				<table class="widefat striped" style="max-width:720px">
 					<thead><tr><th>ID prekladu</th><th>Skupina (trid)</th><th>Jazyk</th><th>Stav</th><th>Originál</th></tr></thead>
@@ -123,7 +123,7 @@ final class Tools {
 					?>
 					</tbody>
 				</table>
-				<p>Vyčistiť = odstrániť tieto záznamy z tabuliek WPML; preklady v koši sa vymažú natrvalo. Originály a ostatné preklady sa nemenia.</p>
+				<p>Vyčistiť = odstrániť tieto prázdne záznamy z tabuliek WPML. Žiadny inzerát ani preklad sa nevymaže.</p>
 				<?php self::form( 'cleanup', 'Vyčistiť pokazené prepojenia', 'primary' ); ?>
 			<?php endif; ?>
 		</div>
@@ -155,7 +155,7 @@ final class Tools {
 	public static function handle_cleanup(): void {
 		self::guard( 'cleanup' );
 		$r = self::cleanup();
-		self::done( sprintf( 'Odstránené prepojenia: %d, natrvalo vymazané preklady z koša: %d.', $r['rows'], $r['posts'] ) );
+		self::done( sprintf( 'Odstránené prázdne záznamy: %d.', $r['rows'] ) );
 	}
 
 	/** @return array{rows:int,posts:int} */
@@ -164,13 +164,6 @@ final class Tools {
 		$rows  = 0;
 		$posts = 0;
 		foreach ( Groups::broken() as $r ) {
-			if ( $r['exists'] ) {
-				// In the trash: deleting the post also removes its WPML row.
-				if ( wp_delete_post( (int) $r['id'], true ) ) {
-					++$posts;
-				}
-				continue;
-			}
 			$tid = (int) ( $r['tid'] ?? 0 );
 			if ( ! $tid ) {
 				continue;

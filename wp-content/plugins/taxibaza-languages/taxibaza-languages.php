@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       TaxiBaza Languages
  * Description:       Listings in every language for TaxiBaza.sk (WPML stays in manual mode): one list of all languages in the cabinet and in /panel/, the catalogue never picks a deleted or unpublished translation, one sitemap address per language, cleanup of broken translation links, and automatic DeepL translation of a listing's description when it is published.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Results Factory
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 
 require_once __DIR__ . '/includes/class-groups.php';
 require_once __DIR__ . '/includes/class-scope.php';

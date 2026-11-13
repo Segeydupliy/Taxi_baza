@@ -179,7 +179,7 @@ final class Scope {
 			var lang = map[card.getAttribute('data-listing-id')], id = card.querySelector('.tb-fa-mod-card__id');
 			if (!lang || !id || card.querySelector('.tbl-lang')) { return; }
 			var b = document.createElement('span'); b.className = 'tbl-lang'; b.title = lang; b.textContent = lang;
-			id.insertAdjacentElement('afterend', b);
+			id.appendChild(b);
 		});
 	}
 	mark();

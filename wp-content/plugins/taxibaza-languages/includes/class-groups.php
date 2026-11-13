@@ -222,12 +222,14 @@ final class Groups {
 	}
 
 	/**
-	 * Broken links: WPML rows without a post (empty placeholders left by
-	 * deleted translations), whose post is gone, or is in the trash.
+	 * Broken links: WPML rows without a post — empty placeholders left by
+	 * deleted translations (element_id NULL) or rows of posts deleted outside
+	 * WordPress. Listings in the trash are not broken: WordPress empties the
+	 * trash by itself.
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
 	public static function broken(): array {
-		return array_values( array_filter( self::rows(), static fn( $r ) => $r['trid'] > 0 && ( ! $r['exists'] || 'trash' === $r['status'] ) ) );
+		return array_values( array_filter( self::rows(), static fn( $r ) => $r['trid'] > 0 && ! $r['exists'] ) );
 	}
 }

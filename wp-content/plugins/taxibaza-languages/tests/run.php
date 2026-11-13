@@ -160,7 +160,7 @@ namespace {
 	check( 'catalog UK: published translation wins', [ 11 ] === Groups::for_visitors( [ 10 ], 'uk' ) );
 	check( 'catalog: KTM (uk original) shown in SK', [ 2043 ] === Groups::for_visitors( [ 2043 ], 'sk' ) );
 	check( 'catalog: unknown IDs kept', [ 999 ] === Groups::for_visitors( [ 999 ], 'sk' ) );
-	check( 'broken links: deleted + trashed', [ 1428, 1429 ] === array_column( Groups::broken(), 'id' ) );
+	check( 'broken links: rows without a post only (trash is not broken)', [ 1428 ] === array_column( Groups::broken(), 'id' ) );
 	$GLOBALS['__icl'][-1] = [ 1, 'en', 'sk' ]; Groups::flush();
 	$src = Groups::$source;
 	Groups::$source = function () use ( $src ) { $rows = $src(); foreach ( $rows as &$r ) { if ( -1 === $r['id'] ) { $r['id'] = 0; $r['tid'] = 9001; } } return $rows; };
