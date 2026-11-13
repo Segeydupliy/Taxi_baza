@@ -1,0 +1,9 @@
+/* TaxiBaza Fleets — phone photo upload tiles and errors */
+.tbf-photos-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#f3f3f3}
+.tbf-photos-tile__bar{display:block;width:70%;height:6px;border-radius:3px;background:#e2e2e2;overflow:hidden}
+.tbf-photos-tile__bar i{display:block;width:4%;height:100%;background:#02f797;transition:width .2s}
+.tbf-photos-tile__txt{font-size:12px;color:#555}
+.tbf-photos-err{margin:12px 0 0;padding:12px 16px;border:1px solid #d44f4f;border-radius:12px;background:#fff5f5;color:#b03a3a;font-size:14px;line-height:20px;cursor:pointer}
+.tbf-photos-err[hidden]{display:none}
+.tbf-photos-err p{margin:0}
+.tbf-photos-err p + p{margin-top:6px}
