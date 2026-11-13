@@ -117,7 +117,8 @@ final class Tools {
 					$groups = Groups::by_trid();
 					foreach ( $broken as $r ) {
 						$o = Groups::original_of( $groups[ $r['trid'] ] ?? [] );
-						echo '<tr><td>' . (int) $r['id'] . '</td><td>' . (int) $r['trid'] . '</td><td>' . esc_html( strtoupper( (string) $r['lang'] ) ) . '</td><td>' . esc_html( $r['exists'] ? 'v koši' : 'vymazaný' ) . '</td><td>' . ( $o ? (int) $o['id'] . ' ' . esc_html( get_the_title( (int) $o['id'] ) ) : '—' ) . '</td></tr>';
+						$state = $r['exists'] ? 'v koši' : ( $r['id'] ? 'príspevok vymazaný' : 'prázdny záznam bez príspevku' );
+						echo '<tr><td>' . ( $r['id'] ? (int) $r['id'] : '—' ) . '</td><td>' . (int) $r['trid'] . '</td><td>' . esc_html( strtoupper( (string) $r['lang'] ) ) . '</td><td>' . esc_html( $state ) . '</td><td>' . ( $o ? (int) $o['id'] . ' ' . esc_html( get_the_title( (int) $o['id'] ) ) : '—' ) . '</td></tr>';
 					}
 					?>
 					</tbody>
@@ -170,7 +171,7 @@ final class Tools {
 				}
 				continue;
 			}
-			$tid = (int) $wpdb->get_var( $wpdb->prepare( "SELECT translation_id FROM {$wpdb->prefix}icl_translations WHERE element_type = %s AND element_id = %d", Groups::TYPE, (int) $r['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$tid = (int) ( $r['tid'] ?? 0 );
 			if ( ! $tid ) {
 				continue;
 			}

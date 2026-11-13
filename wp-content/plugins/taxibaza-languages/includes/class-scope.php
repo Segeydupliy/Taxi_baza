@@ -94,9 +94,9 @@ final class Scope {
 			$q->set( 'tbl_scope', 'manage' );
 			return;
 		}
-		$in = array_values( array_filter( array_map( 'intval', (array) $q->get( 'post__in' ) ) ) );
-		if ( 'all' === $q->get( 'lang' ) && $in ) {
-			$ids = Groups::for_visitors( $in, self::current_lang() );
+		$raw = array_map( 'intval', array_filter( (array) $q->get( 'post__in' ), static fn( $v ) => '' !== $v && null !== $v ) );
+		if ( 'all' === $q->get( 'lang' ) && $raw ) {
+			$ids = Groups::for_visitors( $raw, self::current_lang() );
 			$q->set( 'post__in', $ids ?: [ 0 ] );
 			$q->set( 'tbl_scope', 'catalog' );
 		}

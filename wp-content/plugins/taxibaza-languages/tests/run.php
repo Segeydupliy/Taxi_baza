@@ -142,7 +142,7 @@ namespace {
 		$rows = [];
 		foreach ( $GLOBALS['__icl'] as $id => $r ) {
 			$p      = $GLOBALS['__posts'][ $id ] ?? null;
-			$rows[] = [ 'id' => $id, 'trid' => $r[0], 'lang' => $r[1], 'src' => $r[2], 'status' => $p['post_status'] ?? '', 'author' => (int) ( $p['post_author'] ?? 0 ), 'exists' => (bool) $p ];
+			$rows[] = [ 'tid' => $id, 'id' => $id, 'trid' => $r[0], 'lang' => $r[1], 'src' => $r[2], 'status' => $p['post_status'] ?? '', 'author' => (int) ( $p['post_author'] ?? 0 ), 'exists' => (bool) $p ];
 		}
 		foreach ( $GLOBALS['__posts'] as $id => $p ) {
 			if ( ! isset( $GLOBALS['__icl'][ $id ] ) && 'car_listing' === $p['post_type'] ) {
@@ -161,6 +161,14 @@ namespace {
 	check( 'catalog: KTM (uk original) shown in SK', [ 2043 ] === Groups::for_visitors( [ 2043 ], 'sk' ) );
 	check( 'catalog: unknown IDs kept', [ 999 ] === Groups::for_visitors( [ 999 ], 'sk' ) );
 	check( 'broken links: deleted + trashed', [ 1428, 1429 ] === array_column( Groups::broken(), 'id' ) );
+	$GLOBALS['__icl'][-1] = [ 1, 'en', 'sk' ]; Groups::flush();
+	$src = Groups::$source;
+	Groups::$source = function () use ( $src ) { $rows = $src(); foreach ( $rows as &$r ) { if ( -1 === $r['id'] ) { $r['id'] = 0; $r['tid'] = 9001; } } return $rows; };
+	Groups::flush();
+	$r = Groups::for_visitors( [ 0, 10 ], 'en' ); sort( $r );
+	check( 'catalog EN: empty WPML placeholder (core sends 0) -> every group, published copy', [ 10, 841, 2043 ] === $r );
+	check( 'empty placeholder listed as broken', in_array( 9001, array_column( Groups::broken(), 'tid' ), true ) );
+	unset( $GLOBALS['__icl'][-1] ); Groups::$source = $src; Groups::flush();
 	check( 'original language', 'uk' === Groups::original_lang( 2043 ) && 'sk' === Groups::original_lang( 11 ) );
 
 	echo "Scope\n";

@@ -49,7 +49,7 @@ final class Groups {
 		if ( self::wpml() ) {
 			$table = $wpdb->prefix . 'icl_translations';
 			$found = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-				"SELECT t.element_id AS id, t.trid, t.language_code AS lang, COALESCE(t.source_language_code,'') AS src,
+				"SELECT t.translation_id AS tid, COALESCE(t.element_id,0) AS id, t.trid, t.language_code AS lang, COALESCE(t.source_language_code,'') AS src,
 				        COALESCE(p.post_status,'') AS status, COALESCE(p.post_author,0) AS author, (p.ID IS NOT NULL) AS ex
 				 FROM {$table} t
 				 LEFT JOIN {$wpdb->posts} p ON p.ID = t.element_id AND p.post_type = 'car_listing'
@@ -58,6 +58,7 @@ final class Groups {
 			);
 			foreach ( (array) $found as $r ) {
 				$rows[] = [
+					'tid'    => (int) $r['tid'],
 					'id'     => (int) $r['id'],
 					'trid'   => (int) $r['trid'],
 					'lang'   => (string) $r['lang'],
@@ -78,6 +79,7 @@ final class Groups {
 		}
 		foreach ( (array) $loose as $r ) {
 			$rows[] = [
+				'tid'    => 0,
 				'id'     => (int) $r['id'],
 				'trid'   => -(int) $r['id'],
 				'lang'   => '',
@@ -172,12 +174,28 @@ final class Groups {
 	public static function for_visitors( array $ids, string $lang ): array {
 		$trid_of = [];
 		foreach ( self::rows() as $r ) {
-			$trid_of[ $r['id'] ] = $r['trid'];
+			if ( $r['id'] > 0 ) {
+				$trid_of[ $r['id'] ] = $r['trid'];
+			}
 		}
 		$groups = self::by_trid();
 		$out    = [];
+		// The core's catalogue list holds one row per group and keeps empty WPML
+		// placeholders (element_id NULL → 0). A 0 can only come from that full
+		// list, so then every group is answered here.
+		if ( in_array( 0, array_map( 'intval', $ids ), true ) ) {
+			foreach ( $groups as $trid => $group ) {
+				$best = self::best_published( $group, $lang );
+				if ( $best ) {
+					$out[ $best ] = $best;
+				}
+			}
+		}
 		foreach ( $ids as $id ) {
 			$id = (int) $id;
+			if ( 0 === $id ) {
+				continue;
+			}
 			if ( ! isset( $trid_of[ $id ] ) ) {
 				$out[ $id ] = $id;
 				continue;
@@ -204,7 +222,8 @@ final class Groups {
 	}
 
 	/**
-	 * Broken links: WPML rows whose post is gone, or is in the trash.
+	 * Broken links: WPML rows without a post (empty placeholders left by
+	 * deleted translations), whose post is gone, or is in the trash.
 	 *
 	 * @return array<int,array<string,mixed>>
 	 */
