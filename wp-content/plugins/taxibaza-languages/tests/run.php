@@ -106,13 +106,16 @@ namespace {
 	add_filter( 'wpml_active_languages', fn() => [ 'sk' => [], 'uk' => [], 'en' => [], 'ru' => [] ] );
 	add_filter( 'wpml_element_language_code', fn( $v, $a ) => $GLOBALS['__icl'][ $a['element_id'] ][1] ?? '', 10, 2 );
 	add_filter( 'wpml_object_id', fn( $id, $tax, $ret, $lang ) => 'uk' === $lang ? $id + 100 : $id, 10, 4 );
-	add_action( 'wpml_set_element_language_details', function ( $a ) { $GLOBALS['__icl'][ $a['element_id'] ] = [ $a['trid'], $a['language_code'], $a['source_language_code'] ]; } );
+	add_action( 'wpml_set_element_language_details', function ( $a ) { $GLOBALS['__icl'][ $a['element_id'] ] = [ $a['trid'], $a['language_code'], (string) $a['source_language_code'] ]; } );
+	function wp_strip_all_tags( $s ) { return strip_tags( (string) $s ); }
 
 	require dirname( __DIR__ ) . '/includes/class-groups.php';
 	require dirname( __DIR__ ) . '/includes/class-scope.php';
 	require dirname( __DIR__ ) . '/includes/class-sitemap.php';
 	require dirname( __DIR__ ) . '/includes/class-deepl.php';
 	require dirname( __DIR__ ) . '/includes/class-auto-translate.php';
+	require dirname( __DIR__ ) . '/includes/class-detect.php';
+	require dirname( __DIR__ ) . '/includes/class-admin-mail.php';
 
 	$GLOBALS['__fail'] = 0; $GLOBALS['__n'] = 0;
 	function check( string $name, bool $ok ): void { $GLOBALS['__n']++; if ( ! $ok ) { $GLOBALS['__fail']++; echo "FAIL  $name\n"; } }
@@ -130,6 +133,8 @@ namespace {
 	use TaxiBaza\Languages\Sitemap;
 	use TaxiBaza\Languages\DeepL;
 	use TaxiBaza\Languages\Auto_Translate;
+	use TaxiBaza\Languages\Detect;
+	use TaxiBaza\Languages\Admin_Mail;
 
 	// Data: Passat 841 (sk original) with empty translations 1428 (deleted) and 1429 (trash);
 	// Corolla 10 (sk) + 11 (uk published) + 12 (en draft); KTM 2043 (uk original, author 7); loose 77.
@@ -227,7 +232,7 @@ namespace {
 	};
 	$tr = DeepL::translate( [ 'short_description' => 'Pekné auto', 'insurance_details' => '', 'maintenance_details' => 'Servis' ], 'sk', 'uk' );
 	check( 'free key -> api-free host, auth header', str_starts_with( $calls[0][1], 'https://api-free.deepl.com/v2/translate' ) && 'DeepL-Auth-Key abc:fx' === $calls[0][3] );
-	check( 'only non-empty texts are sent, keys kept', [ 'Pekné auto', 'Servis' ] === $calls[0][2]['text'] && 'UK' === $calls[0][2]['target_lang'] && 'SK' === $calls[0][2]['source_lang'] && '' === $tr['insurance_details'] && '[UK] Servis' === $tr['maintenance_details'] );
+	check( 'only non-empty texts are sent, keys kept', [ 'Pekné auto', 'Servis' ] === $calls[0][2]['text'] && 'UK' === $calls[0][2]['target_lang'] && ! isset( $calls[0][2]['source_lang'] ) && '' === $tr['insurance_details'] && '[UK] Servis' === $tr['maintenance_details'] );
 	check( 'pro key -> api host', 'https://api.deepl.com/v2/' === DeepL::base( 'abc' ) );
 
 	echo "Auto translate\n";
@@ -269,6 +274,29 @@ namespace {
 	check( 'a hand-edited translation is not overwritten', 'Hand-written EN' === get_post_meta( $en, 'short_description', true ) && '[SK] Ще новіше' === get_post_meta( $sk, 'short_description', true ) );
 	check( 'existing human translation (Corolla UK) untouched by sync', [ 'created' => [ 'ru' ], 'updated' => [], 'failed' => [] ] === Auto_Translate::sync( 10 ) );
 
+
+	echo "Detect\n";
+	check( 'Ukrainian', 'uk' === Detect::lang( 'Автомобіль у відмінному стані, страховка включена, є кондиціонер.' ) );
+	check( 'Russian', 'ru' === Detect::lang( 'Автомобиль в отличном состоянии, страховка включена, есть кондиционер. Объявление.' ) );
+	check( 'Slovak', 'sk' === Detect::lang( 'Auto je vo výbornom stave, poistenie je zahrnuté v cene prenájmu.' ) );
+	check( 'English', 'en' === Detect::lang( 'The car is in great condition, insurance is included in the weekly rent.' ) );
+	check( 'too short -> unknown', '' === Detect::lang( 'Toyota' ) );
+
+	echo "Admin mail\n";
+	update_option( 'options_tb_email_pending_admin_subject', 'Nový inzerát čaká na moderáciu' );
+	check( 'admin template -> Slovak original', 'Nový inzerát čaká na moderáciu' === Admin_Mail::slovak_original( 'Нове оголошення', 'taxi-rental-options', 'tb_email_pending_admin_subject' ) );
+	check( 'owner template stays translated', 'Ваше оголошення' === Admin_Mail::slovak_original( 'Ваше оголошення', 'taxi-rental-options', 'tb_email_pending_owner_subject' ) );
+
+	echo "Original language by text\n";
+	$post( 3000, 'pending', 9, 'Skoda Octavia' );
+	$GLOBALS['__icl'][3000] = [ 30, 'sk', '' ];
+	$GLOBALS['__meta'][3000] = [ 'short_description' => 'Автомобіль у відмінному стані, страховка включена, є кондиціонер.' ];
+	Groups::flush();
+	wp_update_post( [ 'ID' => 3000, 'post_status' => 'publish' ] );
+	Groups::flush();
+	check( 'UK text submitted from the SK interface -> original becomes UK', 'uk' === $GLOBALS['__icl'][3000][1] && '' === $GLOBALS['__icl'][3000][2] );
+	$tr = Auto_Translate::translations( 3000 );
+	check( 'translations made into the other three, from UK', isset( $tr['sk'], $tr['en'], $tr['ru'] ) && ! isset( $tr['uk'] ) && 'uk' === $GLOBALS['__icl'][ $tr['sk'] ][2] );
 	DeepL::$http = fn() => [ 'code' => 456, 'body' => [ 'message' => 'Quota exceeded' ] ];
 	$GLOBALS['__meta'][841]['short_description'] = 'Passat popis';
 	check( 'DeepL failure -> reported, nothing created', [ 'created' => [], 'updated' => [], 'failed' => [ 'uk', 'en', 'ru' ] ] === Auto_Translate::sync( 841 ) && str_contains( (string) get_option( DeepL::LAST_ERROR )['message'], '456' ) );

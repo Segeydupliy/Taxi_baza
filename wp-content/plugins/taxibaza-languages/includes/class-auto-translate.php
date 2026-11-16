@@ -112,6 +112,9 @@ final class Auto_Translate {
 		if ( ! self::is_original( (int) $post->ID ) ) {
 			return;
 		}
+		if ( in_array( $new, [ 'pending', 'publish' ], true ) ) {
+			self::relabel( (int) $post->ID, Detect::lang( Detect::listing_text( (int) $post->ID ) ) );
+		}
 		if ( 'publish' === $new ) {
 			self::release( (int) $post->ID );
 			if ( DeepL::enabled() ) {
@@ -194,6 +197,28 @@ final class Auto_Translate {
 		);
 	}
 
+	/* ---------------- language of the original ---------------- */
+
+	/**
+	 * The original is written in $lang, not in the language WPML gave it (the
+	 * owner's interface language): move it to $lang in its group. Not done
+	 * when the group already has a copy in $lang.
+	 */
+	public static function relabel( int $id, string $lang ): bool {
+		$d = self::details( $id );
+		if ( '' === $lang || ! $d['trid'] || $lang === $d['lang'] || ! in_array( $lang, self::languages(), true ) || isset( self::translations( $id )[ $lang ] ) ) {
+			return false;
+		}
+		$old = $d['lang'];
+		do_action( 'wpml_set_element_language_details', [ 'element_id' => $id, 'element_type' => Groups::TYPE, 'trid' => $d['trid'], 'language_code' => $lang, 'source_language_code' => null ] );
+		foreach ( self::translations( $id ) as $tl => $tid ) {
+			do_action( 'wpml_set_element_language_details', [ 'element_id' => $tid, 'element_type' => Groups::TYPE, 'trid' => $d['trid'], 'language_code' => $tl, 'source_language_code' => $lang ] );
+		}
+		update_post_meta( $id, '_tbl_lang_from', $old );
+		Groups::flush();
+		return true;
+	}
+
 	/* ---------------- translating ---------------- */
 
 	/** @param array<string,string> $texts Field => text. */
@@ -240,6 +265,9 @@ final class Auto_Translate {
 			if ( null === $tr ) {
 				$done['failed'][] = $lang;
 				continue;
+			}
+			if ( '' !== DeepL::$detected && DeepL::$detected !== $d['lang'] && self::relabel( $id, DeepL::$detected ) ) {
+				return self::sync( $id ); // The text is in another language than WPML thought: start again from it.
 			}
 			self::write( $id, $tid, $lang, $d, $tr );
 			$done[ $tid ? 'updated' : 'created' ][] = $lang;

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       TaxiBaza Fleets
  * Description:       Fleet (flotila) profiles, profile moderation, visibility of fleet listings and the public fleet pages (/flotily/) for TaxiBaza.sk. Works on top of taxi-rental-core without changing its data.
- * Version:           0.13.0
+ * Version:           0.14.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Results Factory
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const VERSION = '0.13.0';
+const VERSION = '0.14.0';
 const FILE    = __FILE__;
 
 require_once __DIR__ . '/includes/class-i18n.php';
@@ -36,6 +36,8 @@ require_once __DIR__ . '/includes/class-consent.php';
 require_once __DIR__ . '/includes/class-phone-verify.php';
 require_once __DIR__ . '/includes/class-listing-fleet.php';
 require_once __DIR__ . '/includes/class-listing-photos.php';
+require_once __DIR__ . '/includes/class-listing-limits.php';
+require_once __DIR__ . '/includes/class-listing-cleanup.php';
 require_once __DIR__ . '/includes/class-icons.php';
 require_once __DIR__ . '/includes/class-directory.php';
 require_once __DIR__ . '/includes/class-fleet-view.php';
@@ -63,6 +65,8 @@ add_action(
 		Phone_Verify::init();
 		Listing_Fleet::init();
 		Listing_Photos::init();
+		Listing_Limits::init();
+		Listing_Cleanup::init();
 		Directory::init();
 		Fleet_Pages::init();
 		Work_Request::init();

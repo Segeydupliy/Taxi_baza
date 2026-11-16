@@ -21,6 +21,9 @@ final class DeepL {
 	public const TARGET = [ 'sk' => 'SK', 'uk' => 'UK', 'ru' => 'RU', 'en' => 'EN-GB', 'de' => 'DE', 'cs' => 'CS', 'pl' => 'PL', 'hu' => 'HU' ];
 	public const SOURCE = [ 'sk' => 'SK', 'uk' => 'UK', 'ru' => 'RU', 'en' => 'EN', 'de' => 'DE', 'cs' => 'CS', 'pl' => 'PL', 'hu' => 'HU' ];
 
+	/** Language DeepL recognised in the last translated text ('uk', 'sk' …), '' if none. */
+	public static string $detected = '';
+
 	/** For tests: replaces wp_remote_request(). fn( string $method, string $url, array $args ): array{code:int,body:array}. @var callable|null */
 	public static $http = null;
 
@@ -100,19 +103,19 @@ final class DeepL {
 		if ( ! $send ) {
 			return array_map( 'strval', $texts );
 		}
+		// No source_lang: DeepL recognises the language of the text itself
+		// (the WPML language may be just the interface language of the owner).
 		$body = [
 			'text'                => array_values( array_map( 'strval', $send ) ),
 			'target_lang'         => $target,
 			'preserve_formatting' => true,
 		];
-		if ( isset( self::SOURCE[ $from ] ) ) {
-			$body['source_lang'] = self::SOURCE[ $from ];
-		}
 		$res = self::call( 'POST', 'translate', $body );
 		$out = (array) ( $res['body']['translations'] ?? [] );
 		if ( 200 !== $res['code'] || count( $out ) !== count( $send ) ) {
 			return null;
 		}
+		self::$detected = strtolower( substr( (string) ( $out[0]['detected_source_language'] ?? '' ), 0, 2 ) );
 		$result = array_map( 'strval', $texts );
 		$i      = 0;
 		foreach ( array_keys( $send ) as $k ) {

@@ -787,6 +787,17 @@ namespace TaxiBaza\Fleets\Tests {
 	check( 'pretty(): groups the number', '+380 969 777 704' === $P::pretty( '+380969777704' ) );
 	$P::$http = null; update_option( 'tbf_sms_settings', [] );
 
+	echo "Listing limits\n";
+	$L = '\\TaxiBaza\\Fleets\\Listing_Limits';
+	$counts = [ 300 => 4, 301 => 5, 303 => 99 ];
+	$L::$counter = fn( $u ) => $counts[ $u ] ?? 0;
+	$GLOBALS['__users'][300] = [ 'car_owner' ]; $GLOBALS['__users'][301] = [ 'car_owner' ]; $GLOBALS['__users'][303] = [ 'administrator' ];
+	check( 'owner limit 5, admin unlimited', 5 === $L::limit( 300 ) && 0 === $L::limit( 303 ) );
+	check( 'owner with 4 active can send a 5th', false === $L::over( 300, 0 ) );
+	check( 'owner with 5 active cannot send a 6th', true === $L::over( 301, 0 ) );
+	check( 'admin with 99: no limit', false === $L::over( 303, 0 ) );
+	$L::$counter = null;
+
 	echo "\n$n checks, $fails failed\n";
 	exit( $fails ? 1 : 0 );
 }
