@@ -147,6 +147,8 @@ final class Work_Request {
 			wp_send_json_error( [ 'message' => $tr( 'fl_m_err_rate' ) ], 429 );
 		}
 		self::deliver( $fleet, $data, $lang );
+		// For GA4 (fleet_apply) — only on a real delivery, IDs only.
+		$ok['ga'] = [ 'fleet_id' => $fleet, 'fleet_name' => (string) get_user_meta( $fleet, Directory::META_SLUG, true ) ];
 		wp_send_json_success( $ok );
 	}
 

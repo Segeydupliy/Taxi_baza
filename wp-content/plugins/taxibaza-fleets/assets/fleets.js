@@ -151,6 +151,7 @@
 				submit.disabled = false;
 				var data = (res && res.data) || {};
 				if (res && res.success) {
+					if (data.ga && window.tbTrack) { window.tbTrack('fleet_apply', { fleet_id: data.ga.fleet_id, fleet_name: data.ga.fleet_name }); }
 					wrap.querySelector('[data-tbf-done-title]').textContent = data.title || '';
 					wrap.querySelector('[data-tbf-done-text]').textContent = data.text || '';
 					form.hidden = true;
