@@ -11,11 +11,18 @@
 
 Не чіпає: wp-admin, `/panel/`, «Мої оголошення» в кабінеті.
 
+## 0.8.0 — публічні сторінки флотилій
+- `/flotily/` — каталог (Figma 896:8179): фільтри `?f_city=<slug міста>&f_platform=bolt|uber|hopin&sort=new|name&pg=N`, по 12 на сторінку. Показуються тільки акаунти з роллю `fleet`, статусом `approved` і схваленим профілем.
+- `/flotily/<slug>/` — сторінка флотилії (Figma 909:11272). Slug — user meta `tbf_slug`, створюється з назви при схваленні й більше не змінюється; `/flotily/<ID>/` → 301 на slug. Невідомий slug — 404. Мовні версії: `/uk/flotily/`, `/en/flotily/`, `/ru/flotily/`. Rewrite-правила скидаються один раз після оновлення версії (опція `tbf_rewrite_version`).
+- Попап «Хочу працювати» (Figma 895:5659/5712/5774): AJAX `tbf_work_request` (nonce, honeypot, ліміт 5 заявок / 10 хв з IP). Флотилія отримує e-mail мовою свого профілю (`tbf_lang`, інакше SK) і сповіщення в дзвіночку; останні 50 заявок — user meta `tbf_work_requests`.
+- Пункт меню «Flotily / Флотилії / Fleets / Таксопарки» після каталогу авто (хедер, мобільне меню, футер) — через фільтри теми `tb_header_menu` і `tb_footer_nav_links` (потрібна тема з цими фільтрами).
+- Рендер шаблонів на заглушках: `php tests/render-fleets.php catalog uk`, `php tests/render-fleets.php single sk`.
+
 ## Тести
 ```
 php wp-content/plugins/taxibaza-fleets/tests/run.php
 ```
-Тести логіки на заглушках WordPress (41 перевірка). Інтеграційну перевірку робимо на staging.
+Тести логіки на заглушках WordPress (208 перевірок). Інтеграційну перевірку робимо на staging.
 
 ## Далі
 Етап 2 — форма і перегляд профілю в кабінеті; етап 3 — вкладка «Флотилії» в `/panel/`; етап 4 — реєстрація з вибором типу; етап 5 — сповіщення. Див. `docs/PLAN-fleets.md`.
